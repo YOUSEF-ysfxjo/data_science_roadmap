@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحليل البيانات وتصويرها</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Load Tajawal Font from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #111827;
+            direction: rtl;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Main container styles */
+        .slide-container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            flex: 1;
+            overflow: visible;
+            padding: 2rem 1rem;
+            min-height: 70vh;
+            height: 90vh; /* ارتفاع ثابت لضمان عدم القفز */
+        }
+
+        .slide {
+            width: 100%;
+            flex-shrink: 0;
+            transition: opacity 0.5s ease-in-out, visibility 0.5s;
+            opacity: 0;
+            visibility: hidden;
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            padding: 1.5rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            position: relative;
+            height: 100%;
+            padding: 1.5rem 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide-content {
+            background-color: #1f2937;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            width: 100%;
+            max-width: 1000px;
+            height: 100%;
+            max-height: 100%;
+            display: flex;
+            flex-direction: column;
+            margin: 0 auto;
+            overflow-y: auto; /* إضافة سكرول إذا زاد المحتوى */
+            box-sizing: border-box;
+        }
+
+        .slide-content ul {
+            list-style-type: disc;
+            list-style-position: outside;
+            padding-right: 1.25rem;
+            margin-left: 0;
+        }
+
+        .pagination-dot {
+            width: 0.75rem;
+            height: 0.75rem;
+            border-radius: 9999px;
+            background-color: #4b5563;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        /* استخدام اللون البرتقالي الخاص بقسم التحليل */
+        .pagination-dot.active {
+            background-color: #f97316; /* orange-500 */
+            width: 2rem;
+        }
+        
+        /* أنماط شريحة الفهرس */
+        .slide[data-slide="0"] .slide-content {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 3rem 2rem;
+        }
+
+        .slide[data-slide="0"] h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: #f97316; /* orange-500 */
+        }
+
+        .slide[data-slide="0"] h3 {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: #e5e7eb;
+        }
+
+        .slide[data-slide="0"] ul {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            width: 100%;
+            margin: 0;
+            padding: 1rem;
+        }
+
+        .slide[data-slide="0"] li {
+            background-color: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .slide[data-slide="0"] li::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 4px;
+            height: 100%;
+            background-color: #f97316; /* orange-500 */
+            transition: width 0.3s ease;
+        }
+
+        .slide[data-slide="0"] li:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+                0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-color: #f97316; /* orange-500 */
+        }
+        
+        .slide[data-slide="0"] li:hover::before {
+            width: 8px;
+        }
+
+        /* تنسيقات الجدول */
+        .styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            text-align: right;
+            table-layout: fixed; /* لتوزيع الأعمدة بشكل أفضل */
+        }
+        
+        .styled-table th,
+        .styled-table td {
+            padding: 1rem 0.75rem;
+            border-bottom: 1px solid #374151;
+            word-wrap: break-word; /* لكسر الكلمات الطويلة */
+        }
+        
+        .styled-table th {
+            background-color: #374151;
+            color: #e5e7eb;
+            font-weight: 600;
+        }
+
+        .styled-table th:nth-child(1) { width: 25%; }
+        .styled-table th:nth-child(2) { width: 40%; }
+        .styled-table th:nth-child(3) { width: 35%; }
+
+
+        .styled-table tbody tr:hover {
+            background-color: #313d4f;
+        }
+        
+        .styled-table td a {
+            color: #fb923c; /* orange-400 */
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .styled-table td a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-gray-300 min-h-screen flex flex-col items-center p-4 md:p-6">
+    <div class="max-w-5xl w-full flex-1 flex flex-col">
+        <!-- Back Button -->
+        <div class="mb-4">
+            <a href="index.html" class="inline-flex items-center text-orange-400 hover:text-orange-300 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+                العودة للصفحة الرئيسية
+            </a>
+        </div>
+
+        <!-- Slide Container -->
+        <div class="relative w-full">
+            <div id="slide-container" class="slide-container flex-1">
+
+                <!-- Slide 0: الفهرس (Table of Contents) -->
+                <div class="slide active" data-slide="0">
+                    <div class="slide-content">
+                        <h2 class="text-3xl font-bold mb-6 border-b border-orange-500 pb-2">
+                            <span class="text-orange-500">تحليل البيانات وتصويرها</span>
+                        </h2>
+                        <h3 class="text-xl font-semibold text-white mb-4">المفهوم الأساسي</h3>
+                        <p class="text-center text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
+                            هي العملية المنهجية لفحص وتنظيف وتحويل ونمذجة البيانات بهدف اكتشاف معلومات مفيدة، واستخلاص الاستنتاجات، ودعم عملية اتخاذ القرار. يكتمل التحليل بتحويل الرؤى إلى رسوم بيانية واضحة ومقنعة (التصوير).
+                        </p>
+                        <h3 class="text-xl font-semibold text-white mb-6">فهرس الوحدة</h3>
+                        <ul class="space-y-3 text-gray-300 grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <li><button onclick="showSlide(1)" class="hover:text-orange-400 w-full text-right p-4">1. مراحل معالجة البيانات</button></li>
+                            <li><button onclick="showSlide(2)" class="hover:text-orange-400 w-full text-right p-4">2. أنواع التحليل الإحصائي</button></li>
+                            <li><button onclick="showSlide(3)" class="hover:text-orange-400 w-full text-right p-4">3. تصوير البيانات</button></li>
+                            <li><button onclick="showSlide(4)" class="hover:text-orange-400 w-full text-right p-4">4. الأدوات والمكتبات</button></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Slide 1: مراحل معالجة البيانات -->
+                <div class="slide" data-slide="1">
+                    <div class="slide-content">
+                        <h2 class="text-2xl font-bold text-white mb-6"><span class="text-orange-400">1.</span> 🛠 مراحل معالجة البيانات (Data Preprocessing)</h2>
+                        <div class="overflow-x-auto">
+                            <table class="styled-table">
+                                <thead>
+                                    <tr>
+                                        <th>التقسيم الرئيسي</th>
+                                        <th>الماهية</th>
+                                        <th>الهدف</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>تنظيف البيانات (Data Cleaning)</td>
+                                        <td>عملية تحديد وتصحيح أو إزالة الأخطاء، والقيم المفقودة (Missing Values)، والبيانات غير المتسقة أو المكررة.</td>
+                                        <td>ضمان جودة البيانات وموثوقيتها قبل التحليل.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>هندسة الميزات (Feature Engineering)</td>
+                                        <td>عملية استخدام معرفة المجال لإنشاء ميزات جديدة (متغيرات) من البيانات الخام الحالية.</td>
+                                        <td>تحسين قوة النماذج التنبؤية وزيادة قدرتها على استخلاص الأنماط.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>التحليل الاستكشافي (EDA)</td>
+                                        <td>تحليل أولي للبيانات باستخدام الإحصاء الوصفي والتصور لفهم الخصائص الأساسية وتوزيع البيانات واكتشاف العلاقات الأولية.</td>
+                                        <td>توجيه عملية النمذجة وتحديد المشاكل المحتملة في البيانات.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 2: أنواع التحليل الإحصائي -->
+                <div class="slide" data-slide="2">
+                    <div class="slide-content">
+                        <h2 class="text-2xl font-bold text-white mb-6"><span class="text-orange-400">2.</span> 📊 أنواع التحليل الإحصائي (Statistical Analysis)</h2>
+                        <div class="overflow-x-auto">
+                            <table class="styled-table">
+                                <thead>
+                                    <tr>
+                                        <th>التقسيم الرئيسي</th>
+                                        <th>الماهية</th>
+                                        <th>الهدف</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>الإحصاء الوصفي (Descriptive)</td>
+                                        <td>تلخيص ووصف الخصائص الرئيسية للبيانات (مثل المتوسط، الوسيط، الانحراف المعياري).</td>
+                                        <td>الإجابة عن سؤال "ماذا حدث؟" في الماضي.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>التحليل الاستدلالي (Inferential)</td>
+                                        <td>استخدام عينة من البيانات لاستنتاج وتعميم الخصائص على مجتمع البيانات الأكبر. يتضمن اختبارات الفرضيات.</td>
+                                        <td>استخلاص استنتاجات تتجاوز البيانات المتاحة بشكل مباشر.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>التحليل التنبؤي (Predictive)</td>
+                                        <td>استخدام النماذج الإحصائية والتعلم الآلي (ML) للتنبؤ بالنتائج المستقبلية بناءً على البيانات التاريخية.</td>
+                                        <td>الإجابة عن سؤال "ما الذي سيحدث؟".</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 3: تصوير البيانات -->
+                <div class="slide" data-slide="3">
+                    <div class="slide-content">
+                        <h2 class="text-2xl font-bold text-white mb-6"><span class="text-orange-400">3.</span> 🎨 تصوير البيانات (Data Visualization)</h2>
+                        <div class="overflow-x-auto">
+                            <table class="styled-table">
+                                <thead>
+                                    <tr>
+                                        <th>التقسيم الرئيسي</th>
+                                        <th>الماهية / الشرح</th>
+                                        <th>الهدف</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>أنواع المخططات حسب الهدف</td>
+                                        <td><b>للتوزيع:</b> Histogram. <b>للعلاقات:</b> Scatter Plot. <b>للمقارنات:</b> Bar Chart. <b>للاتجاهات:</b> Line Chart.</td>
+                                        <td>اختيار الرسم البياني المناسب لسرد القصة الصحيحة.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>مبادئ التصميم البصري</td>
+                                        <td>تطبيق قواعد تصميم لضمان أن يكون التصوير دقيقاً وفعالاً ويسهل تفسيره.</td>
+                                        <td>تجنب "التصورات المضللة" (Misleading Visuals)، والتركيز على سرد "قصة البيانات" (Data Storytelling).</td>
+                                    </tr>
+                                    <tr>
+                                        <td>لوحات المعلومات (Dashboards)</td>
+                                        <td>تجميع مجموعة من الرسوم البيانية والمؤشرات (KPIs) في واجهة واحدة تفاعلية.</td>
+                                        <td>توفير رؤية شاملة للمقاييس الرئيسية ودعم اتخاذ القرار في الوقت الفعلي.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 4: الأدوات والمكتبات -->
+                <div class="slide" data-slide="4">
+                    <div class="slide-content">
+                        <h2 class="text-2xl font-bold text-white mb-6"><span class="text-orange-400">4.</span> 💻 الأدوات والمكتبات</h2>
+                        <p class="text-gray-400 mb-4">أهم الأدوات المستخدمة لتنفيذ التحليل والتصوير في علم البيانات:</p>
+                        <div class="overflow-x-auto">
+                            <table class="styled-table">
+                                <thead>
+                                    <tr>
+                                        <th>التصنيف</th>
+                                        <th>المكتبة / الأداة</th>
+                                        <th>الاستخدام والدور في علم البيانات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>المعالجة والتحليل</td>
+                                        <td>Pandas (Python)</td>
+                                        <td>المكتبة الأساسية للتعامل مع البيانات الجدولية (DataFrames)، وتنظيفها، ومعالجتها إحصائياً (تنفيذ EDA).</td>
+                                    </tr>
+                                    <tr>
+                                        <td>النمذجة والإحصاء</td>
+                                        <td>Scikit-learn (Python)</td>
+                                        <td>المكتبة القياسية لتطبيق خوارزميات التعلم الآلي المراقب وغير المراقب الكلاسيكية.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>التصور الثابت والإحصائي</td>
+                                        <td>Matplotlib / Seaborn (Python)</td>
+                                        <td>Matplotlib للتحكم الأساسي، و Seaborn لإنشاء تصورات إحصائية جذابة (EDA).</td>
+                                    </tr>
+                                    <tr>
+                                        <td>التصور التفاعلي</td>
+                                        <td>Plotly (Python) / D3.js (JS)</td>
+                                        <td>إنشاء رسوم بيانية تفاعلية يمكن للمستخدم التلاعب بها، ضرورية لتطبيقات الويب.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>أدوات لوحات المعلومات</td>
+                                        <td>Tableau / Power BI</td>
+                                        <td>واجهات مستخدم رسومية (GUI) لإنشاء لوحات معلومات احترافية لجمهور الأعمال.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Slide Navigation -->
+        <div class="flex justify-between items-center mt-6">
+            <button id="prev-btn"
+                class="py-2 px-6 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                السابق
+            </button>
+            <div id="pagination" class="flex-grow flex justify-center items-center space-x-2 px-4">
+                <!-- Dots will be inserted by JS -->
+            </div>
+            <button id="next-btn"
+                class="py-2 px-6 bg-orange-600 hover:bg-orange-500 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                التالي
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        let slides;
+        let prevBtn;
+        let nextBtn;
+        let pagination;
+        let totalSlides;
+        let dots;
+
+        function showSlide(slideIndex) {
+            if (!slides || !dots || slideIndex < 0 || slideIndex >= totalSlides) {
+                console.error("Slider component not ready or slide index out of bounds.");
+                return;
+            }
+
+            // إخفاء جميع الشرائح
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+
+            // إظهار الشريحة المحددة
+            slides[slideIndex].classList.add('active');
+
+            // تحديث نقاط التنقل
+            dots.forEach((dot, index) => {
+                if (index === slideIndex) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+
+            // تحديث حالة الأزرار
+            prevBtn.disabled = slideIndex === 0;
+            nextBtn.disabled = slideIndex === totalSlides - 1;
+
+            currentSlide = slideIndex;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            slides = document.querySelectorAll('.slide');
+            prevBtn = document.getElementById('prev-btn');
+            nextBtn = document.getElementById('next-btn');
+            pagination = document.getElementById('pagination');
+            totalSlides = slides.length;
+
+            // تهيئة نقاط التنقل
+            if (pagination) {
+                pagination.innerHTML = ''; // مسح أي نقاط موجودة
+                for (let i = 0; i < totalSlides; i++) {
+                    const dot = document.createElement('button');
+                    dot.classList.add('pagination-dot');
+                    dot.dataset.slide = i;
+                    dot.addEventListener('click', () => showSlide(i));
+                    pagination.appendChild(dot);
+                }
+                dots = pagination.querySelectorAll('button');
+            }
+
+            // معالجات أحداث أزرار التنقل
+            if (prevBtn) {
+                prevBtn.addEventListener('click', () => {
+                    if (currentSlide > 0) {
+                        showSlide(currentSlide - 1);
+                    }
+                });
+            }
+
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => {
+                    if (currentSlide < totalSlides - 1) {
+                        showSlide(currentSlide + 1);
+                    }
+                });
+            }
+
+            // التنقل باستخدام لوحة المفاتيح
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight' && currentSlide < totalSlides - 1) {
+                    showSlide(currentSlide + 1);
+                } else if (e.key === 'ArrowLeft' && currentSlide > 0) {
+                    showSlide(currentSlide - 1);
+                }
+            });
+
+            // إظهار الشريحة الأولى
+            if (totalSlides > 0) {
+                showSlide(0);
+            }
+        });
+
+        // جعل الدالة متاحة عالمياً للتنقل من الفهرس
+        window.showSlide = showSlide;
+    </script>
+</body>
+
+</html>
