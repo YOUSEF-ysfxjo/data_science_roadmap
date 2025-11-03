@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مكتبة محاكاة علم البيانات</title>
+    
+    <!-- جلب الخطوط --><link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* ألوان الثيم الموحد */
+            --bg-dark: #2a303c;
+            --card-dark: #364152;
+            --text-light: #e5e7eb;
+            --text-muted: #9ca3af;
+            --border-color: #4b5563;
+            --accent-blue: #3b82f6;
+            
+            /* ألوان البيانات */
+            --cluster-1: #34D399; /* أخضر */
+            --cluster-2: #F87171; /* أحمر */
+            --cluster-3: #FBBF24; /* أصفر */
+            --data-point-color: #60a5fa; /* أزرق */
+            --item-bg: #4b5563; /* لون خلفية العناصر */
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: 'Tajawal', 'Noto Sans Arabic', 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 2rem;
+            box-sizing: border-box;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            transition: background-color 0.2s;
+        }
+
+        .back-button:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+
+        .back-button svg {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        .dashboard-container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+        }
+        
+        h3 {
+             font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        p {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* --- نظام التنقل (Tabs) --- */
+        .tab-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+        
+        .tab-btn {
+            background-color: var(--item-bg, #4b5563);
+            border: 1px solid var(--border-color);
+            color: var(--text-light);
+            border-radius: 0.5rem;
+            padding: 0.6rem 1rem;
+            font-size: 0.875rem;
+            font-family: 'Noto Sans Arabic', 'Inter', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        
+        .tab-btn:hover {
+            background-color: #525f73;
+        }
+        
+        .tab-btn.active {
+            background-color: var(--accent-blue);
+            border-color: var(--accent-blue);
+            color: white;
+        }
+
+        /* حاويات المحتوى */
+        .tab-content {
+            border-radius: 0.5rem;
+        }
+        
+        .tab-pane {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        
+        .tab-pane.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* --- أنماط عامة للمحاكاة --- */
+        .simulation-container {
+            background-color: var(--card-dark);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .simulation-svg {
+            width: 100%;
+            height: 400px;
+            display: block;
+        }
+        
+        .simulation-controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        .sim-btn {
+            background-color: var(--accent-blue);
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-family: 'Noto Sans Arabic', 'Inter', sans-serif;
+            transition: background-color 0.2s;
+        }
+        .sim-btn:hover {
+            background-color: #2563eb;
+        }
+        .sim-btn.secondary {
+            background-color: var(--item-bg, #4b5563);
+        }
+        .sim-btn.secondary:hover {
+             background-color: #525f73;
+        }
+         .sim-btn.danger {
+            background-color: #dc2626; /* أحمر */
+        }
+        .sim-btn.danger:hover {
+            background-color: #b91c1c;
+        }
+        
+        .sim-btn:disabled {
+            background-color: #4b5563;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        /* --- أنماط خاصة لكل محاكاة --- */
+
+        /* 1. K-Means */
+        .centroid {
+            stroke-width: 4px;
+            stroke: white;
+            opacity: 0.8;
+        }
+        .cluster-area {
+            opacity: 0.2;
+        }
+
+        /* 2. Classification */
+        .class-decision-boundary {
+            stroke: var(--accent-blue);
+            stroke-width: 4px;
+            stroke-dasharray: 8 8;
+        }
+
+        /* 3. Regression */
+        .reg-line {
+            stroke: var(--accent-blue);
+            stroke-width: 4px;
+        }
+        .reg-point {
+            fill: var(--data-point-color);
+        }
+
+        /* 4. Dimensionality Reduction */
+        .dim-red-layout {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 1rem;
+        }
+        .dim-red-box {
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            position: relative;
+        }
+        .dim-red-box.main-view {
+            grid-row: span 2;
+        }
+        .dim-red-svg {
+            width: 100%;
+            height: 100%;
+            min-height: 150px;
+        }
+        .dim-red-box .dim-red-label {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* 5. Association Rules */
+        .assoc-layout {
+            display: grid;
+            gap: 1.5rem;
+        }
+        .assoc-box {
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+        }
+        .assoc-item-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+        .assoc-item-btn {
+            background-color: var(--item-bg, #4b5563);
+            border: 1px solid var(--border-color);
+            color: var(--text-light);
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            font-size: 1.5rem;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .assoc-item-btn:hover { background-color: #525f73; }
+        .assoc-item-btn:active { transform: scale(0.95); }
+        
+        #assoc-cart-items {
+            font-size: 2.5rem;
+            min-height: 50px;
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            background-color: var(--card-dark);
+            margin-bottom: 1rem;
+        }
+        #assoc-suggestion-box {
+            min-height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1rem;
+            color: var(--text-muted);
+            border-radius: 0.5rem;
+            background-color: var(--card-dark);
+            padding: 1rem;
+            text-align: center;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        #assoc-suggestion-box.active {
+            color: var(--text-light);
+            background-color: #2a4a7d;
+            border: 1px solid var(--accent-blue);
+        }
+        .assoc-suggestion-content .emoji {
+            font-size: 2rem;
+            display: block;
+            margin-top: 0.5rem;
+        }
+
+        /* 6. Bias-Variance */
+        .bv-controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        .bv-btn {
+            background-color: var(--item-bg, #4b5563);
+            border: 2px solid var(--border-color);
+            color: var(--text-light);
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            font-family: 'Noto Sans Arabic', 'Inter', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .bv-btn:hover { background-color: #525f73; }
+        .bv-btn.active#btn-bv-underfit {
+            border-color: var(--cluster-2);
+            background-color: rgba(248, 113, 113, 0.1);
+        }
+        .bv-btn.active#btn-bv-goodfit {
+            border-color: var(--cluster-1);
+            background-color: rgba(52, 211, 153, 0.1);
+        }
+        .bv-btn.active#btn-bv-overfit {
+            border-color: var(--cluster-3);
+            background-color: rgba(251, 191, 36, 0.1);
+        }
+        .bv-model-line {
+            fill: none;
+            stroke-width: 4px;
+            stroke-linecap: round;
+            transition: d 0.3s ease-in-out, stroke 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="flex justify-between items-center mb-8">
+            <a href="index.html" class="back-button">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                العودة للصفحة الرئيسية
+            </a>
+            <h1 class="text-3xl font-bold">مكتبة محاكاة علم البيانات</h1>
+            <div class="w-6"></div> <!-- For balance --></header>
+        
+        <!-- أزرار التنقل --><div class="tab-buttons">
+            <button class="tab-btn active" data-tab="tab-kmeans">التجميع (Clustering)</button>
+            <button class="tab-btn" data-tab="tab-classification">التصنيف (Classification)</button>
+            <button class="tab-btn" data-tab="tab-regression">الانحدار (Regression)</button>
+            <button class="tab-btn" data-tab="tab-dim-red">تقليل الأبعاد</button>
+            <button class="tab-btn" data-tab="tab-assoc-rules">قواعد الارتباط</button>
+            <button class="tab-btn" data-tab="tab-bias-variance">مشكلات الأداء</button>
+        </div>
+        
+        <!-- حاوية المحتوى --><div class="tab-content">
+            
+            <!-- ======================= --><!-- 1. التجميع (Clustering)  --><!-- ======================= --><div id="tab-kmeans" class="tab-pane active">
+                <h2>التجميع العنقودي (K-Means)</h2>
+                <p>تجميع البيانات المتشابهة في مجموعات. اضغط "ابدأ" لرؤية الخوارزمية وهي تعمل.</p>
+                <div class="simulation-container">
+                    <svg id="kmeans-svg" class="simulation-svg" viewBox="0 0 500 400"></svg>
+                </div>
+                <div class="simulation-controls">
+                    <button id="btn-kmeans-start" class="sim-btn">ابدأ / الخطوة التالية</button>
+                    <button id="btn-kmeans-reset" class="sim-btn secondary">إعادة تعيين</button>
+                </div>
+            </div>
+            
+            <!-- ========================= --><!-- 2. التصنيف (Classification) --><!-- ========================= --><div id="tab-classification" class="tab-pane">
+                <h2>التصنيف (Classification)</h2>
+                <p>التنبؤ بفئة (Categorical). المحاكاة توضح رسم "خط فاصل" بين فئتين من البيانات.</p>
+                <div class="simulation-container">
+                    <svg id="class-svg" class="simulation-svg" viewBox="0 0 500 400"></svg>
+                </div>
+                <div class="simulation-controls">
+                    <button id="btn-class-generate" class="sim-btn">توليد بيانات جديدة</button>
+                </div>
+            </div>
+
+            <!-- ======================== --><!-- 3. الانحدار (Regression) --><!-- ======================== --><div id="tab-regression" class="tab-pane">
+                <h2>الانحدار (Regression)</h2>
+                <p>التنبؤ بقيمة رقمية (Continuous). المحاكاة توضح "خط الاتجاه العام" الذي يناسب البيانات.</p>
+                <div class="simulation-container">
+                    <svg id="reg-svg" class="simulation-svg" viewBox="0 0 500 400"></svg>
+                </div>
+                <div class="simulation-controls">
+                    <button id="btn-reg-generate" class="sim-btn">توليد بيانات جديدة</button>
+                </div>
+            </div>
+
+            <!-- ========================== --><!-- 4. تقليل الأبعاد (Dim Red) --><!-- ========================== --><div id="tab-dim-red" class="tab-pane">
+                <h2>تقليل الأبعاد (Dimensionality Reduction)</h2>
+                <p>تبسيط البيانات عن طريق "إسقاطها" من أبعاد أعلى لأبعاد أقل، كما يظهر "الظل" على الجدار.</p>
+                <div class="dim-red-layout" style="grid-template-columns: 1fr 1fr;">
+                    <!-- اللوحة الرئيسية (3D) --><div class="dim-red-box main-view" style="grid-row: auto;">
+                        <span class="dim-red-label">البيانات الأصلية (3D)</span>
+                        <svg id="dimred-svg-main" class="dim-red-svg"></svg>
+                    </div>
+                    <!-- الإسقاط الأول (X-Y) --><div class="dim-red-box">
+                        <span class="dim-red-label">الإسقاط (X-Y)</span>
+                        <svg id="dimred-svg-xy" class="dim-red-svg"></svg>
+                    </div>
+                    <!-- الإسقاط الثاني (Y-Z) --><div class="dim-red-box">
+                        <span class="dim-red-label">الإسقاط (Y-Z)</span>
+                        <svg id="dimred-svg-yz" class="dim-red-svg"></svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================= --><!-- 5. قواعد الارتباط (Assoc Rules) --><!-- ============================= --><div id="tab-assoc-rules" class="tab-pane">
+                <h2>قواعد الارتباط (Association Rules)</h2>
+                <p>اكتشف الأنماط الخفية. أضف منتجات للسلة ولاحظ الاقتراحات.</p>
+                <div class="assoc-layout">
+                    <div class="assoc-box">
+                        <h3>المتجر</h3>
+                        <div class="assoc-item-buttons">
+                            <button class="assoc-item-btn" data-item="🍞" data-id="bread" title="خبز">🍞</button>
+                            <button class="assoc-item-btn" data-item="🥛" data-id="milk" title="حليب">🥛</button>
+                            <button class="assoc-item-btn" data-item="🥨" data-id="chips" title="شيبس">🥨</button>
+                            <button class="assoc-item-btn" data-item="🥤" data-id="soda" title="مشروب غازي">🥤</button>
+                            <button class="assoc-item-btn" data-item="🥚" data-id="eggs" title="بيض">🥚</button>
+                            <button class="assoc-item-btn" data-item="🍎" data-id="apple" title="تفاح">🍎</button>
+                        </div>
+                    </div>
+                    <div class="assoc-box">
+                        <h3>سلة المشتريات</h3>
+                        <div id="assoc-cart-items"></div>
+                        <button id="assoc-reset-btn" class="sim-btn danger" style="width: 100%;">إفراغ السلة</button>
+                    </div>
+                    <div class="assoc-box">
+                        <h3>الاقتراحات (القواعد)</h3>
+                        <div id="assoc-suggestion-box">
+                            <span>أضف منتجات لرؤية الاقتراحات...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================= --><!-- 6. مشكلات الأداء (Bias/Variance) --><!-- ============================= --><div id="tab-bias-variance" class="tab-pane">
+                <h2>مشكلات الأداء (Bias-Variance)</h2>
+                <p>اختر درجة تعقيد النموذج، ثم جرّب "توليد بيانات جديدة" لترى ثبات النموذج (Variance).</p>
+                <div class="simulation-container">
+                    <svg id="bv-svg" class="simulation-svg" viewBox="0 0 500 400"></svg>
+                </div>
+                <div class="bv-controls">
+                    <button id="btn-bv-underfit" class="bv-btn">بسيط (Underfitting)</button>
+                    <button id="btn-bv-goodfit" class="bv-btn active">ملائم (Good Fit)</button>
+                    <button id="btn-bv-overfit" class="bv-btn">معقد (Overfitting)</button>
+                </div>
+                <div class="simulation-controls">
+                    <button id="btn-bv-new-data" class="sim-btn">توليد بيانات جديدة</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- تنقل بين التبويبات ---
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabPanes = document.querySelectorAll('.tab-pane');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // إزالة الفئة النشطة من جميع الأزهار
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabPanes.forEach(pane => pane.classList.remove('active'));
+                    
+                    // إضافة الفئة النشطة للزر المحدد
+                    button.classList.add('active');
+                    const tabId = button.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+
+            // --- 1. محاكاة K-Means ---
+            function initKMeans() {
+                const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
+                const svg = document.getElementById('kmeans-svg');
+                const startBtn = document.getElementById('btn-kmeans-start');
+                const resetBtn = document.getElementById('btn-kmeans-reset');
+                
+                const svgWidth = 500;
+                const svgHeight = 400;
+                const padding = 50;
+                
+                let points = [];
+                let centroids = [];
+                let clusters = [];
+                let step = 0; // 0: إعادة تعيين, 1: تعيين النقاط, 2: تحديث المراكز
+                const k = 3; // عدد المجموعات
+                
+                // توليد النقاط العشوائية
+                function generatePoints() {
+                    points = [];
+                    for (let i = 0; i < 50; i++) {
+                        points.push({
+                            x: Math.random() * (svgWidth - 2 * padding) + padding,
+                            y: Math.random() * (svgHeight - 2 * padding) + padding
+                        });
+                    }
+                }
+                
+                // تهيئة المراكز العشوائية
+                function initCentroids() {
+                    centroids = [];
+                    const usedIndices = new Set();
+                    
+                    while (centroids.length < k) {
+                        const idx = Math.floor(Math.random() * points.length);
+                        if (!usedIndices.has(idx)) {
+                            usedIndices.add(idx);
+                            centroids.push({
+                                x: points[idx].x,
+                                y: points[idx].y,
+                                color: getColorForCluster(centroids.length)
+                            });
+                        }
+                    }
+                }
+                
+                // تعيين النقاط إلى أقرب مركز
+                function assignPointsToClusters() {
+                    clusters = Array(k).fill().map(() => []);
+                    
+                    points.forEach(point => {
+                        let minDist = Infinity;
+                        let closestCentroidIdx = 0;
+                        
+                        centroids.forEach((centroid, idx) => {
+                            const dx = point.x - centroid.x;
+                            const dy = point.y - centroid.y;
+                            const dist = dx * dx + dy * dy; // المسافة التربيعية
+                            
+                            if (dist < minDist) {
+                                minDist = dist;
+                                closestCentroidIdx = idx;
+                            }
+                        });
+                        
+                        clusters[closestCentroidIdx].push(point);
+                        point.cluster = closestCentroidIdx;
+                    });
+                }
+                
+                // تحديث مواقع المراكز
+                function updateCentroids() {
+                    let hasMoved = false;
+                    
+                    centroids.forEach((centroid, idx) => {
+                        const clusterPoints = clusters[idx];
+                        if (clusterPoints.length === 0) return;
+                        
+                        const sum = clusterPoints.reduce((acc, p) => ({
+                            x: acc.x + p.x,
+                            y: acc.y + p.y
+                        }), { x: 0, y: 0 });
+                        
+                        const newX = sum.x / clusterPoints.length;
+                        const newY = sum.y / clusterPoints.length;
+                        
+                        // التحقق مما إذا كان المركز قد تحرك بشكل كبير
+                        const dx = newX - centroid.x;
+                        const dy = newY - centroid.y;
+                        if (dx * dx + dy * dy > 1) {
+                            hasMoved = true;
+                        }
+                        
+                        centroid.x = newX;
+                        centroid.y = newY;
+                    });
+                    
+                    return hasMoved;
+                }
+                
+                // رسم المشهد
+                function draw() {
+                    // مسح SVG
+                    svg.innerHTML = '';
+                    
+                    // رسم النقاط
+                    points.forEach(point => {
+                        const circle = document.createElementNS(SVG_NAMESPACE, 'circle');
+                        circle.setAttribute('cx', point.x);
+                        circle.setAttribute('cy', point.y);
+                        circle.setAttribute('r', 5);
+                        circle.setAttribute('fill', centroids[point.cluster]?.color || '#999');
+                        svg.appendChild(circle);
+                    });
+                    
+                    // رسم المناطق (Voronoi cells مبسطة)
+                    if (step > 0) {
+                        centroids.forEach((centroid, idx) => {
+                            // رسم منطقة تقريبية (في الواقع، هذا ليس Voronoi حقيقي)
+                            const area = document.createElementNS(SVG_NAMESPACE, 'circle');
+                            area.setAttribute('cx', centroid.x);
+                            area.setAttribute('cy', centroid.y);
+                            area.setAttribute('r', 150);
+                            area.setAttribute('fill', centroid.color);
+                            area.setAttribute('opacity', 0.1);
+                            area.setAttribute('class', 'cluster-area');
+                            svg.appendChild(area);
+                        });
+                    }
+                    
+                    // رسم المراكز
+                    centroids.forEach((centroid, idx) => {
+                        const circle = document.createElementNS(SVG_NAMESPACE, 'circle');
+                        circle.setAttribute('cx', centroid.x);
+                        circle.setAttribute('cy', centroid.y);
+                        circle.setAttribute('r', 10);
+                        circle.setAttribute('fill', centroid.color);
+                        circle.setAttribute('class', 'centroid');
+                        svg.appendChild(circle);
+                        
+                        // إضافة رقم للمجموعة
+                        const text = document.createElementNS(SVG_NAMESPACE, 'text');
+                        text.setAttribute('x', centroid.x + 15);
+                        text.setAttribute('y', centroid.y + 5);
+                        text.setAttribute('fill', 'white');
+                        text.setAttribute('font-size', '12');
+                        text.setAttribute('font-weight', 'bold');
+                        text.textContent = `المجموعة ${idx + 1}`;
+                        svg.appendChild(text);
+                    });
+                }
+                
+                // الدالة الرئيسية للخطوة التالية
+                function nextStep() {
+                    if (step === 0) {
+                        // إعادة تعيين
+                        generatePoints();
+                        initCentroids();
+                        assignPointsToClusters();
+                        step = 1;
+                        startBtn.textContent = 'الخطوة التالية';
+                    } else if (step === 1) {
+                        // تحديث المراكز
+                        const hasMoved = updateCentroids();
+                        if (!hasMoved) {
+                            startBtn.textContent = 'الانتهاء! اضغط لإعادة التشغيل';
+                            startBtn.disabled = false;
+                            step = 0;
+                            return;
+                        }
+                        assignPointsToClusters();
+                    }
+                    
+                    draw();
+                    startBtn.disabled = false;
+                }
+                
+                // معاودة الضبط
+                function reset() {
+                    step = 0;
+                    startBtn.textContent = 'ابدأ';
+                    startBtn.disabled = false;
+                    nextStep();
+                }
+                
+                // مساعد: الحصول على لون لكل مجموعة
+                function getColorForCluster(idx) {
+                    const colors = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6'];
+                    return colors[idx % colors.length];
+                }
+                
+                // إضافة معالجات الأحداث
+                startBtn.addEventListener('click', () => {
+                    startBtn.disabled = true;
+                    nextStep();
+                });
+                
+                resetBtn.addEventListener('click', reset);
+                
+                // البدء
+                reset();
+            }
+            
+            // --- 2. محاكاة Classification ---
+            function initClassification() {
+                const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
+                const svg = document.getElementById('class-svg');
+                const generateBtn = document.getElementById('btn-class-generate');
+                const svgWidth = 500;
+                const svgHeight = 400;
+                const padding = 50;
+                
+                const CLASS_COLORS = {
+                    0: '#F87171', // أحمر
+                    1: '#34D399'   // أخضر
+                };
+                
+                function generateAndDraw() {
+                    svg.innerHTML = '';
+                    
+                    // توليد مجموعتين من النقاط
+                    const dataPoints = [];
+                    const numPointsPerClass = 30;
+                    
+                    // الفئة 0 (يسار)
+                    for (let i = 0; i < numPointsPerClass; i++) {
+                        dataPoints.push({
+                            x: Math.random() * (svgWidth / 2 - 2 * padding) + padding,
+                            y: Math.random() * (svgHeight - 2 * padding) + padding,
+                            class: 0
+                        });
+                    }
+                    
+                    // الفئة 1 (يمين)
+                    for (let i = 0; i < numPointsPerClass; i++) {
+                        dataPoints.push({
+                            x: Math.random() * (svgWidth / 2 - 2 * padding) + svgWidth / 2 + padding,
+                            y: Math.random() * (svgHeight - 2 * padding) + padding,
+                            class: 1
+                        });
+                    }
+                    
+                    // حساب مركز كل فئة
+                    const class0Center = { x: 0, y: 0 };
+                    const class1Center = { x: 0, y: 0 };
+                    let class0Count = 0, class1Count = 0;
+                    
+                    dataPoints.forEach(p => {
+                        if (p.class === 0) {
+                            class0Center.x += p.x;
+                            class0Center.y += p.y;
+                            class0Count++;
+                        } else {
+                            class1Center.x += p.x;
+                            class1Center.y += p.y;
+                            class1Count++;
+                        }
+                    });
+                    
+                    if (class0Count > 0) {
+                        class0Center.x /= class0Count;
+                        class0Center.y /= class0Count;
+                    }
+                    
+                    if (class1Count > 0) {
+                        class1Center.x /= class1Count;
+                        class1Center.y /= class1Count;
+                    }
+                    
+                    // رسم النقاط
+                    dataPoints.forEach(point => {
+                        const circle = document.createElementNS(SVG_NAMESPACE, 'circle');
+                        circle.setAttribute('cx', point.x);
+                        circle.setAttribute('cy', point.y);
+                        circle.setAttribute('r', 8);
+                        circle.style.fill = CLASS_COLORS[point.class];
+                        svg.appendChild(circle);
+                    });
+                    
+                    // رسم خط فاصل (بسيط)
+                    const midX = (class0Center.x + class1Center.x) / 2;
+                    const midY = (class0Center.y + class1Center.y) / 2;
+                    let slope = -1 / ((class1Center.y - class0Center.y) / (class1Center.x - class0Center.x));
+                    
+                    const x1 = 0;
+                    const y1 = midY - slope * midX;
+                    const x2 = svgWidth;
+                    const y2 = midY + slope * (svgWidth - midX);
+                    
+                    const line = document.createElementNS(SVG_NAMESPACE, 'line');
+                    line.setAttribute('x1', x1);
+                    line.setAttribute('y1', y1);
+                    line.setAttribute('x2', x2);
+                    line.setAttribute('y2', y2);
+                    line.setAttribute('class', 'class-decision-boundary');
+                    svg.appendChild(line);
+                }
+                
+                generateBtn.addEventListener('click', generateAndDraw);
+                generateAndDraw(); // للرسم أول مرة
+            }
+            
+            // --- 3. محاكاة Regression ---
+            function initRegression() {
+                const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
+                const svg = document.getElementById('reg-svg');
+                const generateBtn = document.getElementById('btn-reg-generate');
+                const svgWidth = 500;
+                const svgHeight = 400;
+                const padding = 50;
+                
+                function generateAndDraw() {
+                    svg.innerHTML = '';
+                    let dataPoints = [];
+                    const numPoints = 20;
+                    const noiseLevel = 80;
+                    
+                    // ميل الخط (عشوائي قليلاً)
+                    const m_true = (Math.random() - 0.5) * 0.5 + 0.5; // ميل موجب
+                    const b_true = Math.random() * (svgHeight / 4) + (svgHeight / 4);
+                    
+                    // توليد النقاط
+                    for (let i = 0; i < numPoints; i++) {
+                        const x = Math.random() * (svgWidth - 2 * padding) + padding;
+                        const y_true = m_true * x + b_true;
+                        const noise = (Math.random() - 0.5) * noiseLevel;
+                        dataPoints.push({ x: x, y: y_true + noise });
+                    }
+                    
+                    // حساب خط الانحدار
+                    let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
+                    dataPoints.forEach(p => {
+                        sumX += p.x;
+                        sumY += p.y;
+                        sumXY += p.x * p.y;
+                        sumX2 += p.x * p.x;
+                    });
+                    
+                    const n = dataPoints.length;
+                    const m = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+                    const b = (sumY - m * sumX) / n;
+                    
+                    const x1 = 0;
+                    const y1 = m * x1 + b;
+                    const x2 = svgWidth;
+                    const y2 = m * x2 + b;
+                    
+                    // رسم الخط
+                    const line = document.createElementNS(SVG_NAMESPACE, 'line');
+                    line.setAttribute('x1', x1);
+                    line.setAttribute('y1', y1);
+                    line.setAttribute('x2', x2);
+                    line.setAttribute('y2', y2);
+                    line.setAttribute('class', 'reg-line');
+                    svg.appendChild(line);
+
+                    // رسم النقاط
+                    dataPoints.forEach(point => {
+                        const circle = document.createElementNS(SVG_NAMESPACE, 'circle');
+                        circle.setAttribute('cx', point.x);
+                        circle.setAttribute('cy', point.y);
+                        circle.setAttribute('r', 6);
+                        circle.setAttribute('class', 'reg-point');
+                        svg.appendChild(circle);
+                    });
+                }
+                
+                generateBtn.addEventListener('click', generateAndDraw);
+                generateAndDraw();
+            }
+            
+            // --- 4. محاكاة Dimensionality Reduction ---
+            function initDimRed() {
+                const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
+                const container = document.getElementById('dimred-container');
+                container.innerHTML = `
+                    <svg viewBox="0 0 900 450" xmlns="${SVG_NAMESPACE}" class="w-full">
+                        <!-- Title -->
+                        <text x="50" y="30" font-family="Arial, sans-serif" font-size="24" fill="#E5E7EB">Dimensionality Reduction</text>
+
+                        <!-- 1. 3D Scene (Left) -->
+                        <g transform="translate(150, 250)">
+                            <!-- Axes -->
+                            <defs>
+                                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+                                    <polygon points="0 0, 10 3.5, 0 7" fill="#E5E7EB" />
+                                </marker>
+                            </defs>
+                            <line x1="0" y1="0" x2="180" y2="0" stroke="#E5E7EB" stroke-width="2" marker-end="url(#arrowhead)" /> <!-- X axis -->
+                            <line x1="0" y1="0" x2="0" y2="-180" stroke="#E5E7EB" stroke-width="2" marker-end="url(#arrowhead)" /> <!-- Y axis -->
+                            <line x1="0" y1="0" x2="-80" y2="80" stroke="#E5E7EB" stroke-width="2" marker-end="url(#arrowhead)" /> <!-- Z axis -->
+                            
+                            <!-- Axis Labels -->
+                            <text x="185" y="10" font-family="Arial" font-size="16" fill="#E5E7EB">X</text>
+                            <text x="5" y="-180" font-family="Arial" font-size="16" fill="#7FA8B8">Y</text>
+                            <text x="-95" y="90" font-family="Arial" font-size="16" fill="#E5E7EB">Z</text>
+
+                            <!-- Cylinder 1 (Background) -->
+                            <g transform="translate(50, -100)">
+                                <ellipse cx="0" cy="0" rx="40" ry="15" fill="#7FA8B8" stroke="#E5E7EB" stroke-width="1" />
+                                <ellipse cx="0" cy="100" rx="40" ry="15" fill="none" stroke="#E5E7EB" stroke-width="1" stroke-dasharray="4 4" />
+                                <line x1="-40" y1="0" x2="-40" y2="100" stroke="#E5E7EB" stroke-width="1" stroke-dasharray="4 4" />
+                                <line x1="40" y1="0" x2="40" y2="100" stroke="#E5E7EB" stroke-width="1" stroke-dasharray="4 4" />
+                                <text x="0" y="-20" font-family="Arial" font-size="16" fill="#7FA8B8">Y</text>
+                            </g>
+
+                            <!-- Cylinder 2 (Foreground) -->
+                            <g transform="translate(120, -50)">
+                                <ellipse cx="0" cy="0" rx="40" ry="15" fill="#7FA8B8" stroke="#E5E7EB" stroke-width="1" />
+                                <ellipse cx="0" cy="50" rx="40" ry="15" fill="none" stroke="#E5E7EB" stroke-width="1" stroke-dasharray="4 4" />
+                                <line x1="-40" y1="0" x2="-40" y2="50" stroke="#E5E7EB" stroke-width="1" stroke-dasharray="4 4" />
+                                <line x1="40" y1="0" x2="40" y2="50" stroke="#E5E7EB" stroke-width="1" stroke-dasharray="4 4" />
+                            </g>
+                        </g>
+
+                        <!-- 2. Arrow -->
+                        <g transform="translate(380, 200)">
+                            <line x1="0" y1="0" x2="100" y2="0" stroke="#E5E7EB" stroke-width="10" marker-end="url(#arrowhead)" />
+                        </g>
+
+                        <!-- 3. Top Projection (X-Y) -->
+                        <g transform="translate(600, 150)">
+                            <!-- Axes -->
+                            <line x1="0" y1="0" x2="0" y2="-120" stroke="#E5E7EB" stroke-width="2" marker-end="url(#arrowhead)" /> <!-- Y axis -->
+                            <line x1="0" y1="0" x2="200" y2="0" stroke="#E5E7EB" stroke-width="2" marker-end="url(#arrowhead)" /> <!-- X axis -->
+                            
+                            <!-- Axis Labels -->
+                            <text x="205" y="10" font-family="Arial" font-size="16" fill="#E5E7EB">X</text>
+                            <text x="5" y="-125" font-family="Arial" font-size="16" fill="#7FA8B8">Y</text>
+
+                            <!-- Projection (Circles) -->
+                            <circle cx="50" cy="-50" r="25" fill="#7FA8B8" />
+                            <circle cx="120" cy="-50" r="25" fill="#7FA8B8" />
+                        </g>
+
+                        <!-- 4. Side Projection (Y-Z) -->
+                        <g transform="translate(600, 350)">
+                            <!-- Axes -->
+                            <line x1="0" y1="0" x2="0" y2="-120" stroke="#E5E7EB" stroke-width="2" marker-end="url(#arrowhead)" /> <!-- Y axis -->
+                            <line x1="0" y1="0" x2="200" y2="0" stroke="#E5E7EB" stroke-width="2" marker-end="url(#arrowhead)" /> <!-- Z axis -->
+                            
+                            <!-- Axis Labels -->
+                            <text x="205" y="10" font-family="Arial" font-size="16" fill="#E5E7EB">Z</text>
+                            <text x="5" y="-125" font-family="Arial" font-size="16" fill="#7FA8B8">Y</text>
+
+                            <!-- Projection (Lines) -->
+                            <line x1="50" y1="-30" x2="50" y2="-100" stroke="#E5E7EB" stroke-width="4" />
+                            <line x1="120" y1="-30" x2="120" y2="-100" stroke="#E5E7EB" stroke-width="4" />
+                        </g>
+                    </svg>
+                `;
+            }
+
+            // --- 5. محاكاة Association Rules ---
+            function initAssocRules() {
+                const itemButtons = document.querySelectorAll('.assoc-item-btn');
+                const cartItemsContainer = document.getElementById('assoc-cart-items');
+                const suggestionBox = document.getElementById('assoc-suggestion-box');
+                const resetBtn = document.getElementById('assoc-reset-btn');
+                
+                let cart = new Set();
+                const rules = { 'bread': 'milk', 'chips': 'soda' };
+                const itemEmojis = {
+                    'bread': '🍞', 'milk': '🥛', 'chips': '🥨',
+                    'soda': '🥤', 'eggs': '🥚', 'apple': '🍎'
+                };
+
+                function updateCartView() {
+                    cartItemsContainer.innerHTML = '';
+                    if (cart.size === 0) {
+                        cartItemsContainer.innerHTML = '';
+                    } else {
+                        cart.forEach(item => {
+                            const span = document.createElement('span');
+                            span.textContent = itemEmojis[item] || item;
+                            cartItemsContainer.appendChild(span);
+                        });
+                    }
+                    checkRules();
+                }
+
+                function checkRules() {
+                    let suggestionFound = false;
+                    for (const antecedent in rules) {
+                        if (cart.has(antecedent)) {
+                            const consequent = rules[antecedent];
+                            if (!cart.has(consequent)) {
+                                showSuggestion(antecedent, consequent);
+                                suggestionFound = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!suggestionFound) clearSuggestion();
+                }
+
+                function showSuggestion(itemA, itemB) {
+                    suggestionBox.classList.add('active');
+                    suggestionBox.innerHTML = `
+                        <div class="assoc-suggestion-content">
+                            لأنك اشتريت ${itemEmojis[itemA]}...
+                            <span class="emoji">${itemEmojis[itemB]}</span>
+                            قد ترغب أيضاً في شراء ${itemEmojis[itemB]}!
+                        </div>
+                    `;
+                }
+
+                function clearSuggestion() {
+                    suggestionBox.classList.remove('active');
+                    suggestionBox.innerHTML = '<span>أضف منتجات لرؤية الاقتراحات...</span>';
+                }
+
+                itemButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        cart.add(button.dataset.id);
+                        updateCartView();
+                    });
+                });
+
+                resetBtn.addEventListener('click', () => {
+                    cart.clear();
+                    updateCartView();
+                });
+                
+                updateCartView();
+            }
+
+            // --- 6. محاكاة Bias-Variance ---
+            function initBiasVariance() {
+                const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
+                const svg = document.getElementById('bv-svg');
+                const btnUnderfit = document.getElementById('btn-bv-underfit');
+                const btnGoodfit = document.getElementById('btn-bv-goodfit');
+                const btnOverfit = document.getElementById('btn-bv-overfit');
+                const btnNewData = document.getElementById('btn-bv-new-data');
+                const buttons = [btnUnderfit, btnGoodfit, btnOverfit];
+                
+                const svgWidth = 500;
+                const svgHeight = 400;
+                const padding = 50;
+                const numPoints = 15;
+                
+                let dataPoints = [];
+                let currentFit = 'goodfit';
+                
+                // الدالة الحقيقية (التي لا نراها)
+                function trueFunction(x) {
+                    let normalizedX = (x - (svgWidth / 2)) / (svgWidth / 3);
+                    return (normalizedX * normalizedX) * (svgHeight / 4) + (svgHeight / 3);
+                }
+                
+                function generateDataPoints() {
+                    dataPoints = [];
+                    const noiseLevel = svgHeight / 6;
+                    for (let i = 0; i < numPoints; i++) {
+                        const x = Math.random() * (svgWidth - 2 * padding) + padding;
+                        const trueY = trueFunction(x);
+                        const noise = (Math.random() - 0.5) * noiseLevel;
+                        const y = Math.max(padding, Math.min(svgHeight - padding, trueY + noise));
+                        dataPoints.push({ x: x, y: y });
+                    }
+                }
+
+                function drawDataPoints() {
+                    svg.querySelectorAll('.data-point').forEach(p => p.remove());
+                    dataPoints.forEach(point => {
+                        const circle = document.createElementNS(SVG_NAMESPACE, 'circle');
+                        circle.setAttribute('cx', point.x);
+                        circle.setAttribute('cy', point.y);
+                        circle.setAttribute('r', 5);
+                        circle.setAttribute('class', 'data-point');
+                        circle.style.fill = 'var(--data-point-color)';
+                        svg.appendChild(circle);
+                    });
+                }
+
+                function createLine(d, color) {
+                    svg.querySelectorAll('.bv-model-line').forEach(l => l.remove());
+                    const path = document.createElementNS(SVG_NAMESPACE, 'path');
+                    path.setAttribute('d', d);
+                    path.setAttribute('stroke', color);
+                    path.setAttribute('class', 'bv-model-line');
+                    svg.appendChild(path);
+                }
+                
+                // نموذج بسيط (High Bias)
+                function drawUnderfitLine() {
+                    let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
+                    dataPoints.forEach(p => { sumX += p.x; sumY += p.y; sumXY += p.x * p.y; sumX2 += p.x * p.x; });
+                    const n = dataPoints.length;
+                    const m = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+                    const b = (sumY - m * sumX) / n;
+                    const d = `M 0 ${m * 0 + b} L ${svgWidth} ${m * svgWidth + b}`;
+                    createLine(d, 'var(--cluster-2)'); // أحمر
+                }
+                
+                // نموذج ملائم
+                function drawGoodFitLine() {
+                    // نرسم الدالة الحقيقية كأننا نعرفها
+                    let d = `M ${padding} ${trueFunction(padding)}`;
+                    for (let x = padding + 10; x <= svgWidth - padding; x += 10) {
+                        d += ` L ${x} ${trueFunction(x)}`;
+                    }
+                    createLine(d, 'var(--cluster-1)'); // أخضر
+                }
+
+                // نموذج معقد (High Variance)
+                function drawOverfitLine() {
+                    const sortedPoints = [...dataPoints].sort((a, b) => a.x - b.x);
+                    if (sortedPoints.length === 0) return;
+                    
+                    let d = `M ${sortedPoints[0].x} ${sortedPoints[0].y}`;
+                    let p = [];
+                    for (let point of sortedPoints) { p.push(point.x, point.y); }
+
+                    for (let i = 0; i < p.length - 2; i += 2) {
+                         let x0 = i ? p[i - 2] : p[0];
+                         let y0 = i ? p[i - 1] : p[1];
+                         let x1 = p[i];
+                         let y1 = p[i + 1];
+                         let x2 = p[i + 2];
+                         let y2 = p[i + 3];
+                         let x3 = i + 4 < p.length ? p[i + 4] : x2;
+                         let y3 = i + 5 < p.length ? p[i + 5] : y2;
+                         let cp1x = x1 + (x2 - x0) / 6;
+                         let cp1y = y1 + (y2 - y0) / 6;
+                         let cp2x = x2 - (x3 - x1) / 6;
+                         let cp2y = y2 - (y3 - y1) / 6;
+                         d += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${x2} ${y2}`;
+                    }
+                    createLine(d, 'var(--cluster-3)'); // أصفر
+                }
+
+                function updateFit() {
+                    if (currentFit === 'underfit') drawUnderfitLine();
+                    else if (currentFit === 'goodfit') drawGoodFitLine();
+                    else if (currentFit === 'overfit') drawOverfitLine();
+                }
+                
+                function setActiveButton(activeBtn) {
+                    buttons.forEach(btn => btn.classList.remove('active'));
+                    activeBtn.classList.add('active');
+                }
+
+                buttons.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        currentFit = btn.id.split('-')[2]; // 'underfit', 'goodfit', 'overfit'
+                        setActiveButton(btn);
+                        updateFit();
+                    });
+                });
+                
+                btnNewData.addEventListener('click', () => {
+                    generateDataPoints();
+                    drawDataPoints();
+                    updateFit();
+                });
+
+                // التشغيل الأولي
+                generateDataPoints();
+                drawDataPoints();
+                updateFit();
+            }
+
+            // --- تشغيل جميع دوال التهيئة ---
+            initKMeans();
+            initClassification();
+            initRegression();
+            initDimRed();
+            initAssocRules();
+            initBiasVariance();
+            
+        });
+    </script>
+</body>
+</html>

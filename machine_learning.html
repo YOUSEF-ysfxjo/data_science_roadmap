@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تعلم الآلة والذكاء الاصطناعي</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Load Tajawal Font from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #111827;
+            direction: rtl;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Main container styles */
+        .slide-container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            flex: 1;
+            overflow: visible;
+            padding: 2rem 1rem;
+            min-height: 70vh;
+            height: 90vh;
+            /* Fixed height for all slides */
+        }
+
+        .slide {
+            width: 100%;
+            flex-shrink: 0;
+            transition: opacity 0.5s ease-in-out, visibility 0.5s;
+            opacity: 0;
+            visibility: hidden;
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            padding: 1.5rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            position: relative;
+            height: 100%;
+            padding: 1.5rem 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide-content {
+            background-color: #1f2937;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            width: 100%;
+            max-width: 1000px;
+            height: 100%;
+            max-height: 100%;
+            display: flex;
+            flex-direction: column;
+            margin: 0 auto;
+            overflow-y: auto;
+            /* Add scroll if content is too long */
+            box-sizing: border-box;
+        }
+
+        .slide-content ul {
+            list-style-type: disc;
+            list-style-position: outside;
+            padding-right: 1.25rem;
+            margin-left: 0;
+        }
+
+        .pagination-dot {
+            width: 0.75rem;
+            height: 0.75rem;
+            border-radius: 9999px;
+            background-color: #4b5563;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .pagination-dot.active {
+            background-color: #0ea5e9;
+            width: 2rem;
+        }
+
+        .illustration-box {
+            background-color: #1e293b;
+            border: 1px solid #374151;
+            height: 100%;
+            min-height: 300px;
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            margin: 0.5rem 0;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .illustration-box:hover {
+            border-color: #4b5563;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+        }
+
+        .inner-scroll-container {
+            display: flex;
+            overflow-x: auto;
+            padding-bottom: 1rem;
+            scrollbar-width: thin;
+            scrollbar-color: #4b5563 #374151;
+        }
+
+        .inner-scroll-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .inner-scroll-container::-webkit-scrollbar-track {
+            background: #374151;
+            border-radius: 4px;
+        }
+
+        .inner-scroll-container::-webkit-scrollbar-thumb {
+            background-color: #4b5563;
+            border-radius: 4px;
+        }
+
+        .inner-scroll-card {
+            min-width: 280px;
+            flex-shrink: 0;
+            margin-left: 1rem;
+        }
+
+        /* إضافة هذا الكود في قسم الـ <style> */
+        .slide[data-slide="0"] .slide-content {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 3rem 2rem;
+        }
+
+        .slide[data-slide="0"] h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: #0ea5e9;
+        }
+
+        .slide[data-slide="0"] h3 {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: #e5e7eb;
+        }
+
+        .slide[data-slide="0"] ul {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            width: 100%;
+            margin: 0;
+            padding: 1rem;
+        }
+
+        .slide[data-slide="0"] li {
+            background-color: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .slide[data-slide="0"] li:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+                0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-color: #0ea5e9;
+        }
+
+        .slide[data-slide="0"] button {
+            background: none;
+            border: none;
+            color: #e5e7eb;
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+            text-align: right;
+            padding: 1rem;
+        }
+
+        .slide[data-slide="0"] button:hover {
+            color: #0ea5e9;
+        }
+
+        .slide[data-slide="0"] li {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide[data-slide="0"] li::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 4px;
+            height: 100%;
+            background-color: #0ea5e9;
+            transition: width 0.3s ease;
+        }
+
+        .slide[data-slide="0"] li:hover::before {
+            width: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .slide[data-slide="0"] ul {
+                grid-template-columns: 1fr;
+            }
+
+            .slide[data-slide="0"] h2 {
+                font-size: 2rem;
+            }
+
+            .slide[data-slide="0"] h3 {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-gray-300 min-h-screen flex flex-col items-center p-4 md:p-6">
+    <div class="max-w-5xl w-full flex-1 flex flex-col">
+        <!-- Back Button -->
+        <div class="mb-4">
+            <a href="index.html" class="inline-flex items-center text-sky-400 hover:text-sky-300 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+                العودة للصفحة الرئيسية
+            </a>
+        </div>
+
+        <!-- Slide Container -->
+        <div class="relative w-full">
+            <div id="slide-container" class="slide-container flex-1">
+
+                <!-- Slide 0: الفهرس (Table of Contents) -->
+                <div class="slide active" data-slide="0">
+                    <div class="slide-content">
+                        <h2 class="text-3xl font-bold text-white mb-6 border-b border-sky-500 pb-2">
+                            <span class="text-sky-500">تعلم الآلة والذكاء الاصطناعي</span>
+                        </h2>
+                        <h3 class="text-xl font-semibold text-white mb-4">فهرس الوحدة</h3>
+                        <ul class="space-y-3 text-gray-300 grid grid-cols-1 md:grid-cols-2 gap-x-4">
+                            <li><button onclick="showSlide(1)" class="hover:text-sky-400">1. التعلم الآلي المراقب
+                                    (Supervised)</button></li>
+                            <li><button onclick="showSlide(2)" class="hover:text-sky-400">2. التعلم الآلي غير المراقب
+                                    (Unsupervised)</button></li>
+                            <li><button onclick="showSlide(3)" class="hover:text-sky-400">3. تقييم وتحسين
+                                    النماذج</button></li>
+                            <li><button onclick="showSlide(4)" class="hover:text-sky-400">4. التعلم العميق (Deep
+                                    Learning)</button></li>
+                            <li><button onclick="showSlide(5)" class="hover:text-sky-400">5. مصادر ومراجع</button></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Slide 1: التعلم الآلي المراقب -->
+                <div class="slide" data-slide="1">
+                    <div class="slide-content">
+                        <div class="space-y-4 mb-6">
+                            <h2 class="text-2xl font-bold text-white"><span class="text-sky-400">1.</span> التعلم الآلي
+                                المراقب (Supervised ML)</h2>
+                            <p class="text-gray-400 leading-relaxed">هو تدريب النموذج باستخدام "بيانات مُصنّفة" (Labeled
+                                Data). أي أن كل مدخل يقابله المخرج الصحيح (الإجابة). الهدف هو تعلم العلاقة للتنبؤ
+                                ببيانات جديدة.</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-grow">
+                            <!-- Classification -->
+                            <div
+                                class="bg-gray-800 p-6 rounded-lg border border-gray-700 flex flex-col hover:border-sky-500 transition-colors duration-200">
+                                <div class="mb-4">
+                                    <h3 class="text-lg font-semibold text-white mb-2">التصنيف (Classification)</h3>
+                                    <p class="text-gray-400 leading-relaxed">التنبؤ بفئة (Categorical).<br>مثال: "بريد
+                                        مزعج" أم "غير مزعج"؟</p>
+                                </div>
+                                <div class="illustration-box h-48">
+                                    <!-- استبدل SVG الموجود بهذا الكود -->
+                                    <svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg">
+                                        <title>رسم توضيحي للتصنيف (البريد المزعج وغير المزعج)</title>
+
+                                        <!-- المحاور -->
+                                        <line x1="20" y1="10" x2="20" y2="170" stroke="#4b5563" stroke-width="1.5" />
+                                        <line x1="20" y1="170" x2="180" y2="170" stroke="#4b5563" stroke-width="1.5" />
+                                        <text x="25" y="20" fill="#9ca3af" font-size="10" text-anchor="start">Y</text>
+                                        <text x="100" y="178" fill="#9ca3af" font-size="10"
+                                            text-anchor="middle">X</text>
+
+                                        <!-- خط الفاصل المائل -->
+                                        <line x1="30" y1="160" x2="160" y2="30" stroke="#e2e8f0" stroke-width="2.5"
+                                            stroke-dasharray="4 4" />
+
+                                        <!-- Class A (Blue Circles) - بريد مزعج -->
+                                        <circle cx="50" cy="40" r="6" fill="#60a5fa"
+                                            class="hover:scale-125 transition-transform" />
+                                        <circle cx="70" cy="30" r="6" fill="#60a5fa"
+                                            class="hover:scale-125 transition-transform" />
+                                        <circle cx="60" cy="60" r="6" fill="#60a5fa"
+                                            class="hover:scale-125 transition-transform" />
+                                        <circle cx="40" cy="70" r="6" fill="#60a5fa"
+                                            class="hover:scale-125 transition-transform" />
+                                        <circle cx="80" cy="70" r="6" fill="#60a5fa"
+                                            class="hover:scale-125 transition-transform" />
+                                        <circle cx="65" cy="90" r="6" fill="#60a5fa"
+                                            class="hover:scale-125 transition-transform" />
+
+                                        <!-- Class B (Purple Triangles) - بريد غير مزعج -->
+                                        <polygon points="110,150 104,160 116,160" fill="#c084fc"
+                                            class="hover:scale-125 transition-transform" />
+                                        <polygon points="130,140 124,150 136,150" fill="#c084fc"
+                                            class="hover:scale-125 transition-transform" />
+                                        <polygon points="120,120 114,130 126,130" fill="#c084fc"
+                                            class="hover:scale-125 transition-transform" />
+                                        <polygon points="140,110 134,120 146,120" fill="#c084fc"
+                                            class="hover:scale-125 transition-transform" />
+                                        <polygon points="150,130 144,140 156,140" fill="#c084fc"
+                                            class="hover:scale-125 transition-transform" />
+                                        <polygon points="160,155 154,165 166,165" fill="#c084fc"
+                                            class="hover:scale-125 transition-transform" />
+                                        <polygon points="145,90 139,100 151,100" fill="#c084fc"
+                                            class="hover:scale-125 transition-transform" />
+
+                                        <!-- Legend -->
+                                        <!-- استبدل سطور الـ Legend بهذا الكود -->
+                                        <text x="50" y="20" fill="#60a5fa" font-size="10" font-weight="bold"></text>
+                                        <text x="150" y="150" fill="#c084fc" font-size="10" font-weight="bold"></text>
+                                    </svg>
+                                </div>
+                            </div>
+                            <!-- Regression -->
+                            <div
+                                class="bg-gray-800 p-6 rounded-lg border border-gray-700 flex flex-col hover:border-sky-500 transition-colors duration-200">
+                                <div class="mb-4">
+                                    <h3 class="text-lg font-semibold text-white mb-2">الانحدار (Regression)</h3>
+                                    <p class="text-gray-400 leading-relaxed">التنبؤ بقيمة رقمية (Continuous).<br>مثال:
+                                        التنبؤ بـ "سعر المنزل".</p>
+                                </div>
+                                <div class="illustration-box h-48">
+                                    <svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg">
+                                        <title>رسم توضيحي للانحدار الخطي</title>
+
+                                        <!-- المحاور المعدلة -->
+                                        <line x1="20" y1="10" x2="20" y2="170" stroke="#4b5563" stroke-width="1.5" />
+                                        <line x1="20" y1="170" x2="180" y2="170" stroke="#4b5563" stroke-width="1.5" />
+                                        <text x="25" y="20" fill="#9ca3af" font-size="10" text-anchor="start">Y</text>
+                                        <text x="100" y="178" fill="#9ca3af" font-size="10"
+                                            text-anchor="middle">X</text>
+
+                                        <!-- الخط الأحمر يبدأ من (0,0) -->
+                                        <line x1="20" y1="170" x2="180" y2="20" stroke="#ef4444" stroke-width="2.5" />
+
+                                        <!-- 30 نقطة مبعثرة -->
+                                        <!-- نقاط عشوائية حول الخط الأحمر -->
+<circle cx="25" cy="165" r="2" fill="#3b82f6" opacity="0.9" />
+<circle cx="30" cy="155" r="2" fill="#3b82f6" opacity="0.9" />
+<circle cx="45" cy="145" r="2" fill="#3b82f6" opacity="0.9" />
+<circle cx="55" cy="135" r="2" fill="#3b82f6" opacity="0.9" />
+<circle cx="65" cy="125" r="2" fill="#3b82f6" opacity="0.9" />
+<circle cx="75" cy="115" r="2" fill="#3b82f6" opacity="0.9" />
+<circle cx="85" cy="105" r="2" fill="#3b82f6" opacity="0.9" />
+<circle cx="95" cy="95" r="2" fill="#3b82f6" opacity="0.9" />
+<circle cx="105" cy="85" r="2" fill="#3b82f6" opacity="0.9" />
+<circle cx="115" cy="75" r="2" fill="#3b82f6" opacity="0.9" />
+<circle cx="125" cy="65" r="2" fill="#3b82f6" opacity="0.9" />
+<circle cx="135" cy="55" r="2" fill="#3b82f6" opacity="0.9" />
+<circle cx="145" cy="45" r="2" fill="#3b82f6" opacity="0.9" />
+<circle cx="155" cy="35" r="2" fill="#3b82f6" opacity="0.9" />
+<circle cx="165" cy="25" r="2" fill="#3b82f6" opacity="0.9" />
+<circle cx="175" cy="15" r="2" fill="#3b82f6" opacity="0.9" />
+<circle cx="40" cy="160" r="2" fill="#3b82f6" opacity="0.9" />
+<circle cx="50" cy="150" r="2" fill="#3b82f6" opacity="0.9" />
+<circle cx="60" cy="140" r="2" fill="#3b82f6" opacity="0.9" />
+<circle cx="70" cy="130" r="2" fill="#3b82f6" opacity="0.9" />
+<circle cx="80" cy="120" r="2" fill="#3b82f6" opacity="0.9" />
+<circle cx="90" cy="110" r="2" fill="#3b82f6" opacity="0.9" />
+<circle cx="100" cy="100" r="2" fill="#3b82f6" opacity="0.9" />
+<circle cx="110" cy="90" r="2" fill="#3b82f6" opacity="0.9" />
+<circle cx="120" cy="80" r="2" fill="#3b82f6" opacity="0.9" />
+<circle cx="130" cy="70" r="2" fill="#3b82f6" opacity="0.9" />
+<circle cx="140" cy="60" r="2" fill="#3b82f6" opacity="0.9" />
+<circle cx="150" cy="50" r="2" fill="#3b82f6" opacity="0.9" />
+<circle cx="160" cy="40" r="2" fill="#3b82f6" opacity="0.9" />
+<circle cx="170" cy="30" r="2" fill="#3b82f6" opacity="0.9" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 2: التعلم الآلي غير المراقب -->
+                <div class="slide" data-slide="2">
+                    <div class="slide-content">
+                        <h2 class="text-2xl font-bold text-white mb-4"><span class="text-sky-400">2.</span> التعلم الآلي
+                            غير المراقب (Unsupervised ML)</h2>
+                        <p class="mb-4 text-gray-400">تدريب النموذج باستخدام "بيانات غير مُصنّفة" (Unlabeled Data).
+                            الهدف هو اكتشاف الأنماط والهياكل المخفية في البيانات تلقائيًا.</p>
+
+                        <!-- حاوية التمرير الأفقي للمحتوى الداخلي -->
+                        <div class="inner-scroll-container">
+                            <!-- Clustering -->
+                            <div
+                                class="inner-scroll-card bg-gray-800 p-4 rounded-lg border border-gray-700 flex flex-col">
+                                <h3 class="text-lg font-semibold text-white mb-2">التجميع العنقودي (Clustering)</h3>
+                                <p class="text-sm text-gray-400 mb-2">تجميع البيانات المتشابهة.<br>مثال: تجزئة العملاء.
+                                </p>
+                                <div class="illustration-box h-32">
+                                    <svg viewBox="0 0 150 100" xmlns="http://www.w3.org/2000/svg">
+                                        <title>رسم توضيحي للتجميع العنقودي</title>
+                                        <circle cx="30" cy="30" r="5" fill="#f43f5e" />
+                                        <circle cx="40" cy="20" r="5" fill="#f43f5e" />
+                                        <circle cx="25" cy="45" r="5" fill="#f43f5e" />
+                                        <circle cx="80" cy="30" r="5" fill="#34d399" />
+                                        <circle cx="70" cy="25" r="5" fill="#34d399" />
+                                        <circle cx="75" cy="40" r="5" fill="#34d399" />
+                                        <circle cx="120" cy="70" r="5" fill="#facc15" />
+                                        <circle cx="110" cy="80" r="5" fill="#facc15" />
+                                        <circle cx="130" cy="65" r="5" fill="#facc15" />
+
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <!-- Dimensionality Reduction -->
+                            <div
+                                class="inner-scroll-card bg-gray-800 p-4 rounded-lg border border-gray-700 flex flex-col">
+                                <h3 class="text-lg font-semibold text-white mb-2">تقليل الأبعاد (Dimensionality
+                                    Reduction)</h3>
+                                <p class="text-sm text-gray-400 mb-2">تقليل عدد الميزات/الخصائص.<br>مثال: تبسيط البيانات
+                                    للتصور.</p>
+                                <div class="illustration-box h-32">
+                                    <svg viewBox="0 0 150 100" xmlns="http://www.w3.org/2000/svg">
+                                        <title>رسم توضيحي لتقليل الأبعاد</title>
+                                        <rect x="10" y="20" width="40" height="60" fill="none" stroke="#a5f3fc"
+                                            stroke-width="2" stroke-dasharray="4,4" />
+                                        <ellipse cx="30" cy="50" rx="20" ry="30" fill="#a5f3fc" opacity="0.5" />
+                                        <path d="M60 50 L 90 50" stroke="#fff" stroke-width="2"
+                                            marker-end="url(#arrow)" />
+                                        <rect x="100" y="30" width="40" height="40" fill="#a5f3fc" opacity="0.7" />
+                                        <defs>
+                                            <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6"
+                                                markerHeight="6" orient="auto-start-reverse">
+                                                <path d="M 0 0 L 10 5 L 0 10 z" fill="#fff" />
+                                            </marker>
+                                        </defs>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <!-- Association Rule -->
+                            <div
+                                class="inner-scroll-card bg-gray-800 p-4 rounded-lg border border-gray-700 flex flex-col">
+                                <h3 class="text-lg font-semibold text-white mb-2">قواعد الارتباط (Association Rules)
+                                </h3>
+                                <p class="text-sm text-gray-400 mb-2">اكتشاف الأنماط المتكررة.<br>مثال: "من اشترى خبز
+                                    اشترى حليب".</p>
+                                <div class="illustration-box h-32 flex space-x-4 items-center text-sky-400"
+                                    style="direction: ltr;">
+                                    <span class="text-4xl">🍞</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                    </svg>
+                                    <span class="text-4xl">🥛</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slide" data-slide="3">
+    <div class="slide-content">
+        <h2 class="text-2xl font-bold text-white mb-4"><span class="text-sky-400">3.</span> تقييم وتحسين النماذج</h2>
+        <p class="mb-6 text-gray-300">فهم أداء النموذج وتطويره لتحقيق أفضل النتائج على البيانات الجديدة</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Left Column: Evaluation Metrics -->
+            <div class="space-y-6">
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
+                    <h3 class="text-lg font-semibold text-white mb-4">📊 مقاييس التقييم</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="text-sky-400 font-medium mb-2">للتصنيف</h4>
+                            <ul class="space-y-2 text-gray-300 text-sm">
+                                <li>• الدقة (Accuracy): نسبة التوقعات الصحيحة</li>
+                                <li>• الدقة (Precision): نسبة الإيجابيات الصحيحة</li>
+                                <li>• الاستدعاء (Recall): نسبة اكتشاف الحالات الإيجابية</li>
+                                <li>• درجة F1: متوسط توافقي بين الدقة والاستدعاء</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="text-sky-400 font-medium mb-2">للانحدار</h4>
+                            <ul class="space-y-2 text-gray-300 text-sm">
+                                <li>• متوسط الخطأ المطلق (MAE)</li>
+                                <li>• جذر متوسط مربع الخطأ (RMSE)</li>
+                                <li>• معامل التحديد (R²)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
+                    <h3 class="text-lg font-semibold text-white mb-4">🔄 طرق التحقق</h3>
+                    <ul class="space-y-3 text-gray-300 text-sm">
+                        <li>
+                            <span class="font-medium text-sky-400">التقسيم التدريبي/الاختباري:</span>
+                            <p class="mt-1">تقسيم البيانات إلى 70-80% تدريب و 20-30% اختبار</p>
+                        </li>
+                        <li>
+                            <span class="font-medium text-sky-400">التحقق المتقاطع (K-Fold):</span>
+                            <p class="mt-1">تقسيم البيانات إلى K مجموعة، والتدريب على K-1 واختبار على المجموعة المتبقية</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Right Column: Model Improvement -->
+            <div class="space-y-6">
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
+                    <h3 class="text-lg font-semibold text-white mb-4">⚙️ تحسين النموذج</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="text-sky-400 font-medium mb-2">معالجة فرط التجهيز (Overfitting)</h4>
+                            <ul class="space-y-2 text-gray-300 text-sm">
+                                <li>• تقليل تعقيد النموذج</li>
+                                <li>• استخدام التنظيم (Regularization) مثل L1/L2</li>
+                                <li>• إسقاط (Dropout) للشبكات العصبية</li>
+                                <li>• زيادة حجم بيانات التدريب</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="text-sky-400 font-medium mb-2">معالجة نقص التجهيز (Underfitting)</h4>
+                            <ul class="space-y-2 text-gray-300 text-sm">
+                                <li>• زيادة تعقيد النموذج</li>
+                                <li>• تقليل معامل التنظيم</li>
+                                <li>• زيادة عدد مرات التدريب</li>
+                                <li>• تحسين معالم النموذج (Hyperparameters)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
+                    <h3 class="text-lg font-semibold text-white mb-4">📈 ضبط المعالم (Hyperparameter Tuning)</h3>
+                    <ul class="space-y-2 text-gray-300 text-sm">
+                        <li>• بحث الشبكة (Grid Search)</li>
+                        <li>• البحث العشوائي (Random Search)</li>
+                        <li>• التحسين البايزي (Bayesian Optimization)</li>
+                        <li>• أدوات مثل Optuna أو Hyperopt</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+                <!-- Slide 4: التعلم العميق -->
+                <div class="slide" data-slide="4">
+                    <div class="slide-content">
+                        <h2 class="text-2xl font-bold text-white mb-4"><span class="text-sky-400">4.</span> التعلم
+                            العميق (Deep Learning)</h2>
+                        <p class="mb-4 text-gray-400">مجموعة فرعية من التعلم الآلي تستخدم "شبكات عصبية اصطناعية عميقة"
+                            (طبقات متعددة) لمعالجة الأنماط المعقدة.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <!-- CNN -->
+                            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700">
+                                <h3 class="text-lg font-semibold text-white mb-2">الشبكات التلافيفية (CNN)</h3>
+                                <p class="text-sm text-gray-400">مصممة لمعالجة "الصور" والفيديو.<br>التطبيقات: التعرف
+                                    على الصور.</p>
+                            </div>
+                            <!-- RNN -->
+                            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700">
+                                <h3 class="text-lg font-semibold text-white mb-2">الشبكات المتكررة (RNN)</h3>
+                                <p class="text-sm text-gray-400">مصممة للبيانات "المتسلسلة" كالنصوص.<br>التطبيقات:
+                                    الترجمة، تحليل المشاعر.</p>
+                            </div>
+                            <!-- Transformers -->
+                            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700">
+                                <h3 class="text-lg font-semibold text-white mb-2">المحولات (Transformers)</h3>
+                                <p class="text-sm text-gray-400">تعتمد على "الانتباه" (Attention).<br>التطبيقات: النماذج
+                                    اللغوية (ChatGPT).</p>
+                            </div>
+                        </div>
+
+                        <!-- ==== START FIX AREA ==== -->
+                        <!-- تم تعديل الحاونة لتكون مرنة وتناسب المحتوى -->
+                        <div
+                            class="illustration-box min-h-[60vh] p-4 mt-8 w-full overflow-hidden flex items-center justify-center bg-gray-900/50 rounded-xl">
+                            <style>
+                                /* تم دمج كل أكواد CSS الخاصة بالشبكة هنا */
+                                .node {
+                                    stroke-width: 2;
+                                    transition: all 0.3s ease;
+                                }
+
+                                .node-input {
+                                    fill: #60a5fa;
+                                    stroke: #93c5fd;
+                                    filter: drop-shadow(0 0 6px #60a5fa);
+                                }
+
+                                .node-hidden {
+                                    fill: #22d3ee;
+                                    stroke: #67e8f9;
+                                    filter: drop-shadow(0 0 6px #22d3ee);
+                                }
+
+                                .node-output {
+                                    fill: #f43f5e;
+                                    stroke: #fb7185;
+                                    filter: drop-shadow(0 0 6px #f43f5e);
+                                }
+
+                                .link {
+                                    stroke-width: 1;
+                                    opacity: 0.6;
+                                }
+
+                                .link-hidden {
+                                    stroke: #22d3ee;
+                                    filter: drop-shadow(0 0 3px #22d3ee);
+                                }
+
+                                .link-output {
+                                    stroke: #f43f5e;
+                                    stroke-width: 1.5;
+                                    opacity: 0.9;
+                                    filter: drop-shadow(0 0 3px #f43f5e);
+                                }
+
+                                .label {
+                                    fill: #d1d5db;
+                                    font-size: 16px;
+                                    font-weight: 500;
+                                    text-anchor: middle;
+                                    dominant-baseline: central;
+                                    font-family: 'Tajawal', sans-serif;
+                                }
+
+                                /* هذه الأكواد كانت بالخطأ خارج السكربت */
+                                .output-connection {
+                                    stroke-linecap: round;
+                                    stroke-linejoin: round;
+                                    transition: all 0.5s cubic-bezier(0.2, 0.8, 0.4, 1.2);
+                                    filter: drop-shadow(0 0 10px rgba(244, 63, 94, 0.7));
+                                }
+
+                                .neuron:hover~.connections .connection {
+                                    stroke-opacity: 0.9;
+                                    stroke-width: 5;
+                                    stroke-dasharray: none;
+                                }
+
+                                .neuron:hover~.connections .output-connection {
+                                    stroke-opacity: 1;
+                                    stroke-width: 8;
+                                    filter: drop-shadow(0 0 20px rgba(244, 63, 94, 1));
+                                }
+
+                                .layer-label {
+                                    text-shadow: 0 0 20px rgba(255, 255, 255, 0.9);
+                                    transition: all 0.4s ease;
+                                    font-family: 'Tajawal', sans-serif;
+                                    font-weight: 900;
+                                    letter-spacing: 1px;
+                                }
+                            </style>
+
+                            <!-- SVG سيأخذ العرض والارتفاع الكامل للحاوية -->
+                            <svg id="neural-network-svg" viewBox="0 0 1200 800" class="w-full h-full"></svg>
+
+                            <script>
+                                // السكربت يعمل عند تحميل الشريحة
+                                // (ملاحظة: ليعمل السكربت فقط عند عرض الشريحة، نحتاج لتعديل منطق السلايدر)
+                                // لكن هذا السكربت سيعمل عند تحميل الصفحة DOMContentLoaded
+
+                                document.addEventListener('DOMContentLoaded', function () {
+                                    // التأكد من أن الكود يعمل فقط على الشريحة 4
+                                    const currentSlide = document.querySelector('[data-slide="4"]');
+                                    if (!currentSlide) return;
+
+                                    const svg = currentSlide.querySelector('#neural-network-svg');
+                                    if (!svg) {
+                                        console.error("SVG element not found in slide 4.");
+                                        return;
+                                    }
+
+                                    // Network structure: [input, hidden1, hidden2, hidden3, output]
+                                    const layers = [6, 8, 8, 5, 3];
+                                    const layerLabels = [
+                                        "طبقة الإدخال",
+                                        "الطبقة المخفية 1",
+                                        "الطبقة المخفية 2",
+                                        "الطبقة المخفية 3",
+                                        "طبقة الإخراج"
+                                    ];
+
+                                    const svgWidth = 1200;
+                                    const svgHeight = 800;
+                                    const nodeRadius = 18;
+                                    const layerGap = (svgWidth - 100) / (layers.length - 1);
+                                    const topPadding = 100;
+                                    const bottomPadding = 50;
+
+                                    const nodePositions = [];
+
+                                    // Helper function to create SVG elements
+                                    function createSvgElement(tag, attrs) {
+                                        const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+                                        for (let k in attrs) {
+                                            el.setAttribute(k, attrs[k]);
+                                        }
+                                        return el;
+                                    }
+
+                                    // Draw nodes and labels
+                                    layers.forEach((nodeCount, layerIndex) => {
+                                        const layerX = 50 + layerIndex * layerGap;
+                                        const layerNodes = [];
+
+                                        const availableHeight = svgHeight - topPadding - bottomPadding;
+                                        let nodeGap = availableHeight / (nodeCount + 1);
+
+                                        const minGap = nodeRadius * 3;
+                                        if (nodeCount > 1 && nodeGap < minGap) {
+                                            nodeGap = minGap;
+                                        }
+
+                                        const totalLayerHeight = (nodeCount - 1) * nodeGap;
+                                        const startY = (svgHeight - totalLayerHeight) / 2;
+
+                                        // Add layer label
+                                        const label = createSvgElement('text', {
+                                            x: layerX,
+                                            y: topPadding / 2,
+                                            class: 'label',
+                                            'font-size': '20px',
+                                            'font-weight': 'bold'
+                                        });
+                                        label.textContent = layerLabels[layerIndex];
+                                        svg.appendChild(label);
+
+                                        // Draw nodes
+                                        for (let i = 0; i < nodeCount; i++) {
+                                            const nodeY = startY + i * nodeGap;
+
+                                            let nodeClass = 'node ';
+                                            if (layerIndex === 0) {
+                                                nodeClass += 'node-input';
+                                            } else if (layerIndex === layers.length - 1) {
+                                                nodeClass += 'node-output';
+                                            } else {
+                                                nodeClass += 'node-hidden';
+                                            }
+
+                                            const node = createSvgElement('circle', {
+                                                cx: layerX,
+                                                cy: nodeY,
+                                                r: nodeRadius,
+                                                class: nodeClass
+                                            });
+
+                                            // Add hover effect
+                                            node.addEventListener('mouseenter', function () {
+                                                this.style.filter = 'drop-shadow(0 0 15px currentColor)';
+                                                this.setAttribute('r', nodeRadius * 1.4);
+                                            });
+
+                                            node.addEventListener('mouseleave', function () {
+                                                this.style.filter = 'drop-shadow(0 0 6px currentColor)';
+                                                this.setAttribute('r', nodeRadius);
+                                            });
+
+                                            svg.appendChild(node);
+                                            layerNodes.push({ x: layerX, y: nodeY });
+                                        }
+                                        nodePositions.push(layerNodes);
+                                    });
+
+                                    // Draw connections between nodes
+                                    for (let i = 0; i < nodePositions.length - 1; i++) {
+                                        const currentLayer = nodePositions[i];
+                                        const nextLayer = nodePositions[i + 1];
+
+                                        let linkClass = (i === nodePositions.length - 2) ? 'link link-output' : 'link link-hidden';
+
+                                        currentLayer.forEach(startNode => {
+                                            nextLayer.forEach(endNode => {
+                                                const link = createSvgElement('line', {
+                                                    x1: startNode.x,
+                                                    y1: startNode.y,
+                                                    x2: endNode.x,
+                                                    y2: endNode.y,
+                                                    class: linkClass
+                                                });
+                                                svg.insertBefore(link, svg.firstChild);
+                                            });
+                                        });
+                                    }
+                                });
+                            </script>
+                        </div>
+                        <!-- ==== END FIX AREA ==== -->
+
+                    </div>
+                </div>
+
+                <!-- Slide 5: مصادر ومراجع -->
+                <div class="slide" data-slide="5">
+    <div class="slide-content">
+        <h2 class="text-2xl font-bold text-white mb-6"><span class="text-sky-400">5.</span> 📚 مصادر تعليمية شاملة</h2>
+        <p class="mb-6 text-gray-300">مجموعة مختارة من أفضل المصادر لبناء مسارك في تعلم الآلة</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Column 1: Courses & Books -->
+            <div class="space-y-6">
+                <!-- Online Courses -->
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 hover:border-sky-500 transition-colors">
+                    <h3 class="text-lg font-semibold text-white mb-3">🎓 دورات تعليمية</h3>
+                    <ul class="space-y-4">
+                        <li>
+                            <a href="https://www.coursera.org/learn/machine-learning" target="_blank" class="text-sky-400 hover:text-sky-300 font-medium block">Machine Learning - Andrew Ng</a>
+                            <p class="text-sm text-gray-300 mt-1">أشهر دورة في تعلم الآلة من جامعة ستانفورد</p>
+                        </li>
+                        <li>
+                            <a href="https://www.coursera.org/specializations/deep-learning" target="_blank" class="text-sky-400 hover:text-sky-300 font-medium block">Deep Learning Specialization</a>
+                            <p class="text-sm text-gray-300 mt-1">تخصص متكامل في التعلم العميق من DeepLearning.AI</p>
+                        </li>
+                        <li>
+                            <a href="https://www.fast.ai/" target="_blank" class="text-sky-400 hover:text-sky-300 font-medium block">Practical Deep Learning - Fast.ai</a>
+                            <p class="text-sm text-gray-300 mt-1">تعلم عملي للتعلم العميق</p>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Books -->
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 hover:border-sky-500 transition-colors">
+                    <h3 class="text-lg font-semibold text-white mb-3">📚 كتب أساسية</h3>
+                    <ul class="space-y-4">
+                        <li>
+                            <a href="https://www.amazon.com/Hands-Machine-Learning-Scikit-Learn-TensorFlow/dp/1492032646" target="_blank" class="text-sky-400 hover:text-sky-300 font-medium block">Hands-On Machine Learning</a>
+                            <p class="text-sm text-gray-300 mt-1">أوريليون جيرون - تطبيقات عملية مع Scikit-Learn و TensorFlow</p>
+                        </li>
+                        <li>
+                            <a href="https://www.deeplearningbook.org/" target="_blank" class="text-sky-400 hover:text-sky-300 font-medium block">Deep Learning Book</a>
+                            <p class="text-sm text-gray-300 mt-1">إيان جودفيلو - مرجع أكاديمي شامل</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Column 2: Practice & Community -->
+            <div class="space-y-6">
+                <!-- Practice Platforms -->
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 hover:border-sky-500 transition-colors">
+                    <h3 class="text-lg font-semibold text-white mb-3">💻 منصات التطبيق العملي</h3>
+                    <ul class="space-y-4">
+                        <li>
+                            <a href="https://www.kaggle.com/learn" target="_blank" class="text-sky-400 hover:text-sky-300 font-medium block">Kaggle Learn</a>
+                            <p class="text-sm text-gray-300 mt-1">دروس تفاعلية مجانية مع تمارين عملية</p>
+                        </li>
+                        <li>
+                            <a href="https://colab.research.google.com/" target="_blank" class="text-sky-400 hover:text-sky-300 font-medium block">Google Colab</a>
+                            <p class="text-sm text-gray-300 mt-1">منصة مجانية لتشغيل نماذج بايثون في السحابة</p>
+                        </li>
+                        <li>
+                            <a href="https://www.huggingface.co/course/" target="_blank" class="text-sky-400 hover:text-sky-300 font-medium block">Hugging Face Course</a>
+                            <p class="text-sm text-gray-300 mt-1">دورة مجانية في معالجة اللغات الطبيعية</p>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Documentation & Tools -->
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 hover:border-sky-500 transition-colors">
+                    <h3 class="text-lg font-semibold text-white mb-3">🔧 وثائق وأدوات</h3>
+                    <ul class="space-y-4">
+                        <li>
+                            <a href="https://scikit-learn.org/stable/documentation.html" target="_blank" class="text-sky-400 hover:text-sky-300 font-medium block">Scikit-learn</a>
+                            <p class="text-sm text-gray-300 mt-1">أفضل مكتبة لخوارزميات تعلم الآلة الكلاسيكية</p>
+                        </li>
+                        <li>
+                            <a href="https://pytorch.org/docs/stable/index.html" target="_blank" class="text-sky-400 hover:text-sky-300 font-medium block">PyTorch</a>
+                            <p class="text-sm text-gray-300 mt-1">إطار عمل قوي للتعلم العميق من فيسبوك</p>
+                        </li>
+                        <li>
+                            <a href="https://www.tensorflow.org/learn" target="_blank" class="text-sky-400 hover:text-sky-300 font-medium block">TensorFlow</a>
+                            <p class="text-sm text-gray-300 mt-1">إطار عمل شامل للتعلم الآلي من جوجل</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+            </div>
+        </div>
+
+        <!-- Slide Navigation -->
+        <div class="flex justify-between items-center mt-6">
+            <button id="prev-btn"
+                class="py-2 px-6 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                السابق
+            </button>
+            <div id="pagination" class="flex-grow flex justify-center items-center space-x-2 px-4">
+                <!-- Dots will be inserted by JS -->
+            </div>
+            <button id="next-btn"
+                class="py-2 px-6 bg-sky-600 hover:bg-sky-500 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                التالي
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        let slides;
+        let prevBtn;
+        let nextBtn;
+        let pagination;
+        let totalSlides;
+        let dots;
+
+        function showSlide(slideIndex) {
+            if (!slides || !dots || slideIndex < 0 || slideIndex >= totalSlides) {
+                console.error("Slider component not ready or slide index out of bounds.");
+                return;
+            }
+
+            // Hide all slides
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+
+            // Show the selected slide
+            slides[slideIndex].classList.add('active');
+
+            // Update pagination dots
+            dots.forEach((dot, index) => {
+                if (index === slideIndex) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+
+            // Update button states
+            prevBtn.disabled = slideIndex === 0;
+            nextBtn.disabled = slideIndex === totalSlides - 1;
+
+            currentSlide = slideIndex;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            slides = document.querySelectorAll('.slide');
+            prevBtn = document.getElementById('prev-btn');
+            nextBtn = document.getElementById('next-btn');
+            pagination = document.getElementById('pagination');
+            totalSlides = slides.length;
+
+            // Initialize pagination dots
+            if (pagination) {
+                pagination.innerHTML = ''; // Clear any existing dots
+                for (let i = 0; i < totalSlides; i++) {
+                    const dot = document.createElement('button');
+                    dot.classList.add('pagination-dot');
+                    dot.dataset.slide = i;
+                    dot.addEventListener('click', () => showSlide(i));
+                    pagination.appendChild(dot);
+                }
+                dots = pagination.querySelectorAll('button');
+            }
+
+            // Event listeners for navigation buttons
+            if (prevBtn) {
+                prevBtn.addEventListener('click', () => {
+                    if (currentSlide > 0) {
+                        showSlide(currentSlide - 1);
+                    }
+                });
+            }
+
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => {
+                    if (currentSlide < totalSlides - 1) {
+                        showSlide(currentSlide + 1);
+                    }
+                });
+            }
+
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight' && currentSlide < totalSlides - 1) {
+                    showSlide(currentSlide + 1);
+                } else if (e.key === 'ArrowLeft' && currentSlide > 0) {
+                    showSlide(currentSlide - 1);
+                }
+            });
+
+            // Show first slide
+            if (totalSlides > 0) {
+                showSlide(0);
+            }
+        });
+
+        // Make showSlide available globally for direct navigation from TOC
+        window.showSlide = showSlide;
+    </script>
+</body>
+
+</html>
