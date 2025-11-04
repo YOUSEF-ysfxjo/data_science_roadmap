@@ -1,0 +1,524 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>البرمجة في علم البيانات</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet" />
+
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #111827;
+            direction: rtl;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide-container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            flex: 1;
+            overflow: visible;
+            padding: 2rem 1rem;
+            min-height: 70vh;
+            height: 90vh;
+        }
+
+        .slide {
+            width: 100%;
+            flex-shrink: 0;
+            transition: opacity 0.5s ease-in-out, visibility 0.5s;
+            opacity: 0;
+            visibility: hidden;
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            padding: 1.5rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            position: relative;
+            height: 100%;
+            padding: 1.5rem 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide-content {
+            background-color: #1f2937;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            width: 100%;
+            max-width: 1000px;
+            height: 100%;
+            max-height: 100%;
+            display: flex;
+            flex-direction: column;
+            margin: 0 auto;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        .slide-content ul {
+            list-style-type: disc;
+            list-style-position: outside;
+            padding-right: 1.25rem;
+            margin-left: 0;
+        }
+
+        .pagination-dot {
+            width: 0.75rem;
+            height: 0.75rem;
+            border-radius: 9999px;
+            background-color: #4b5563;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        /* Accent color: orange (programming) */
+        .pagination-dot.active {
+            background-color: #f97316; /* orange-400 */
+            width: 2rem;
+        }
+
+        .illustration-box {
+            background-color: #111827;
+            border: 1px solid #374151;
+            height: 100%;
+            min-height: 200px;
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            margin-top: 1rem;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .illustration-box:hover {
+            border-color: #f97316;
+        }
+
+        .slide[data-slide="0"] .slide-content {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 3rem 2rem;
+        }
+
+        .slide[data-slide="0"] h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: #f97316;
+        }
+
+        .slide[data-slide="0"] h3 {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: #e5e7eb;
+        }
+
+        .slide[data-slide="0"] ul {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            width: 100%;
+            margin: 0;
+            padding: 1rem;
+        }
+
+        .slide[data-slide="0"] li {
+            background-color: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide[data-slide="0"] li::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 4px;
+            height: 100%;
+            background-color: #f97316;
+            transition: width 0.3s ease;
+        }
+
+        .slide[data-slide="0"] li:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+                0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-color: #f97316;
+        }
+
+        .slide[data-slide="0"] li:hover::before {
+            width: 8px;
+        }
+
+        .styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            text-align: right;
+        }
+
+        .styled-table th,
+        .styled-table td {
+            padding: 1rem 0.75rem;
+            border-bottom: 1px solid #374151;
+        }
+
+        .styled-table th {
+            background-color: #374151;
+            color: #e5e7eb;
+            font-weight: 600;
+        }
+
+        .styled-table tbody tr:hover {
+            background-color: #313d4f;
+        }
+
+        .styled-table td a {
+            color: #fb923c; /* orange-400 */
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .styled-table td a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-gray-300 min-h-screen flex flex-col items-center p-4 md:p-6">
+    <div class="max-w-5xl w-full flex-1 flex flex-col">
+        <!-- Back Button -->
+        <div class="mb-4">
+            <a href="index.html" class="inline-flex items-center text-orange-400 hover:text-orange-300 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+                العودة للصفحة الرئيسية
+            </a>
+        </div>
+
+        <!-- Slide Container -->
+        <div class="relative w-full">
+            <div id="slide-container" class="slide-container flex-1">
+
+                <!-- Slide 0: الفهرس (Table of Contents) -->
+                <div class="slide active" data-slide="0">
+                    <div class="slide-content">
+                        <h2 class="text-3xl font-bold mb-6 border-b border-orange-500 pb-2">
+                            <span class="text-orange-400">البرمجة في علم البيانات</span>
+                        </h2>
+                        <h3 class="text-xl font-semibold text-white mb-4">الأساس والأدوات — نظرة شاملة</h3>
+                        <p class="text-center text-gray-300 mb-8 max-w-3xl mx-auto">
+                            القدرة على استخدام اللغات البرمجية مثل Python وأدواتها لترجمة المفاهيم الرياضية والإحصائية إلى عمليات حاسوبية قابلة للتنفيذ.
+                        </p>
+
+                        <h3 class="text-xl font-semibold text-white mb-6">فهرس الوحدة</h3>
+                        <ul class="space-y-3 text-gray-300 grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <li><button onclick="showSlide(1)" class="hover:text-orange-400 w-full text-right p-4">1. ⚙️ بيئة العمل وأساسيات بايثون</button></li>
+                            <li><button onclick="showSlide(2)" class="hover:text-orange-400 w-full text-right p-4">2. 🧮 مكتبات معالجة البيانات (NumPy / Pandas)</button></li>
+                            <li><button onclick="showSlide(3)" class="hover:text-orange-400 w-full text-right p-4">3. 🎨 التصوير والنمذجة الأولية</button></li>
+                            <li><button onclick="showSlide(4)" class="hover:text-orange-400 w-full text-right p-4">4. 🌐 التعامل مع البيانات ومصادرها (SQL / Git)</button></li>
+                            <li><button onclick="showSlide(5)" class="hover:text-orange-400 w-full text-right p-4">5. أمثلة عملية وروابط</button></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Slide 1: Environment & Python Fundamentals -->
+                <div class="slide" data-slide="1">
+                    <div class="slide-content">
+                        <h2 class="text-2xl font-bold text-white mb-4"><span class="text-orange-400">1.</span> ⚙️ بيئة العمل وأساسيات بايثون</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-4">
+                                <div>
+                                    <h3 class="text-lg font-semibold text-white mb-2">الماهية</h3>
+                                    <p class="text-gray-400 leading-relaxed">استخدام لغات وأدوات لكتابة الكود وتنفيذه وتتبع الإصدارات: Jupyter، Colab، VS Code، GitHub.</p>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-white mb-2">الهدف</h3>
+                                    <p class="text-gray-400 leading-relaxed">
+                                        إتقان بيئات العمل، فهم تراكيب البيانات الأساسية (قوائم، قواميس، tuples)، التحكم في تدفق البرنامج، وكتابة دوال والتعامل مع الأخطاء باستخدام try/except.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="illustration-box">
+                                <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+                                    <title>أيقونة بيئة العمل</title>
+                                    <rect x="10" y="20" width="180" height="110" rx="8" fill="#0f172a"></rect>
+                                    <text x="30" y="55" fill="#f97316" font-size="14">Jupyter / Colab</text>
+                                    <text x="30" y="80" fill="#e5e7eb" font-size="12">VS Code • GitHub • virtualenv</text>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <h3 class="mt-4 text-lg font-semibold">نصائح سريعة</h3>
+                        <ul class="mt-2">
+                            <li>استعمل virtualenv أو conda لعزل البيئات.</li>
+                            <li>ابدأ بـ Jupyter/Colab للـ EDA وانتقل إلى VS Code للمشروعات الأكبر.</li>
+                            <li>ادمج Git في سير العمل منذ البداية لتتبع التغييرات والتعاون.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Slide 2: Core Data Processing Libraries -->
+                <div class="slide" data-slide="2">
+                    <div class="slide-content">
+                        <h2 class="text-2xl font-bold text-white mb-4"><span class="text-orange-400">2.</span> 🧮 مكتبات معالجة البيانات</h2>
+
+                        <h3 class="text-lg font-semibold">التقسيمات الرئيسية</h3>
+                        <ul class="mt-2">
+                            <li><strong>NumPy:</strong> مصفوفات عالية الأداء وعمليات عددية.</li>
+                            <li><strong>Pandas:</strong> DataFrame لقراءة، تنظيف، وتجهيز البيانات.</li>
+                            <li><strong>التعامل مع البيانات المعقدة:</strong> نصوص، تواريخ، وتحويل الميزات (Feature Engineering).</li>
+                        </ul>
+
+                        <h3 class="mt-4 text-lg font-semibold">روابط وأمثلة</h3>
+                        <table class="styled-table">
+                            <thead>
+                                <tr>
+                                    <th>المكتبة</th>
+                                    <th>الوصف</th>
+                                    <th>رابط</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>NumPy</td>
+                                    <td>Arrays وعمليات عددية</td>
+                                    <td><a href="https://numpy.org" target="_blank">numpy.org</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Pandas</td>
+                                    <td>DataFrame وEDA</td>
+                                    <td><a href="https://pandas.pydata.org" target="_blank">pandas.pydata.org</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Slide 3: Visualization & Basic Modeling -->
+                <div class="slide" data-slide="3">
+                    <div class="slide-content">
+                        <h2 class="text-2xl font-bold text-white mb-4"><span class="text-orange-400">3.</span> 🎨 التصوير والنمذجة الأولية</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-4">
+                                <h3 class="text-lg font-semibold text-white mb-2">المكتبات</h3>
+                                <ul class="mt-2">
+                                    <li><strong>Matplotlib & Seaborn:</strong> لإنشاء مخططات واضحة وتحليل بصري.</li>
+                                    <li><strong>Scikit-learn:</strong> أدوات للنمذجة الكلاسيكية: تقسيم البيانات، نماذج بسيطة، تقييم.</li>
+                                </ul>
+
+                                <h3 class="mt-3 text-lg font-semibold">ملاحظات عملية</h3>
+                                <ul class="mt-2">
+                                    <li>ابدأ بمخططات بسيطة ثم اعمق في التحليل الرسومي.</li>
+                                    <li>استخدم train_test_split ومقاييس مثل RMSE, accuracy.</li>
+                                </ul>
+                            </div>
+
+                            <div class="illustration-box">
+                                <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+                                    <title>تصور و نموذج</title>
+                                    <rect x="20" y="30" width="160" height="90" rx="6" fill="#0f172a"></rect>
+                                    <polyline points="30,100 60,70 90,80 120,50 150,60" stroke="#f97316" stroke-width="3" fill="none" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 4: Data Sources & Version Control -->
+                <div class="slide" data-slide="4">
+                    <div class="slide-content">
+                        <h2 class="text-2xl font-bold text-white mb-4"><span class="text-orange-400">4.</span> 🌐 التعامل مع البيانات ومصادرها</h2>
+
+                        <h3 class="text-lg font-semibold">التقسيمات الرئيسية</h3>
+                        <ul class="mt-2">
+                            <li><strong>التعامل مع البيانات الهيكلية:</strong> SQL للاستعلام عن البيانات باستخدام SELECT و JOIN.</li>
+                            <li><strong>Git / GitHub:</strong> تتبع الإصدارات، التعاون، ورفع المشاريع.</li>
+                        </ul>
+
+                        <h3 class="mt-4 text-lg font-semibold">الهدف</h3>
+                        <p class="text-gray-400">تجهيز البيانات للاستعمال في التحليل والنمذجة، والعمل بشكل منظم مع فرق التطوير عبر Git.</p>
+
+                        <h3 class="mt-4 text-lg font-semibold">روابط سريعة</h3>
+                        <ul class="mt-2">
+                            <li><a class="inline-link" href="https://www.postgresql.org/docs/" target="_blank">دليل SQL — PostgreSQL</a></li>
+                            <li><a class="inline-link" href="https://docs.github.com/" target="_blank">GitHub Documentation</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Slide 5: Examples & Resources -->
+                <div class="slide" data-slide="5">
+                    <div class="slide-content">
+                        <h2 class="text-2xl font-bold text-white mb-6"><span class="text-orange-400">5.</span> أمثلة عملية وروابط</h2>
+                        <div class="overflow-x-auto">
+                            <table class="styled-table">
+                                <thead>
+                                    <tr>
+                                        <th>الموضوع</th>
+                                        <th>المورد</th>
+                                        <th>ملاحظة</th>
+                                        <th>رابط</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>بيئة العمل</td>
+                                        <td>Jupyter / Colab</td>
+                                        <td>مثالي للـ EDA والتجارب السريعة</td>
+                                        <td><a href="https://jupyter.org/" target="_blank">jupyter.org</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>تنظيف البيانات</td>
+                                        <td>Pandas</td>
+                                        <td>وظائف مثل dropna، fillna، groupby</td>
+                                        <td><a href="https://pandas.pydata.org/docs/" target="_blank">pandas docs</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>التصوير</td>
+                                        <td>Seaborn</td>
+                                        <td>تصوير إحصائي جذاب</td>
+                                        <td><a href="https://seaborn.pydata.org/" target="_blank">seaborn</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>نماذج أولية</td>
+                                        <td>Scikit-learn</td>
+                                        <td>نماذج جاهزة للتجربة السريعة</td>
+                                        <td><a href="https://scikit-learn.org/" target="_blank">scikit-learn</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Slide Navigation -->
+        <div class="flex justify-between items-center mt-6">
+            <button id="prev-btn"
+                class="py-2 px-6 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                السابق
+            </button>
+            <div id="pagination" class="flex-grow flex justify-center items-center space-x-2 px-4">
+                <!-- Dots will be inserted by JS -->
+            </div>
+            <button id="next-btn"
+                class="py-2 px-6 bg-orange-600 hover:bg-orange-500 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                التالي
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        let slides;
+        let prevBtn;
+        let nextBtn;
+        let pagination;
+        let totalSlides;
+        let dots;
+
+        function showSlide(slideIndex) {
+            if (!slides || !dots || slideIndex < 0 || slideIndex >= totalSlides) {
+                console.error("Slider not ready or index out of bounds.");
+                return;
+            }
+
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[slideIndex].classList.add('active');
+
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === slideIndex);
+            });
+
+            prevBtn.disabled = slideIndex === 0;
+            nextBtn.disabled = slideIndex === totalSlides - 1;
+
+            currentSlide = slideIndex;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            slides = document.querySelectorAll('.slide');
+            prevBtn = document.getElementById('prev-btn');
+            nextBtn = document.getElementById('next-btn');
+            pagination = document.getElementById('pagination');
+            totalSlides = slides.length;
+
+            // build dots
+            if (pagination) {
+                pagination.innerHTML = '';
+                for (let i = 0; i < totalSlides; i++) {
+                    const dot = document.createElement('button');
+                    dot.classList.add('pagination-dot');
+                    dot.dataset.slide = i;
+                    dot.addEventListener('click', () => showSlide(i));
+                    pagination.appendChild(dot);
+                }
+                dots = pagination.querySelectorAll('button');
+            }
+
+            prevBtn.addEventListener('click', () => {
+                if (currentSlide > 0) showSlide(currentSlide - 1);
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (currentSlide < totalSlides - 1) showSlide(currentSlide + 1);
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight' && currentSlide < totalSlides - 1) {
+                    showSlide(currentSlide + 1);
+                } else if (e.key === 'ArrowLeft' && currentSlide > 0) {
+                    showSlide(currentSlide - 1);
+                }
+            });
+
+            if (totalSlides > 0) showSlide(0);
+        });
+
+        window.showSlide = showSlide;
+    </script>
+</body>
+
+</html>
