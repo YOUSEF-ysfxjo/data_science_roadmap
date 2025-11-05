@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>النشر والتخصص في علم البيانات</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet" />
+
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #111827;
+            direction: rtl;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide-container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            flex: 1;
+            overflow: visible;
+            padding: 2rem 1rem;
+            min-height: 70vh;
+            height: 90vh;
+        }
+
+        .slide {
+            width: 100%;
+            flex-shrink: 0;
+            transition: opacity 0.5s ease-in-out, visibility 0.5s;
+            opacity: 0;
+            visibility: hidden;
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            padding: 1.5rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            position: relative;
+            height: 100%;
+            padding: 1.5rem 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide-content {
+            background-color: #1f2937;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            width: 100%;
+            max-width: 1000px;
+            height: 100%;
+            max-height: 100%;
+            display: flex;
+            flex-direction: column;
+            margin: 0 auto;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        .slide-content ul {
+            list-style-type: disc;
+            list-style-position: outside;
+            padding-right: 1.25rem;
+            margin-left: 0;
+        }
+
+        .pagination-dot {
+            width: 0.75rem;
+            height: 0.75rem;
+            border-radius: 9999px;
+            background-color: #4b5563;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        /* Accent color: purple (Deployment) */
+        .pagination-dot.active {
+            background-color: #a855f7; /* purple-500 */
+            width: 2rem;
+        }
+        
+        /* أنماط شريحة الفهرس */
+        .slide[data-slide="0"] .slide-content {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 3rem 2rem;
+        }
+
+        .slide[data-slide="0"] h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: #a855f7; /* purple-500 */
+        }
+
+        .slide[data-slide="0"] h3 {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: #e5e7eb;
+        }
+
+        .slide[data-slide="0"] ul {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            width: 100%;
+            margin: 0;
+            padding: 1rem;
+        }
+
+        .slide[data-slide="0"] li {
+            background-color: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .slide[data-slide="0"] li::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 4px;
+            height: 100%;
+            background-color: #a855f7; /* purple-500 */
+            transition: width 0.3s ease;
+        }
+
+        .slide[data-slide="0"] li:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+                0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-color: #a855f7; /* purple-500 */
+        }
+        
+        .slide[data-slide="0"] li:hover::before {
+            width: 8px;
+        }
+
+        /* تنسيقات الجدول */
+        .styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            text-align: right;
+        }
+        
+        .styled-table th,
+        .styled-table td {
+            padding: 1rem 0.75rem;
+            border-bottom: 1px solid #374151;
+        }
+        
+        .styled-table th {
+            background-color: #374151;
+            color: #e5e7eb;
+            font-weight: 600;
+        }
+        
+        .styled-table tbody tr:hover {
+            background-color: #313d4f;
+        }
+        
+        .styled-table td a {
+            color: #d8b4fe; /* violet-300 */
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .styled-table td a:hover {
+            text-decoration: underline;
+        }
+        
+        .illustration-box {
+            background-color: #111827;
+            border: 1px solid #374151;
+            height: 100%;
+            min-height: 200px;
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            margin-top: 1rem;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        .illustration-box:hover {
+            border-color: #a855f7; /* purple-500 */
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-gray-300 min-h-screen flex flex-col items-center p-4 md:p-6">
+    <div class="max-w-5xl w-full flex-1 flex flex-col">
+        <!-- Navigation Header -->
+        <div class="mb-4 flex justify-between items-center w-full">
+            <a href="data_science_roadmap.html" class="inline-flex items-center text-purple-400 hover:text-purple-300 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+                العودة لخارطة الطريق
+            </a>
+            <!-- Note: The previous stage is 'machine_learning.html' (Milestone 04) -->
+            <a href="machine_learning.html" class="inline-flex items-center text-gray-500 hover:text-gray-400 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 9 9 0 01-18 0z" />
+                </svg>
+                السابق: تعلم الآلة والذكاء الاصطناعي
+            </a>
+        </div>
+        
+        <!-- Slide Container -->
+        <div class="relative w-full">
+            <div id="slide-container" class="slide-container flex-1">
+
+                <!-- Slide 0: الفهرس (Table of Contents) -->
+                <div class="slide active" data-slide="0">
+                    <div class="slide-content">
+                        <h2 class="text-3xl font-bold mb-6 border-b border-purple-500 pb-2">
+                            <span class="text-purple-400">النشر والتخصص (Deployment & Specialization)</span>
+                        </h2>
+                        <h3 class="text-xl font-semibold text-white mb-4">تحويل النماذج إلى قيمة حقيقية</h3>
+                        <p class="text-center text-gray-300 mb-8 max-w-3xl mx-auto">
+                            هذه المرحلة هي الجسر بين بناء النموذج في بيئة البحث (Jupyter) ودمجه في الأنظمة الحية للشركة، بالإضافة إلى تحديد مسارك المهني المتعمق.
+                        </p>
+
+                        <h3 class="text-xl font-semibold text-white mb-6">فهرس الوحدة</h3>
+                        <ul class="space-y-3 text-gray-300 grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <li><button onclick="showSlide(1)" class="hover:text-purple-400 w-full text-right p-4">1. ☁️ أساسيات نشر النماذج (Model Deployment)</button></li>
+                            <li><button onclick="showSlide(2)" class="hover:text-purple-400 w-full text-right p-4">2. ⚙️ البنية التحتية لعلم البيانات (MLOps)</button></li>
+                            <li><button onclick="showSlide(3)" class="hover:text-purple-400 w-full text-right p-4">3. 🧠 تحديات النموذج في البيئة الحية (Monitoring)</button></li>
+                            <li><button onclick="showSlide(4)" class="hover:text-purple-400 w-full text-right p-4">4. 💼 مسارات التخصص والتعمق</button></li>
+                            <li><button onclick="showSlide(5)" class="hover:text-purple-400 w-full text-right p-4">5. الأدوات والموارد</button></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Slide 1: Model Deployment -->
+                <div class="slide" data-slide="1">
+                    <div class="slide-content">
+                        <h2 class="text-2xl font-bold text-white mb-4"><span class="text-purple-400">1.</span> ☁️ أساسيات نشر النماذج (Deployment)</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-4">
+                                <div>
+                                    <h3 class="text-lg font-semibold text-white mb-2">المفهوم</h3>
+                                    <p class="text-gray-400 leading-relaxed">تحويل النموذج المدرب إلى خدمة يمكن للتطبيقات الأخرى استدعاؤها للحصول على تنبؤات. عادةً ما يتم ذلك عبر واجهات برمجية (APIs).</p>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-white mb-2">الأدوات والتطبيقات</h3>
+                                    <ul class="list-disc pr-4 space-y-1 text-gray-400">
+                                        <li>**Flask/FastAPI:** لإنشاء واجهة API خفيفة للنموذج.</li>
+                                        <li>**Docker:** لتغليف النموذج والبيئة الخاصة به لضمان تشغيله في أي مكان.</li>
+                                        <li>**Cloud Services:** مثل AWS Sagemaker أو Google AI Platform لنشر النماذج وإدارتها على السحابة.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="illustration-box">
+                                <p class="text-2xl text-purple-400">Model (Python) ➡️ Flask API ➡️ Docker ➡️ Cloud</p>
+                                                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 2: MLOps -->
+                <div class="slide" data-slide="2">
+                    <div class="slide-content">
+                        <h2 class="text-2xl font-bold text-white mb-4"><span class="text-purple-400">2.</span> ⚙️ البنية التحتية لعلم البيانات (MLOps)</h2>
+                        <h3 class="text-lg font-semibold text-white mb-2">الماهية</h3>
+                        <p class="text-gray-400 leading-relaxed">هو مجموعة الممارسات التي تهدف إلى أتمتة وإدارة ونشر نماذج تعلم الآلة في مرحلة الإنتاج بشكل موثوق وفعال.</p>
+
+                        <h3 class="mt-4 text-lg font-semibold text-white mb-2">المكونات الأساسية (الـ CI/CD للنماذج)</h3>
+                        <ul class="list-disc pr-4 space-y-2 text-gray-400">
+                            <li>**التدريب المستمر (CT):** إعادة تدريب النموذج تلقائيًا عند توفر بيانات جديدة.</li>
+                            <li>**التسليم المستمر (CD):** نشر النموذج المُحدث تلقائيًا في بيئة الإنتاج.</li>
+                            <li>**تتبع البيانات والإصدارات (Versioning):** إدارة إصدارات البيانات والرموز والنموذج نفسه.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Slide 3: Model Monitoring & Maintenance -->
+                <div class="slide" data-slide="3">
+                    <div class="slide-content">
+                        <h2 class="text-2xl font-bold text-white mb-4"><span class="text-purple-400">3.</span> 🧠 تحديات النموذج في البيئة الحية (Monitoring)</h2>
+                        <h3 class="text-lg font-semibold text-white mb-2">ما الذي يمكن أن يذهب خطأ؟</h3>
+                        <p class="text-gray-400 leading-relaxed">النموذج الذي كان يعمل جيداً في المختبر قد يفشل في البيئة الحية نتيجة لتغير البيانات بمرور الوقت.</p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                            <div class="space-y-4">
+                                <h3 class="text-lg font-semibold text-white mb-2">1. انحراف البيانات (Data Drift)</h3>
+                                <p class="text-gray-400 text-sm">تغير في خصائص البيانات الواردة (البيانات التي يتلقاها النموذج للتنبؤ) مقارنة ببيانات التدريب.</p>
+                                <h3 class="text-lg font-semibold text-white mb-2">2. انحراف المفهوم (Concept Drift)</h3>
+                                <p class="text-gray-400 text-sm">تغير في العلاقة بين الميزات والهدف (أي أن القاعدة التي تعلمها النموذج لم تعد صحيحة).</p>
+                            </div>
+                            <div class="illustration-box">
+                                <p class="text-xl text-purple-300">"تتطلب البيئة الحية مراقبة مستمرة لجودة البيانات وأداء النموذج."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 4: Specialization Paths -->
+                <div class="slide" data-slide="4">
+                    <div class="slide-content">
+                        <h2 class="text-2xl font-bold text-white mb-4"><span class="text-purple-400">4.</span> 💼 مسارات التخصص والتعمق</h2>
+                        <p class="mb-4 text-gray-400">بعد إتقان الأساسيات، يمكنك اختيار مسار التخصص لتعميق معرفتك.</p>
+
+                        <div class="space-y-4">
+                            <div class="bg-gray-700 p-4 rounded-lg">
+                                <h4 class="font-semibold text-white">مهندس تعلم الآلة (ML Engineer)</h4>
+                                <p class="text-sm text-gray-300">**التركيز:** النشر، MLOps، الكفاءة، تطوير البنية التحتية للنماذج. (يتطلب مهارات برمجية وهندسية عالية).</p>
+                            </div>
+                            <div class="bg-gray-700 p-4 rounded-lg">
+                                <h4 class="font-semibold text-white">متخصص رؤية حاسوبية (Computer Vision)</h4>
+                                <p class="text-sm text-gray-300">**التركيز:** الصور، الفيديو، الشبكات التلافيفية (CNN)، وتطبيقات الذكاء الاصطناعي البصري.</p>
+                            </div>
+                            <div class="bg-gray-700 p-4 rounded-lg">
+                                <h4 class="font-semibold text-white">متخصص معالجة اللغات الطبيعية (NLP)</h4>
+                                <p class="text-sm text-gray-300">**التركيز:** النصوص، الصوت، نماذج المحولات (Transformers)، وتطوير نماذج اللغة الكبيرة (LLMs).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 5: Tools & Resources -->
+                <div class="slide" data-slide="5">
+                    <div class="slide-content">
+                        <h2 class="text-2xl font-bold text-white mb-6"><span class="text-purple-400">5.</span> 🛠️ الأدوات والموارد</h2>
+                        <div class="overflow-x-auto">
+                            <table class="styled-table">
+                                <thead>
+                                    <tr>
+                                        <th>المجال</th>
+                                        <th>الأداة/المكتبة</th>
+                                        <th>ملاحظة</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>النشر (API)</td>
+                                        <td><a href="https://fastapi.tiangolo.com/" target="_blank">FastAPI</a> / Flask</td>
+                                        <td>لإنشاء واجهات برمجية سريعة وآمنة.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>التغليف (Containerization)</td>
+                                        <td><a href="https://www.docker.com/" target="_blank">Docker</a></td>
+                                        <td>لضمان أن النموذج يعمل في أي بيئة.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>MLOps / البنية التحتية</td>
+                                        <td>Kubeflow / MLflow</td>
+                                        <td>لإدارة دورة حياة التعلم الآلي بالكامل.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>مراقبة النماذج (Monitoring)</td>
+                                        <td>Arize / WhyLabs</td>
+                                        <td>أدوات متخصصة للكشف عن الانحراف (Drift).</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Slide Navigation -->
+        <div class="flex justify-between items-center mt-6">
+            <a href="data_science_roadmap.html" class="py-2 px-6 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-lg transition-colors flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+                </svg>
+                العودة للخارطة
+            </a>
+            <div id="pagination" class="flex-grow flex justify-center items-center space-x-2 px-4">
+                <!-- Dots will be inserted by JS -->
+            </div>
+            <!-- Since this is the last milestone, the "next" link goes back to the roadmap -->
+            <a href="data_science_roadmap.html" class="py-2 px-6 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg transition-colors flex items-center justify-center">
+                نهاية المسار
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        let slides;
+        let prevBtn;
+        let nextBtn;
+        let pagination;
+        let totalSlides;
+        let dots;
+
+        // يجب تحديث أزرار التنقل يدويًا هنا لأنها ليست أزرار HTML عادية
+        const prevStageLink = document.querySelector('a[href="machine_learning.html"]'); 
+        const roadmapReturnButton = document.querySelector('a[href="data_science_roadmap.html"]:first-child');
+        const endOfPathButton = document.querySelector('a[href="data_science_roadmap.html"]:last-child');
+
+        function updateStageNavigation(slideIndex) {
+            // إظهار زر العودة للمرحلة السابقة
+            prevStageLink.style.display = (slideIndex === 0) ? 'inline-flex' : 'none';
+            // إخفاء زر نهاية المسار أثناء التنقل الداخلي للشرائح
+            endOfPathButton.style.display = (slideIndex === totalSlides - 1) ? 'flex' : 'none';
+            // إخفاء زر العودة للخارطة الرئيسية الذي في الزاوية أثناء التنقل الداخلي للشرائح
+            roadmapReturnButton.style.display = (slideIndex === 0) ? 'inline-flex' : 'none';
+        }
+
+        function showSlide(slideIndex) {
+            if (!slides || !dots || slideIndex < 0 || slideIndex >= totalSlides) {
+                console.error("Slider component not ready or slide index out of bounds.");
+                return;
+            }
+
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+            slides[slideIndex].classList.add('active');
+
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === slideIndex);
+            });
+
+            // تحديث أزرار التالي/السابق الداخلية للشرائح
+            // إذا كنا في الشريحة الأولى، يتم تعطيل زر "السابق" وإظهار زر العودة للخارطة
+            if (slideIndex === 0) {
+                prevBtn.disabled = true;
+                roadmapReturnButton.style.visibility = 'visible';
+                prevStageLink.style.visibility = 'visible';
+            } else {
+                prevBtn.disabled = false;
+                roadmapReturnButton.style.visibility = 'hidden';
+                prevStageLink.style.visibility = 'hidden';
+            }
+            
+            // إذا كنا في آخر شريحة، نعطل زر "التالي" ونظهر زر "نهاية المسار"
+            if (slideIndex === totalSlides - 1) {
+                nextBtn.disabled = true;
+                endOfPathButton.style.visibility = 'visible';
+            } else {
+                nextBtn.disabled = false;
+                endOfPathButton.style.visibility = 'hidden';
+            }
+            
+            currentSlide = slideIndex;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            slides = document.querySelectorAll('.slide');
+            prevBtn = document.getElementById('prev-btn');
+            nextBtn = document.getElementById('next-btn');
+            pagination = document.getElementById('pagination');
+            totalSlides = slides.length;
+
+            if (pagination) {
+                pagination.innerHTML = ''; 
+                for (let i = 0; i < totalSlides; i++) {
+                    const dot = document.createElement('button');
+                    dot.classList.add('pagination-dot');
+                    dot.dataset.slide = i;
+                    dot.addEventListener('click', () => showSlide(i));
+                    pagination.appendChild(dot);
+                }
+                dots = pagination.querySelectorAll('button');
+            }
+
+            if (prevBtn) {
+                prevBtn.addEventListener('click', () => {
+                    if (currentSlide > 0) showSlide(currentSlide - 1);
+                });
+            }
+
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => {
+                    if (currentSlide < totalSlides - 1) showSlide(currentSlide + 1);
+                });
+            }
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight' && currentSlide < totalSlides - 1) {
+                    showSlide(currentSlide + 1);
+                } else if (e.key === 'ArrowLeft' && currentSlide > 0) {
+                    showSlide(currentSlide - 1);
+                }
+            });
+
+            if (totalSlides > 0) showSlide(0);
+        });
+
+        window.showSlide = showSlide;
+    </script>
+</body>
+</html>
