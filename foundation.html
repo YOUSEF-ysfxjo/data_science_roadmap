@@ -1,301 +1,1543 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مدخلك لعالم البيانات</title>
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- Load Tajawal Font from Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
-    
+
     <style>
         body {
             font-family: 'Tajawal', sans-serif;
             background-color: #111827;
-            color: #d1d5db;
+            direction: rtl;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
+
+        /* Main container styles */
+         .slide-container {
+            display: flex;
+            width: 100%;
+            max-width: 1700px; /* <-- 1. كبرنا الأب هنا (كان 1200px) */
+            margin: 0 auto;
+            position: relative;
+            flex: 1;
+            overflow: visible;
+            padding: 2rem 1rem;
+            min-height: 70vh;
+            height: 95vh; /* <-- 2. وكبرنا ارتفاع الأب هنا (كان 90vh) */
+        }
+
         .slide {
-            display: none;
-            animation: fadeIn 0.5s ease-in-out;
+            width: 100%;
+            flex-shrink: 0;
+            transition: opacity 0.5s ease-in-out, visibility 0.5s;
+            opacity: 0;
+            visibility: hidden;
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            padding: 1.5rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            box-sizing: border-box;
         }
+
+        /* --- 
+         * التعديل الأول: 
+         * 1. تمت إضافة 'align-items: center' و 'justify-content: center' لإصلاح مشكلة التوسيط.
+         * 2. تمت إزالة 'flex-direction: column' التي كانت تلغي التوسيط.
+         * ---
+        */
         .slide.active {
-            display: block;
+            opacity: 1;
+            visibility: visible;
+            position: relative;
+            height: 100%;
+            padding: 1.5rem 0;
+            display: flex;
+            /* تمت إضافة الخاصيتين التاليتين */
+            align-items: center;
+            justify-content: center;
+            /* تم حذف 'flex-direction: column;' من هنا */
         }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        .pagination-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background-color: #4b5563;
-            margin: 0 4px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .pagination-dot.active {
-            background-color: #3b82f6;
-            transform: scale(1.2);
-        }
-        .illustration-box {
+
+        /* --- 
+         * التعديل الثاني: 
+         * 1. تمت إزالة 'height: 100%' لجعل ارتفاع البطاقة مرناً حسب المحتوى.
+         * 2. تم الإبقاء على 'max-height: 100%' للسماح بالتمرير (scroll) إذا كان المحتوى طويلاً.
+         * ---
+        */
+        .slide-content {
             background-color: #1f2937;
-            border-radius: 0.5rem;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            width: 100%;
+            max-width: 2000px;
+            /* تم حذف 'height: 100%;' من هنا */
+            max-height: 100%;
+            /* سيبقى هذا ليسمح بالتمرير عند الحاجة */
+            display: flex;
+            flex-direction: column;
+            margin: 0 auto;
+            overflow-y: auto;
+            box-sizing: border-box;
+            min-height: 70vh;
+            height: 90vh;
+        }
+
+        .slide-content ul {
+            list-style-type: disc;
+            list-style-position: outside;
+            padding-right: 1.25rem;
+            margin-left: 0;
+        }
+
+        /* TOC Specific Styles */
+        .slide[data-slide="0"] .slide-content {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 5rem 2rem 3rem;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            border: 1px solid #166534;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+        }
+
+        .slide[data-slide="0"] h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: #10b981;
+            border-bottom: 2px solid #10b981;
+            padding-bottom: 1rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .slide[data-slide="0"] h3 {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: #e5e7eb;
+        }
+
+        .slide[data-slide="0"] ul {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            width: 100%;
+            margin: 0;
             padding: 1rem;
-            margin: 1rem 0;
+            list-style: none;
+        }
+
+        .slide[data-slide="0"] li {
+            background-color: rgba(30, 41, 59, 0.8);
+            border: 1px solid #166534;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide[data-slide="0"] li:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+                0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-color: #10b981;
+            background-color: rgba(30, 41, 59, 0.9);
+        }
+
+        .slide[data-slide="0"] button {
+            background: none;
+            border: none;
+            color: #e5e7eb;
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            padding: 1rem;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .slide[data-slide="0"] button:hover {
+            color: #34d399;
+        }
+
+        .slide[data-slide="0"] li::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 4px;
+            height: 100%;
+            background-color: #10b981;
+            transition: width 0.3s ease;
+        }
+
+        .slide[data-slide="0"] li:hover::before {
+            width: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .slide[data-slide="0"] ul {
+                grid-template-columns: 1fr;
+            }
+
+            .slide[data-slide="0"] h2 {
+                font-size: 2rem;
+            }
+
+            .slide[data-slide="0"] h3 {
+                font-size: 1.25rem;
+            }
+        }
+
+        .pagination-dot {
+            width: 0.75rem;
+            height: 0.75rem;
+            border-radius: 9999px;
+            background-color: #4b5563;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .pagination-dot.active {
+            background-color: #0ea5e9;
+            width: 2rem;
+        }
+
+        .illustration-box {
+            background-color: #1e293b;
+            border: 1px solid #374151;
+            height: 100%;
+            min-height: 300px;
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            margin: 0.5rem 0;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .illustration-box:hover {
+            border-color: #4b5563;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+        }
+
+        .inner-scroll-container {
+            display: flex;
+            overflow-x: auto;
+            padding-bottom: 1rem;
+            scrollbar-width: thin;
+            scrollbar-color: #4b5563 #374151;
+        }
+
+        .inner-scroll-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .inner-scroll-container::-webkit-scrollbar-track {
+            background: #374151;
+            border-radius: 4px;
+        }
+
+        .inner-scroll-container::-webkit-scrollbar-thumb {
+            background-color: #4b5563;
+            border-radius: 4px;
+        }
+
+        .inner-scroll-card {
+            min-width: 280px;
+            flex-shrink: 0;
+            margin-left: 1rem;
+        }
+
+
+        /* --- أنماط دورة حياة علم البيانات (من الملف الآخر) --- */
+        .data-lifecycle-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4.5rem 2rem;
+            /* زيادة المسافة العمودية لإفساح المجال للخطوط */
+            position: relative;
+            padding: 2rem 0;
+            /* إضافة مسافة لظهور الأرقام */
+        }
+
+        /* تصميم بطاقة الخطوة */
+        .step-card {
+            background-color: #374151;
+            /* أغمق قليلاً للتباين */
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            padding-top: 2.5rem;
+            /* مساحة إضافية للرقم */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            position: relative;
+            border: 1px solid #4b5563;
+            transition: all 0.3s ease;
+            z-index: 10;
+            /* للتأكد من أن البطاقات فوق الخطوط */
+        }
+
+        .step-card:hover {
+            border-color: #0ea5e9;
+            /* تمييز عند التمرير */
+            transform: translateY(-5px);
+        }
+
+        /* تصميم رقم الخطوة (الدائرة البرتقالية) */
+        .step-number {
+            position: absolute;
+            top: -1.25rem;
+            /* نصف القطر للخارج */
+            right: 50%;
+            transform: translateX(50%);
+            width: 2.75rem;
+            height: 2.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+            background-color: #f97316;
+            /* برتقالي */
+            color: white;
+            font-size: 1.125rem;
+            font-weight: 700;
+            border: 4px solid #1f2937;
+            /* حدود بنفس لون خلفية الشريحة */
+            z-index: 20;
+        }
+
+        /* تصميم أيقونة الخطوة */
+        .step-icon {
+            width: 3rem;
+            height: 3rem;
+            color: #38bdf8;
+            /* أزرق سماوي فاتح */
+            margin-bottom: 1rem;
+        }
+
+        /* الخطوط الموصلة (لشاشات الحاسوب) */
+        .connector {
+            position: absolute;
+            border-color: #4b5563;
+            /* لون رمادي للخط */
+            border-style: dashed;
+            z-index: 1;
+            /* خلف البطاقات */
+        }
+
+        /* خط من اليمين إلى اليسار (يستخدم في الصف الأول والثالث) */
+        .line-right {
+            top: 50%;
+            left: -2rem;
+            /* يمتد من البطاقة إلى اليسار */
+            width: 2rem;
+            border-top-width: 2px;
+            transform: translateY(-50%);
+        }
+
+        /* خط من اليسار إلى اليمين (يستخدم في الصف الثاني) */
+        .line-left {
+            top: 50%;
+            right: -2rem;
+            /* يمتد من البطاقة إلى اليمين */
+            width: 2rem;
+            border-top-width: 2px;
+            transform: translateY(-50%);
+        }
+
+        /* الخط المنحني للأسفل ولليمين (يربط 3 بـ 4) */
+        .line-down-right {
+            bottom: -2.25rem;
+            /* نصف المسافة العمودية */
+            left: 50%;
+            width: calc(100% + 2rem);
+            /* يمتد بعرض بطاقتين + المسافة بينهما */
+            height: 2.25rem;
+            border-bottom-width: 2px;
+            border-right-width: 2px;
+            border-bottom-right-radius: 1.5rem;
+        }
+
+        /* الخط المنحني للأسفل ولليسار (يربط 6 بـ 7) */
+        .line-down-left {
+            bottom: -2.25rem;
+            /* نصف المسافة العمودية */
+            right: 50%;
+            width: calc(100% + 2rem);
+            /* يمتد بعرض بطاقتين + المسافة بينهما */
+            height: 2.25rem;
+            border-bottom-width: 2px;
+            border-left-width: 2px;
+            border-bottom-left-radius: 1.5rem;
+        }
+
+
+        /* --- أنماط إضافية اختيارية --- */
+        /*
+            هذه الإضافة لطلبك "عشان تكون ممتازة"
+            تعطي حركة "نبض" بسيطة للنواة (السيرفر) في أيقونة الخطوة 1
+        */
+        @keyframes pulse-server {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+        }
+
+        /* تطبيق حركة "نبض" بسيطة على 
+            نواة (السيرفر) في الخطوة 1
+        */
+        #step-1 svg #server-core {
+            animation: pulse-server 3s ease-in-out infinite;
+            transform-origin: 50px 50px;
+            /* 50 50 هو مركز الـ SVG */
+        }
+
+
+        /* التوافق مع الجوال (شاشات أصغر من 1024px) */
+        @media (max-width: 1023px) {
+            .data-lifecycle-grid {
+                grid-template-columns: 1fr;
+                /* عمود واحد */
+                gap: 5rem 0;
+                /* مسافة عمودية أكبر للخطوط */
+            }
+
+            /* إخفاء الخطوط الأفقية والمنحنية المعقدة */
+            .connector {
+                display: none;
+            }
+
+            /* ترتيب البطاقات عمودياً بالشكل الصحيح 1-9 */
+            #step-1 {
+                order: 1;
+            }
+
+            #step-2 {
+                order: 2;
+            }
+
+            #step-3 {
+                order: 3;
+            }
+
+            #step-4 {
+                order: 4;
+            }
+
+            #step-5 {
+                order: 5;
+            }
+
+            #step-6 {
+                order: 6;
+            }
+
+            #step-7 {
+                order: 7;
+            }
+
+            #step-8 {
+                order: 8;
+            }
+
+            #step-9 {
+                order: 9;
+            }
+
+            /* إضافة خط عمودي بسيط بين البطاقات في وضع الجوال */
+            .step-card:not(:last-child)::after {
+                content: '';
+                position: absolute;
+                bottom: -3.5rem;
+                /* تحديد المسافة أسفل البطاقة */
+                left: 50%;
+                transform: translateX(-50%);
+                width: 2px;
+                height: 3rem;
+                /* طول الخط */
+                border-left-width: 2px;
+                border-color: #4b5563;
+                border-style: dashed;
+                z-index: 1;
+            }
         }
     </style>
 </head>
-<body class="bg-gray-900 text-gray-300">
-    <div class="container mx-auto px-4 py-8 max-w-4xl">
-        <!-- Navigation -->
-        <div class="flex justify-between items-center mb-8">
-            <a href="index.html" class="text-blue-400 hover:text-blue-300 flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+
+<body class="bg-gray-900 text-gray-300 min-h-screen flex flex-col items-center p-4 md:p-6">
+    <div class="max-w-5xl w-full flex-1 flex flex-col">
+        <!-- Back Button -->
+        <div class="mb-4">
+            <a href="index.html" class="inline-flex items-center text-sky-400 hover:text-sky-300 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
-                العودة للرئيسية
+                العودة للصفحة الرئيسية
             </a>
-            <h1 class="text-2xl font-bold text-white">مدخلك لعالم البيانات</h1>
         </div>
 
-        <!-- Slides Container -->
-        <div class="slides-container bg-gray-800 rounded-xl p-6 shadow-lg">
-            <!-- Slide 1: مقدمة -->
-            <div class="slide active" data-slide="1">
-                <div class="slide-content">
-                    <h2 class="text-2xl font-bold text-white mb-4"><span class="text-sky-400">1.</span> مقدمة في علوم البيانات</h2>
-                    <p class="mb-4 text-gray-400">علوم البيانات هو مجال متعدد التخصصات يجمع بين الإحصاء، تحليل البيانات، التعلم الآلي، والطرق ذات الصلة من أجل فهم وتحليل الظواهر الفعلية باستخدام البيانات.</p>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="bg-gray-700 p-4 rounded-lg">
-                            <h3 class="text-lg font-semibold text-white mb-2">المكونات الرئيسية</h3>
-                            <ul class="list-disc pr-4 space-y-1 text-gray-300">
-                                <li>جمع البيانات وتنظيفها</li>
-                                <li>تحليل البيانات الاستكشافي</li>
-                                <li>النمذجة الإحصائية</li>
-                                <li>التعلم الآلي</li>
-                                <li>تصور البيانات</li>
-                            </ul>
-                        </div>
-                        <div class="bg-gray-700 p-4 rounded-lg">
-                            <h3 class="text-lg font-semibold text-white mb-2">المهارات المطلوبة</h3>
-                            <ul class="list-disc pr-4 space-y-1 text-gray-300">
-                                <li>البرمجة (بايثون/ R)</li>
-                                <li>الإحصاء والجبر الخطي</li>
-                                <li>قواعد البيانات (SQL)</li>
-                                <li>أدوات تصور البيانات</li>
-                                <li>التعلم الآلي</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <!-- New Link/Button to Slide 6 (index 5) -->
-                    <div class="mt-6 text-center">
-                        <button id="saudi-data-link" data-target-slide="5" class="py-2 px-6 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-lg transition-colors shadow-lg">
-                            🇸🇦 علم البيانات في السعودية
-                        </button>
+        <!-- Slide Container -->
+        <div class="relative w-full">
+            <div id="slide-container" class="slide-container flex-1">
+                <!-- Slide 0: جدول المحتويات -->
+                <div class="slide active" data-slide="0">
+                    <div class="slide-content">
+                        <h2 class="text-4xl font-bold mb-6 text-center">
+                            <span class="text-emerald-500">مدخلك لعالم البيانات</span>
+                        </h2>
+                        <h3 class="text-xl font-semibold text-white mb-4">فهرس الوحدة</h3>
+                        <ul class="space-y-3">
+                            <li><button onclick="showSlide(1)">1. مقدمة شاملة</button></li>
+                            <li><button onclick="showSlide(2)">2. دورة حياة المشروع</button></li>
+                            <li><button onclick="showSlide(3)">3. تقييم وتحسين النماذج</button></li>
+                            <li><button onclick="showSlide(4)">4. التعلم العميق</button></li>
+                            <li><button onclick="showSlide(5)">5. مصادر تعليمية</button></li>
+                            <li><button onclick="showSlide(6)">6. علم البيانات في السعودية</button></li>
+                        </ul>
                     </div>
                 </div>
-            </div>
 
-            <!-- Slide 2: دورة حياة مشروع علوم البيانات -->
-            <div class="slide" data-slide="2">
-                <div class="slide-content">
-                    <h2 class="text-2xl font-bold text-white mb-4"><span class="text-sky-400">2.</span> دورة حياة مشروع علوم البيانات</h2>
-                    <p class="mb-4 text-gray-400">كل مشروع في علوم البيانات يمر بعدة مراحل رئيسية لفهم المشكلة وتحليل البيانات وبناء النموذج المناسب.</p>
-                    
-                    <div class="space-y-4">
-                        <div class="bg-gray-700 p-4 rounded-lg">
-                            <h3 class="text-lg font-semibold text-white mb-2">1. فهم الأعمال</h3>
-                            <p class="text-gray-300 text-sm">فهم المشكلة التجارية والأهداف المطلوبة من المشروع.</p>
+                <!-- Slide 1: مقدمة شاملة -->
+                <div class="slide" data-slide="1">
+                    <div
+                        class="slide-content relative bg-gradient-to-br from-gray-800 to-gray-900 p-8 rounded-xl shadow-2xl">
+                        <div
+                            class="absolute top-4 right-4 bg-gradient-to-r from-pink-600 to-sky-600 text-white text-xs px-3 py-1 rounded-full">
+                            البداية</div>
+                        <div class="text-center mb-8">
+                            <h1
+                                class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-pink-400 mb-2">
+                                مدخل إلى علوم البيانات</h1>
+                            <p class="text-gray-400">اكتشف عالم البيانات وكيف يمكنه تغيير طريقة عملنا واتخاذ قراراتنا
+                            </p>
                         </div>
-                        <div class="bg-gray-700 p-4 rounded-lg">
-                            <h3 class="text-lg font-semibold text-white mb-2">2. جمع البيانات</h3>
-                            <p class="text-gray-300 text-sm">الحصول على البيانات من مصادر مختلفة.</p>
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <!-- تعريف علوم البيانات -->
+                            <div
+                                class="bg-gray-800/50 backdrop-blur-sm p-6 rounded-xl border border-gray-700 hover:border-sky-500 transition-all duration-300">
+                                <div class="w-12 h-12 bg-sky-900/50 rounded-lg flex items-center justify-center mb-4">
+                                    <svg class="w-6 h-6 text-sky-400" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6h2m-2-6h18M5 15h18M9 3h6v18H9V3z">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold text-white mb-3">ما هي علوم البيانات؟</h3>
+                                <p class="text-gray-300 text-sm leading-relaxed">
+                                    علم يجمع بين الإحصاء، تحليل البيانات، التعلم الآلي، وأساليب متقدمة لاستخلاص المعرفة
+                                    والرؤى من البيانات المهيكلة وغير المهيكلة.
+                                </p>
+                            </div>
+
+                            <!-- أهمية علوم البيانات -->
+                            <div
+                                class="bg-gray-800/50 backdrop-blur-sm p-6 rounded-xl border border-gray-700 hover:border-pink-500 transition-all duration-300">
+                                <div class="w-12 h-12 bg-pink-900/50 rounded-lg flex items-center justify-center mb-4">
+                                    <svg class="w-6 h-6 text-pink-400" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold text-white mb-3">لماذا تتعلم علوم البيانات؟</h3>
+                                <ul class="space-y-2 text-gray-300 text-sm">
+                                    <li class="flex items-start">
+                                        <svg class="w-4 h-4 text-green-500 mt-1 ml-2 flex-shrink-0" fill="none"
+                                            stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        <span>واحدة من أكثر المهارات طلباً في سوق العمل</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <svg class="w-4 h-4 text-green-500 mt-1 ml-2 flex-shrink-0" fill="none"
+                                            stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        <span>رواتب تنافسية ومستقبل وظيفي واعد</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <svg class="w-4 h-4 text-green-500 mt-1 ml-2 flex-shrink-0" fill="none"
+                                            stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        <span>تطبيقات في جميع المجالات تقريباً</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- المكونات الرئيسية -->
+                            <div
+                                class="bg-gray-800/50 backdrop-blur-sm p-6 rounded-xl border border-gray-700 hover:border-amber-500 transition-all duration-300">
+                                <div class="w-12 h-12 bg-amber-900/50 rounded-lg flex items-center justify-center mb-4">
+                                    <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold text-white mb-3">المكونات الرئيسية</h3>
+                                <ul class="space-y-2 text-gray-300 text-sm">
+                                    <li class="flex items-start">
+                                        <svg class="w-4 h-4 text-green-500 mt-1 ml-2 flex-shrink-0" fill="none"
+                                            stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        <span>جمع البيانات وتنظيفها</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <svg class="w-4 h-4 text-green-500 mt-1 ml-2 flex-shrink-0" fill="none"
+                                            stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        <span>تحليل البيانات الاستكشافي</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <svg class="w-4 h-4 text-green-500 mt-1 ml-2 flex-shrink-0" fill="none"
+                                            stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        <span>النمذجة الإحصائية</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <svg class="w-4 h-4 text-green-500 mt-1 ml-2 flex-shrink-0" fill="none"
+                                            stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        <span>التعلم الآلي</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <svg class="w-4 h-4 text-green-500 mt-1 ml-2 flex-shrink-0" fill="none"
+                                            stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        <span>تصور البيانات</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- المهارات المطلوبة -->
+                            <div
+                                class="bg-gray-800/50 backdrop-blur-sm p-6 rounded-xl border border-gray-700 hover:border-purple-500 transition-all duration-300">
+                                <div
+                                    class="w-12 h-12 bg-purple-900/50 rounded-lg flex items-center justify-center mb-4">
+                                    <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold text-white mb-3">المهارات المطلوبة</h3>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="bg-gray-700/70 text-xs px-3 py-1 rounded-full text-center">بايثون /
+                                        R</span>
+                                    <span class="bg-gray-700/70 text-xs px-3 py-1 rounded-full text-center">SQL</span>
+                                    <span
+                                        class="bg-gray-700/70 text-xs px-3 py-1 rounded-full text-center">الإحصاء</span>
+                                    <span class="bg-gray-700/70 text-xs px-3 py-1 rounded-full text-center">الجبر
+                                        الخطي</span>
+                                    <span class="bg-gray-700/70 text-xs px-3 py-1 rounded-full text-center">تصور
+                                        البيانات</span>
+                                    <span class="bg-gray-700/70 text-xs px-3 py-1 rounded-full text-center">التعلم
+                                        الآلي</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="bg-gray-700 p-4 rounded-lg">
-                            <h3 class="text-lg font-semibold text-white mb-2">3. تنظيف البيانات</h3>
-                            <p class="text-gray-300 text-sm">معالجة القيم المفقودة والقيم المتطرفة.</p>
-                        </div>
-                        <div class="bg-gray-700 p-4 rounded-lg">
-                            <h3 class="text-lg font-semibold text-white mb-2">4. التحليل الاستكشافي</h3>
-                            <p class="text-gray-300 text-sm">فهم العلاقات والأنماط في البيانات.</p>
+
+                        <!-- New Link/Button to Slide 6 (index 5) -->
+                        <div class="mt-6 text-center">
+                            <button id="saudi-data-link" data-target-slide="5"
+                                class="py-2 px-6 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-lg transition-colors shadow-lg">
+                                🇸🇦 علم البيانات في السعودية
+                            </button>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Slide 3: تقييم وتحسين النماذج -->
-            <div class="slide" data-slide="3">
-                <div class="slide-content">
-                    <h2 class="text-2xl font-bold text-white mb-4"><span class="text-sky-400">3.</span> تقييم وتحسين النماذج</h2>
-                    <p class="mb-4 text-gray-400">قياس أداء النموذج، تحديد نقاط ضعفه، وتعديل إعداداته لضمان أفضل أداء وتعميم (Generalization) على البيانات الجديدة.</p>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="bg-gray-700 p-4 rounded-lg">
-                            <h3 class="text-lg font-semibold text-white mb-2">منهجيات التقييم</h3>
-                            <ul class="list-disc pr-4 space-y-1 text-gray-300">
-                                <li><b>تقسيم البيانات (Train/Test Split):</b> مجموعة للتدريب ومجموعة للاختبار.</li>
-                                <li><b>التحقق المتقاطع (Cross-Validation):</b> طريقة أقوى لضمان استقلالية التقييم.</li>
-                            </ul>
-                            <h3 class="text-lg font-semibold text-white mt-4 mb-2">مقاييس الأداء</h3>
-                            <ul class="list-disc pr-4 space-y-1 text-gray-300">
-                                <li><b>للتصنيف:</b> الدقة (Accuracy)، مصفوفة التشويش (Confusion Matrix).</li>
-                                <li><b>للانحدار:</b> متوسط الخطأ المطلق (MAE)، جذر متوسط مربع الخطأ (RMSE).</li>
-                            </ul>
-                        </div>
-                        <div class="bg-gray-700 p-4 rounded-lg">
-                            <h3 class="text-lg font-semibold text-white mb-2">مشكلات الأداء (Bias-Variance)</h3>
-                            <div class="illustration-box">
-                                <svg viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg">
-                                    <title>رسم توضيحي لمشكلات Overfitting و Underfitting</title>
-                                    <!-- Data points -->
-                                    <circle cx="20" cy="80" r="3" fill="#a5f3fc"/>
-                                    <circle cx="40" cy="90" r="3" fill="#a5f3fc"/>
-                                    <circle cx="60" cy="85" r="3" fill="#a5f3fc"/>
-                                    <circle cx="80" cy="100" r="3" fill="#a5f3fc"/>
-                                    <circle cx="100" cy="95" r="3" fill="#a5f3fc"/>
-                                    <circle cx="120" cy="110" r="3" fill="#a5f3fc"/>
-                                    <circle cx="140" cy="105" r="3" fill="#a5f3fc"/>
-                                    <circle cx="160" cy="120" r="3" fill="#a5f3fc"/>
-                                    
-                                    <!-- Underfitting -->
-                                    <line x1="10" y1="70" x2="170" y2="90" stroke="#f43f5e" stroke-width="2"/>
-                                    <text x="20" y="60" fill="white" font-size="12">Underfitting</text>
-                                    
-                                    <!-- Good Fit -->
-                                    <path d="M 10 90 Q 90 60 170 110" stroke="#34d399" stroke-width="2" fill="none"/>
-                                    <text x="100" y="60" fill="white" font-size="12">Good Fit</text>
-                                    
-                                    <!-- Overfitting -->
-                                    <path d="M 10 80 C 30 60, 50 100, 70 80 S 90 120, 110 100 S 130 130, 150 110 S 170 140, 170 140" 
-                                          stroke="#facc15" stroke-width="2" fill="none"/>
-                                    <text x="100" y="140" fill="white" font-size="12">Overfitting</text>
-                                </svg>
+                <!-- Slide 2: دورة حياة مشروع علوم البيانات -->
+                <div class="slide" data-slide="2">
+                    <div class="slide-content">
+                        <h1 class="text-3xl md:text-4xl font-bold text-center text-white mb-4">
+                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-orange-500">
+                                9 خطوات رئيسية
+                            </span>
+                            في دورة حياة علم البيانات
+                        </h1>
+                        <p class="text-center text-gray-400 text-lg mb-12">
+                            تمثيل بصري للخطوات الأساسية لتحويل البيانات إلى قرارات مؤثرة.
+                        </p>
+
+                        <!-- شبكة الخطوات -->
+                        <div class="data-lifecycle-grid">
+
+                            <!-- الصف الأول: 1 -> 2 -> 3 -->
+                            <!-- ================================= -->
+                            <!-- START: تعديل الخطوة 1 -->
+                            <!-- ================================= -->
+                            <div class="step-card" id="step-1" style="order: 1;">
+                                <div class="step-number">01</div>
+                                <div class="flex flex-col items-center text-center">
+                                    <!-- أيقونة: تعاون -->
+                                    <!-- 
+                                        تم تعديل الـ SVG هنا:
+                                        1. تمت إضافة كلاس "step-icon" لتوحيد الحجم مع باقي الأيقونات.
+                                        2. تم إزالة الـ div الضخم (w-64 h-64) الذي كان يحيط به لضمان التناسق.
+                                        3. تم تعديل ألوان SVG (stroke, fill) لتصبح "currentColor" لترث اللون الأزرق من كلاس .step-icon.
+                                        4. تم تعديل لون خلفية السيرفر ليتناسب مع خلفية البطاقة.
+                                    -->
+                                    <svg class="step-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+
+                                        <!-- المدارات -->
+                                        <g id="orbits" stroke-opacity="0.8">
+                                            <!-- المدار الأفقي -->
+                                            <ellipse cx="50" cy="50" rx="45" ry="25" />
+                                            <!-- المدار المائل 1 -->
+                                            <ellipse cx="50" cy="50" rx="45" ry="25" transform="rotate(60 50 50)" />
+                                            <!-- المدار المائل 2 -->
+                                            <ellipse cx="50" cy="50" rx="45" ry="25" transform="rotate(120 50 50)" />
+                                        </g>
+
+                                        <!-- الإلكترونات (الدوائر) -->
+                                        <g id="electrons" fill="currentColor" stroke="none">
+                                            <circle cx="10" cy="39" r="3" />
+                                            <circle cx="90" cy="61" r="3" />
+                                            <circle cx="28.8" cy="78.5" r="3" />
+                                            <circle cx="71.2" cy="21.5" r="3" />
+                                            <circle cx="28.8" cy="21.5" r="3" />
+                                            <circle cx="71.2" cy="78.5" r="3" />
+                                        </g>
+
+                                        <!-- المركز (أيقونة الخادم/البيانات) -->
+                                        <g id="server-core" stroke-width="2.5">
+                                            <!-- الإطار الخارجي للخادم -->
+                                            <rect x="36" y="38" width="28" height="24" rx="2" ry="2" fill="#374151" />
+                                            <!-- الخط الفاصل في المنتصف -->
+                                            <line x1="36" y1="50" x2="64" y2="50" />
+                                            <!-- الأضواء/المنافذ -->
+                                            <line x1="52" y1="44" x2="58" y2="44" stroke-width="1.5" />
+                                            <line x1="52" y1="56" x2="58" y2="56" stroke-width="1.5" />
+                                        </g>
+                                    </svg>
+                                    <!-- 
+                                        تم نقل النص هنا:
+                                        أصبح خارج الـ div الخاص بالأيقونة ليطابق هيكل البطاقات الأخرى.
+                                    -->
+                                    <p class="step-text font-medium text-sm">التعاون وفهم مشكلة العمل، تحديد النطاق،
+                                        ووضع الأهداف.</p>
+                                </div>
+                            </div>
+                            <!-- ================================= -->
+                            <!-- END: تعديل الخطوة 1 -->
+                            <!-- ================================= -->
+
+                            <div class="step-card" id="step-2" style="order: 2;">
+                                <div class="step-number">02</div>
+                                <div class="flex flex-col items-center text-center">
+                                    <!-- أيقونة: جمع وتنظيف البيانات (تصميم موحد) -->
+                                    <svg class="step-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" stroke="currentColor" stroke-width="2.5">
+                                        <!-- دائرة خلفية -->
+                                        <circle cx="50" cy="50" r="35" fill="currentColor" fill-opacity="0.2" />
+
+                                        <!-- قمع التصفية -->
+                                        <!-- الجزء العلوي (واسع) -->
+                                        <path d="M 35 35 L 65 35 L 55 50 L 45 50 Z" stroke-width="2.5"
+                                            fill="currentColor" fill-opacity="0.3" />
+
+                                        <!-- الجزء السفلي (ضيق) -->
+                                        <path d="M 45 50 L 45 65 L 55 65 L 55 50" stroke-width="2.5" fill="currentColor"
+                                            fill-opacity="0.3" />
+
+                                        <!-- نقاط تمثل البيانات تدخل من الأعلى -->
+                                        <circle cx="40" cy="30" r="2" fill="currentColor" />
+                                        <circle cx="50" cy="28" r="2" fill="currentColor" />
+                                        <circle cx="60" cy="30" r="2" fill="currentColor" />
+
+                                        <!-- قطرات تمثل البيانات النظيفة تخرج من الأسفل -->
+                                        <circle cx="50" cy="68" r="2.5" fill="currentColor" />
+                                    </svg>
+                                    <p class="step-text font-medium text-sm">جمع البيانات وتنظيفها وهيكلتها لإجراء تحليل
+                                        قوي ورؤى ذات معنى.</p>
+                                </div>
+                            </div>
+
+                            <div class="step-card" id="step-3" style="order: 3;">
+                                <div class="step-number">03</div>
+                                <div class="flex flex-col items-center text-center">
+                                    <!-- أيقونة: استكشاف وتحليل البيانات (تصميم موحد) -->
+                                    <svg class="step-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" stroke="currentColor" stroke-width="2.5">
+                                        <!-- دائرة خلفية -->
+                                        <circle cx="50" cy="50" r="35" fill="currentColor" fill-opacity="0.2" />
+
+                                        <!-- عدسة مكبرة -->
+                                        <circle cx="45" cy="45" r="15" stroke-width="3" />
+
+                                        <!-- مقبض العدسة -->
+                                        <path d="M 56 56 L 68 68" stroke-width="3.5" stroke-linecap="round" />
+
+                                        <!-- رسم بياني داخل العدسة -->
+                                        <!-- أعمدة صغيرة -->
+                                        <path d="M 38 48 L 38 42" stroke-width="2.5" stroke-linecap="round" />
+                                        <path d="M 42 48 L 42 38" stroke-width="2.5" stroke-linecap="round" />
+                                        <path d="M 46 48 L 46 40" stroke-width="2.5" stroke-linecap="round" />
+                                        <path d="M 50 48 L 50 36" stroke-width="2.5" stroke-linecap="round" />
+                                    </svg>
+                                    <p class="step-text font-medium text-sm">استكشاف البيانات وتحليلها وإعدادها لهندسة
+                                        الميزات (feature engineering)، لتعزيز الرؤى وأداء النموذج.</p>
+                                </div>
+                            </div>
+
+                            <!-- الصف الثاني: 6 <- 5 <- 4 (الترتيب معكوس في العرض) -->
+                            <div class="step-card" id="step-6" style="order: 6;">
+                                <div class="step-number">06</div>
+                                <div class="flex flex-col items-center text-center">
+                                    <!-- أيقونة: النشر في الإنتاج (تصميم موحد) -->
+                                    <svg class="step-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" stroke="currentColor" stroke-width="2.5">
+                                        <!-- دائرة خلفية -->
+                                        <circle cx="50" cy="50" r="35" fill="currentColor" fill-opacity="0.2" />
+
+                                        <!-- سحابة (Cloud/Production Environment) -->
+                                        <path
+                                            d="M 35 45 Q 35 38 42 38 Q 42 32 50 32 Q 58 32 58 38 Q 65 38 65 45 Q 65 52 58 52 L 42 52 Q 35 52 35 45 Z"
+                                            stroke-width="2.5" fill="currentColor" fill-opacity="0.3" />
+
+                                        <!-- سهم للأعلى (النشر/Deploy) -->
+                                        <path d="M 50 70 L 50 55" stroke-width="3.5" stroke-linecap="round" />
+                                        <path d="M 50 55 L 45 60" stroke-width="3.5" stroke-linecap="round" />
+                                        <path d="M 50 55 L 55 60" stroke-width="3.5" stroke-linecap="round" />
+                                    </svg>
+                                    <p class="step-text font-medium text-sm">نشر النماذج في بيئة الإنتاج للحصول على رؤى
+                                        في الوقت الفعلي، وتعزيز اتخاذ القرار والكفاءة التشغيلية.</p>
+                                </div>
+                            </div>
+
+                            <div class="step-card" id="step-5" style="order: 5;">
+                                <div class="step-number">05</div>
+                                <div class="flex flex-col items-center text-center">
+                                    <!-- أيقونة: تقييم وتخفيف التحيز (تصميم موحد) -->
+                                    <svg class="step-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" stroke="currentColor" stroke-width="2.5">
+                                        <!-- دائرة خلفية -->
+                                        <circle cx="50" cy="50" r="35" fill="currentColor" fill-opacity="0.2" />
+
+                                        <!-- ميزان العدالة -->
+                                        <!-- القاعدة -->
+                                        <path d="M 35 65 L 65 65" stroke-width="3" stroke-linecap="round" />
+                                        <!-- العمود -->
+                                        <path d="M 50 65 L 50 38" stroke-width="3" stroke-linecap="round" />
+
+                                        <!-- العارضة الأفقية -->
+                                        <path d="M 32 38 L 68 38" stroke-width="2.5" stroke-linecap="round" />
+
+                                        <!-- الكفة اليمنى -->
+                                        <path d="M 60 45 L 68 45" stroke-width="2.5" stroke-linecap="round" />
+                                        <path d="M 64 45 L 64 38" stroke-width="2" stroke-linecap="round" />
+
+                                        <!-- الكفة اليسرى -->
+                                        <path d="M 32 45 L 40 45" stroke-width="2.5" stroke-linecap="round" />
+                                        <path d="M 36 45 L 36 38" stroke-width="2" stroke-linecap="round" />
+
+                                        <!-- علامة صح على الكفة اليمنى -->
+                                        <path d="M 62 48 L 64 50 L 68 46" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                    <p class="step-text font-medium text-sm">تقييم وتخفيف التحيز (bias) والأخطاء لضمان
+                                        تنبؤات دقيقة وموثوقة لنموذج تعلم الآلة.</p>
+                                </div>
+                            </div>
+
+                            <div class="step-card" id="step-4" style="order: 4;">
+                                <div class="step-number">04</div>
+                                <div class="flex flex-col items-center text-center">
+                                    <!-- أيقونة: بناء وتدريب النماذج (تصميم موحد) -->
+                                    <svg class="step-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" stroke="currentColor" stroke-width="2.5">
+                                        <!-- دائرة خلفية -->
+                                        <circle cx="50" cy="50" r="35" fill="currentColor" fill-opacity="0.2" />
+
+                                        <!-- شبكة عصبية مبسطة -->
+                                        <!-- الطبقة اليمنى (المدخلات) -->
+                                        <circle cx="61" cy="40" r="3" fill="currentColor" />
+                                        <circle cx="61" cy="50" r="3" fill="currentColor" />
+                                        <circle cx="61" cy="60" r="3" fill="currentColor" />
+
+                                        <!-- الطبقة الوسطى (المخفية) -->
+                                        <circle cx="49" cy="45" r="3" fill="currentColor" />
+                                        <circle cx="49" cy="55" r="3" fill="currentColor" />
+
+                                        <!-- الطبقة اليسرى (المخرجات) -->
+                                        <circle cx="37" cy="50" r="3" fill="currentColor" />
+
+                                        <!-- الخطوط الموصلة -->
+                                        <path d="M 58 40 L 54 45" stroke-width="1.5" opacity="0.6" />
+                                        <path d="M 58 40 L 54 55" stroke-width="1.5" opacity="0.6" />
+                                        <path d="M 58 50 L 54 45" stroke-width="1.5" opacity="0.6" />
+                                        <path d="M 58 50 L 54 55" stroke-width="1.5" opacity="0.6" />
+                                        <path d="M 58 60 L 54 45" stroke-width="1.5" opacity="0.6" />
+                                        <path d="M 58 60 L 54 55" stroke-width="1.5" opacity="0.6" />
+
+                                        <path d="M 46 45 L 42 50" stroke-width="1.5" opacity="0.6" />
+                                        <path d="M 46 55 L 42 50" stroke-width="1.5" opacity="0.6" />
+                                    </svg>
+                                    <p class="step-text font-medium text-sm">بناء وتدريب نماذج تعلم الآلة للحصول على رؤى
+                                        قابلة للتنفيذ، وتعزيز اتخاذ القرار من خلال الأدلة المستندة إلى البيانات.</p>
+                                </div>
+                            </div>
+
+                            <!-- الصف الثالث: 7 -> 8 -> 9 -->
+                            <div class="step-card" id="step-7" style="order: 7;">
+                                <div class="step-number">07</div>
+                                <div class="flex flex-col items-center text-center">
+                                    <!-- أيقونة: المراقبة والكشف (تصميم موحد) -->
+                                    <svg class="step-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" stroke="currentColor" stroke-width="2.5">
+                                        <!-- دائرة خلفية -->
+                                        <circle cx="50" cy="50" r="35" fill="currentColor" fill-opacity="0.2" />
+
+                                        <!-- شاشة المراقبة (مستطيل) -->
+                                        <rect x="30" y="35" width="40" height="30" rx="2" stroke-width="3" />
+
+                                        <!-- خط نبض القلب داخل الشاشة -->
+                                        <path
+                                            d="M 35 50 L 40 50 L 43 45 L 47 55 L 50 50 L 53 50 L 56 45 L 60 55 L 65 50"
+                                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+
+                                        <!-- قاعدة الشاشة -->
+                                        <path d="M 45 65 L 55 65" stroke-width="3" stroke-linecap="round" />
+                                        <path d="M 50 65 L 50 68" stroke-width="3" stroke-linecap="round" />
+                                    </svg>
+                                    <p class="step-text font-medium text-sm">مراقبة النماذج بعد النشر للكشف عن الحالات
+                                        الشاذة (anomalies) والتحيز والدقة لضمان عمليات أخلاقية ومتسقة وفعالة.</p>
+                                </div>
+                            </div>
+
+                            <div class="step-card" id="step-8" style="order: 8;">
+                                <div class="step-number">08</div>
+                                <div class="flex flex-col items-center text-center">
+                                    <!-- أيقونة: التحسين التكراري (تصميم موحد) -->
+                                    <svg class="step-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" stroke="currentColor" stroke-width="2.5">
+                                        <!-- دائرة خلفية -->
+                                        <circle cx="50" cy="50" r="35" fill="currentColor" fill-opacity="0.2" />
+
+                                        <!-- الدائرة الخارجية -->
+                                        <circle cx="50" cy="50" r="25" stroke-width="3" />
+
+                                        <!-- سهم للأعلى (في المنتصف) -->
+                                        <path d="M 50 60 L 50 40" stroke-width="3.5" stroke-linecap="round" />
+                                        <path d="M 50 40 L 45 45" stroke-width="3.5" stroke-linecap="round" />
+                                        <path d="M 50 40 L 55 45" stroke-width="3.5" stroke-linecap="round" />
+
+                                        <!-- سهم دائري أيسر -->
+                                        <path d="M 35 35 A 15 15 0 0 1 50 25" stroke-width="3" stroke-linecap="round" />
+                                        <path d="M 35 35 L 32 40" stroke-width="3" stroke-linecap="round" />
+                                        <path d="M 35 35 L 40 37" stroke-width="3" stroke-linecap="round" />
+
+                                        <!-- سهم دائري أيمن -->
+                                        <path d="M 65 35 A 15 15 0 0 0 50 25" stroke-width="3" stroke-linecap="round" />
+                                        <path d="M 65 35 L 68 40" stroke-width="3" stroke-linecap="round" />
+                                        <path d="M 65 35 L 60 37" stroke-width="3" stroke-linecap="round" />
+                                    </svg>
+                                    <p class="step-text font-medium text-sm">تحسين أداء النموذج بشكل تكراري من خلال
+                                        البيانات والضبط (tuning) والتقييم، لضمان الدقة والقدرة على التكيف.</p>
+                                </div>
+                            </div>
+
+                            <div class="step-card" id="step-9" style="order: 9;">
+                                <div class="step-number">9</div>
+                                <div class="flex flex-col items-center text-center">
+                                    <!-- أيقونة: المواءمة الاستراتيجية (تصميم موحد) -->
+                                    <svg class="step-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" stroke="currentColor" stroke-width="2.5">
+                                        <!-- دائرة خلفية -->
+                                        <circle cx="50" cy="50" r="35" fill="currentColor" fill-opacity="0.2" />
+
+                                        <!-- رمز الهدف (Target) - 3 دوائر متحدة المركز -->
+                                        <circle cx="50" cy="50" r="25" stroke-width="2" />
+                                        <circle cx="50" cy="50" r="17" stroke-width="2" />
+                                        <circle cx="50" cy="50" r="9" stroke-width="2" />
+
+                                        <!-- نقطة المركز -->
+                                        <circle cx="50" cy="50" r="3" fill="currentColor" />
+
+                                        <!-- سهم يشير للهدف (من الأسفل للمركز) -->
+                                        <path d="M 50 75 L 50 58" stroke-width="3" stroke-linecap="round" />
+                                        <path d="M 50 58 L 45 63" stroke-width="3" stroke-linecap="round" />
+                                        <path d="M 50 58 L 55 63" stroke-width="3" stroke-linecap="round" />
+                                    </svg>
+                                    <p class="step-text font-medium text-sm">مواءمة علم البيانات مع الأهداف
+                                        الاستراتيجية، وتحويل الرؤى إلى قرارات مؤثرة لنجاح المنظمة.</p>
+                                </div>
+                            </div>
+
+                        </div> <!-- نهاية الشبكة -->
+
+                    </div>
+                </div>
+
+                <!-- Slide 3: تقييم وتحسين النماذج -->
+                <div class="slide" data-slide="3">
+                    <div class="slide-content">
+                        <h2 class="text-2xl font-bold text-white mb-4"><span class="text-sky-400">3.</span> تقييم وتحسين
+                            النماذج</h2>
+                        <p class="mb-6 text-gray-300">قياس أداء النموذج، تحديد نقاط ضعفه، وتعديل إعداداته لضمان أفضل
+                            أداء وتعميم (Generalization) على البيانات الجديدة.</p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700">
+                                <h3 class="text-xl font-bold text-white mb-4 flex items-center">
+                                    <svg class="w-6 h-6 text-amber-400 mr-2" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                                    </svg>
+                                    <span>منهجيات التقييم</span>
+                                </h3>
+                                <ul class="space-y-3">
+                                    <li class="flex items-start">
+                                        <span
+                                            class="bg-sky-900/50 text-sky-400 text-xs px-2 py-1.5 rounded-full ml-4 inline-flex items-center justify-center min-w-[100px] mt-1">
+                                            <span>Train/Test Split</span>
+                                        </span>
+                                        <span class="text-gray-300">تقسيم البيانات إلى مجموعتي تدريب واختبار (مثال:
+                                            80/20)</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span
+                                            class="bg-sky-900/50 text-sky-400 text-xs px-2 py-1.5 rounded-full ml-4 inline-flex items-center justify-center min-w-[100px] mt-1">
+                                            <span>Cross-Validation</span>
+                                        </span>
+                                        <span class="text-gray-300">التحقق المتقاطع (مثل K-Fold) لتحسين موثوقية
+                                            التقييم</span>
+                                    </li>
+                                </ul>
+
+                                <h3 class="text-xl font-bold text-white mt-6 mb-4 flex items-center">
+                                    <svg class="w-6 h-6 text-emerald-400 mr-2" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                    </svg>
+                                    <span>مقاييس الأداء</span>
+                                </h3>
+                                <div class="grid grid-cols-1 gap-4">
+                                    <div class="bg-gray-700/50 p-3 rounded-lg">
+                                        <h4 class="font-semibold text-amber-300 mb-1">للتصنيف</h4>
+                                        <ul class="text-sm space-y-1 text-gray-300">
+                                            <li>• الدقة (Accuracy): نسبة التوقعات الصحيحة</li>
+                                            <li>• الدقة (Precision) والاستدعاء (Recall): لتحليل الأداء بشكل أدق</li>
+                                            <li>• F1-Score: متوسط توافقي بين الدقة والاستدعاء</li>
+                                            <li>• مصفوفة التشويش (Confusion Matrix)</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-gray-700/50 p-3 rounded-lg">
+                                        <h4 class="font-semibold text-amber-300 mb-1">للانحدار</h4>
+                                        <ul class="text-sm space-y-1 text-gray-300">
+                                            <li>• متوسط الخطأ المطلق (MAE)</li>
+                                            <li>• جذر متوسط مربع الخطأ (RMSE)</li>
+                                            <li>• R²: نسبة التباين المفسرة</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700">
+                                <h3 class="text-xl font-bold text-white mb-4 flex items-center">
+                                    <svg class="w-6 h-6 text-purple-400 mr-2" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                    </svg>
+                                    <span>تحسين النماذج</span>
+                                </h3>
+
+                                <div class="mb-6">
+                                    <h4 class="font-semibold text-emerald-300 mb-2">ضبط المعلمات (Hyperparameter Tuning)
+                                    </h4>
+                                    <ul class="space-y-2 text-sm text-gray-300">
+                                        <li class="flex items-start">
+                                            <span
+                                                class="text-xs bg-gray-700 text-emerald-300 px-2 py-0.5 rounded-full ml-2">Grid
+                                                Search</span>
+                                            <span>البحث الشامل على شبكة من القيم</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <span
+                                                class="text-xs bg-gray-700 text-emerald-300 px-2 py-0.5 rounded-full ml-2">Random
+                                                Search</span>
+                                            <span>عينة عشوائية من قيم المعلمات</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <span
+                                                class="text-xs bg-gray-700 text-emerald-300 px-2 py-0.5 rounded-full ml-2">Bayesian
+                                                Optimization</span>
+                                            <span>تحسين استدلالي للمعلمات</span>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="illustration-box h-48">
+                                    <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+                                        <title>مشكلة التحيز والتباين (Bias-Variance Tradeoff)</title>
+
+                                        <!-- الشبكة الخلفية -->
+                                        <defs>
+                                            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                                                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#374151"
+                                                    stroke-width="0.5" opacity="0.3" />
+                                            </pattern>
+                                        </defs>
+                                        <rect width="400" height="200" fill="url(#grid)" />
+
+                                        <!-- المحور السيني والصادي -->
+                                        <line x1="40" y1="160" x2="380" y2="160" stroke="#6b7280" stroke-width="2" />
+                                        <line x1="40" y1="20" x2="40" y2="160" stroke="#6b7280" stroke-width="2" />
+
+                                        <!-- سهم المحور السيني -->
+                                        <polygon points="380,160 375,157 375,163" fill="#6b7280" />
+                                        <!-- سهم المحور الصادي -->
+                                        <polygon points="40,20 37,25 43,25" fill="#6b7280" />
+
+                                        <!-- تسميات المحاور -->
+                                        <text x="250" y="190" fill="#9ca3af" font-size="12" font-weight="600">تعقيد
+                                            النموذج</text>
+                                        <text x="25" y="15" fill="#9ca3af" font-size="12" font-weight="600"
+                                            text-anchor="end">الخطأ</text>
+
+                                        <!-- البيانات الحقيقية (منحنى متموج واقعي) -->
+                                        <path d="M 40 120 Q 80 60, 120 90 T 200 100 T 280 85 T 360 110" stroke="#3b82f6"
+                                            stroke-width="2.5" fill="none" stroke-dasharray="6,4" opacity="0.9" />
+
+                                        <!-- Underfitting (خط مستقيم بسيط) -->
+                                        <path d="M 40 130 L 360 110" stroke="#ef4444" stroke-width="3" fill="none"
+                                            opacity="0.85" />
+
+                                        <!-- Good Fit (يتبع البيانات بشكل جيد) -->
+                                        <path d="M 40 120 Q 80 65, 120 92 T 200 102 T 280 87 T 360 112" stroke="#10b981"
+                                            stroke-width="3" fill="none" opacity="0.85" />
+
+                                        <!-- Overfitting (منحنى معقد جداً) -->
+                                        <path
+                                            d="M 40 125 Q 55 50, 70 115 T 100 130 Q 115 60, 130 105 T 160 125 Q 175 55, 190 100 T 220 120 Q 235 65, 250 95 T 280 115 Q 295 70, 310 100 T 340 125 Q 355 80, 360 140"
+                                            stroke="#f59e0b" stroke-width="3" fill="none" opacity="0.85" />
+
+                                        <!-- Labels مع خلفيات -->
+                                        <!-- High Bias -->
+                                        <rect x="330" y="-20" width="75" height="23" fill="rgba(239, 68, 68, 0.2)" rx="3"
+                                            opacity="0.9" />
+                                        <text x="365" y="-5" fill="#ef4444" font-size="13" font-weight="600"
+                                            text-anchor="middle">تحيز عالي</text>
+
+                                        <!-- Good Fit -->
+                                        <rect x="330" y="10" width="75" height="23" fill="rgba(16, 185, 129, 0.2)"
+                                            rx="3" opacity="0.9" />
+                                        <text x="365" y="24" fill="#10b981" font-size="12" font-weight="600"
+                                            text-anchor="middle">ملاءمة جيدة</text>
+
+                                        <!-- High Variance -->
+                                        <rect x="330" y="-50" width="80" height="23" fill="rgba(245, 158, 11, 0.2)"
+                                            rx="3" opacity="0.9" />
+                                        <text x="365" y="-33" fill="#f59e0b" font-size="13" font-weight="600"
+                                            text-anchor="middle">تباين عالي</text>
+
+                                        <!-- Legend -->
+                                        <g transform="translate(45, 30)">
+                                            <rect x="285" y="10" width="70" height="23" fill="rgba(59, 130, 246, 0.2)" rx="3" opacity="0.9" />
+                                            <rect x="360" y="10" width="2" height="2" fill="#1f2937" rx="4" opacity="0.85" />
+                                            <text x="320" y="23" fill="#3b82f6" font-size="9" font-weight="600" text-anchor="middle">البيانات الحقيقية</text>
+                                        </g>
+                                    </svg>
+                                </div>
+
+                                <div class="mt-4 text-sm text-gray-400">
+                                    <p class="font-medium">الهدف: تحقيق التوازن الأمثل بين التحيز (Bias) والتباين
+                                        (Variance) للحصول على أفضل تعميم للنموذج</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Slide 4: التعلم العميق -->
-            <div class="slide" data-slide="4">
-                <div class="slide-content">
-                    <h2 class="text-2xl font-bold text-white mb-4"><span class="text-sky-400">4.</span> التعلم العميق (Deep Learning)</h2>
-                    <p class="mb-4 text-gray-400">مجموعة فرعية من التعلم الآلي تستخدم "شبكات عصبية اصطناعية عميقة" (طبقات متعددة) لمعالجة الأنماط المعقدة.</p>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="bg-gray-700 p-4 rounded-lg">
-                            <h3 class="text-lg font-semibold text-white mb-2">الشبكات التلافيفية (CNN)</h3>
-                            <p class="text-sm text-gray-300">مصممة لمعالجة "الصور" والفيديو.<br>التطبيقات: التعرف على الصور، الفيديو.</p>
+                <!-- Slide 4: التعلم العميق -->
+                <div class="slide" data-slide="4">
+                    <div class="slide-content">
+                        <h2 class="text-2xl font-bold text-white mb-4"><span class="text-sky-400">4.</span>
+                            التعلم العميق (Deep Learning)</h2>
+                        <p class="mb-6 text-gray-400">تعلّم عميق يُمكّن الحواسيب من التعلم مباشرة من البيانات الخام باستخدام شبكات عصبية متعددة الطبقات.</p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                            <!-- Card 1 -->
+                            <div class="bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700 hover:border-sky-500 transition-all duration-300">
+                                <div class="w-12 h-12 bg-sky-900/50 rounded-lg flex items-center justify-center mb-4">
+                                    <svg class="w-6 h-6 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5z"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-lg font-semibold text-white mb-3">الشبكات التلافيفية (CNN)</h3>
+                                <ul class="space-y-2 text-sm text-gray-300">
+                                    <li class="flex items-start">
+                                        <span class="text-sky-400 mr-2">•</span>
+                                        <span>مصممة خصيصاً لمعالجة البيانات ثنائية الأبعاد</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-sky-400 mr-2">•</span>
+                                        <span>تستخدم المرشحات (Filters) للكشف عن الميزات</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-sky-400 mr-2">•</span>
+                                        <span>تطبيقات: التعرف على الصور، الفيديو، الرعاية الصحية</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Card 2 -->
+                            <div class="bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700 hover:border-pink-500 transition-all duration-300">
+                                <div class="w-12 h-12 bg-pink-900/50 rounded-lg flex items-center justify-center mb-4">
+                                    <svg class="w-6 h-6 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-lg font-semibold text-white mb-3">الشبكات المتكررة (RNN)</h3>
+                                <ul class="space-y-2 text-sm text-gray-300">
+                                    <li class="flex items-start">
+                                        <span class="text-pink-400 mr-2">•</span>
+                                        <span>مصممة لمعالجة البيانات المتسلسلة</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-pink-400 mr-2">•</span>
+                                        <span>تحتفظ بذاكرة للحالات السابقة</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-pink-400 mr-2">•</span>
+                                        <span>تطبيقات: الترجمة الآلية، تحليل المشاعر، التعرف على الكلام</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Card 3 -->
+                            <div class="bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700 hover:border-amber-500 transition-all duration-300">
+                                <div class="w-12 h-12 bg-amber-900/50 rounded-lg flex items-center justify-center mb-4">
+                                    <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-lg font-semibold text-white mb-3">المحولات (Transformers)</h3>
+                                <ul class="space-y-2 text-sm text-gray-300">
+                                    <li class="flex items-start">
+                                        <span class="text-amber-400 mr-2">•</span>
+                                        <span>تعتمد على آلية الانتباه (Attention)</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-amber-400 mr-2">•</span>
+                                        <span>تتعامل مع المدخلات بشكل متوازٍ</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-amber-400 mr-2">•</span>
+                                        <span>تطبيقات: النماذج اللغوية (ChatGPT، BERT)، الترجمة الآلية</span>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
-                        <div class="bg-gray-700 p-4 rounded-lg">
-                            <h3 class="text-lg font-semibold text-white mb-2">الشبكات المتكررة (RNN)</h3>
-                            <p class="text-sm text-gray-300">مصممة للبيانات "المتسلسلة" كالنصوص.<br>التطبيقات: الترجمة، تحليل المشاعر.</p>
+
+                        <!-- Key Concepts Section -->
+                        <div class="bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700 mb-8">
+                            <h3 class="text-xl font-semibold text-white mb-4">المفاهيم الأساسية في التعلم العميق</h3>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Left Column -->
+                                <div>
+                                    <div class="mb-6">
+                                        <h4 class="text-sky-400 font-medium mb-2">التعلم تحت الإشراف</h4>
+                                        <p class="text-sm text-gray-300">تدريب النماذج على بيانات مُصنّفة مسبقاً للتنبؤ بالمخرجات</p>
+                                        <div class="mt-2 text-xs text-gray-500">مثال: تصنيف الصور، التعرف على الكلام</div>
+                                    </div>
+                                    
+                                    <div class="mb-6">
+                                        <h4 class="text-pink-400 font-medium mb-2">التعلم غير الموجّه</h4>
+                                        <p class="text-sm text-gray-300">اكتشاف أنماط وهياكل في البيانات غير المصنفة</p>
+                                        <div class="mt-2 text-xs text-gray-500">مثال: تجميع العملاء، تقليل الأبعاد</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Right Column -->
+                                <div>
+                                    <div class="mb-6">
+                                        <h4 class="text-amber-400 font-medium mb-2">التعزيزي</h4>
+                                        <p class="text-sm text-gray-300">يتعلم النموذج من خلال التفاعل مع البيئة</p>
+                                        <div class="mt-2 text-xs text-gray-500">مثال: ألعاب الفيديو، الروبوتات</div>
+                                    </div>
+                                    
+                                    <div>
+                                        <h4 class="text-emerald-400 font-medium mb-2">نقل التعلم</h4>
+                                        <p class="text-sm text-gray-300">استخدام نماذج مدربة مسبقاً لحل مهام جديدة</p>
+                                        <div class="mt-2 text-xs text-gray-500">مثال: ضبط النماذج الجاهزة لمهام محددة</div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="bg-gray-700 p-4 rounded-lg">
-                            <h3 class="text-lg font-semibold text-white mb-2">المحولات (Transformers)</h3>
-                            <p class="text-sm text-gray-300">تعتمد على "الانتباه" (Attention).<br>التطبيقات: النماذج اللغوية (ChatGPT).</p>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-6 bg-gray-700 p-4 rounded-lg">
-                        <h3 class="text-lg font-semibold text-white mb-3">مثال على شبكة عصبية بسيطة</h3>
-                        <div class="flex justify-center">
-                            <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" class="w-full max-w-lg">
-                                <!-- Input Layer -->
-                                <circle cx="50" cy="50" r="10" fill="#a5f3fc"/>
-                                <circle cx="50" cy="100" r="10" fill="#a5f3fc"/>
-                                <text x="20" cy="50" fill="white" font-size="10" text-anchor="middle">Input</text>
-                                
-                                <!-- Hidden Layer 1 -->
-                                <circle cx="150" cy="30" r="10" fill="#67e8f9"/>
-                                <circle cx="150" cy="80" r="10" fill="#67e8f9"/>
-                                <circle cx="150" cy="130" r="10" fill="#67e8f9"/>
-                                <text x="150" cy="170" fill="white" font-size="10" text-anchor="middle">Hidden Layer</text>
-                                
-                                <!-- Output Layer -->
-                                <circle cx="250" cy="75" r="10" fill="#22d3ee"/>
-                                <circle cx="250" cy="125" r="10" fill="#22d3ee"/>
-                                <text x="300" cy="100" fill="white" font-size="10" text-anchor="middle">Output</text>
-                                
-                                <!-- Connections -->
-                                <line x1="60" y1="50" x2="140" y2="30" stroke="#4b5563" stroke-width="1"/>
-                                <line x1="60" y1="50" x2="140" y2="80" stroke="#4b5563" stroke-width="1"/>
-                                <line x1="60" y1="50" x2="140" y2="130" stroke="#4b5563" stroke-width="1"/>
-                                <line x1="60" y1="100" x2="140" y2="30" stroke="#4b5563" stroke-width="1"/>
-                                <line x1="60" y1="100" x2="140" y2="80" stroke="#4b5563" stroke-width="1"/>
-                                <line x1="60" y1="100" x2="140" y2="130" stroke="#4b5563" stroke-width="1"/>
-                                
-                                <line x1="160" y1="30" x2="240" y2="75" stroke="#4b5563" stroke-width="1"/>
-                                <line x1="160" y1="30" x2="240" y2="125" stroke="#4b5563" stroke-width="1"/>
-                                <line x1="160" y1="80" x2="240" y2="75" stroke="#4b5563" stroke-width="1"/>
-                                <line x1="160" y1="80" x2="240" y2="125" stroke="#4b5563" stroke-width="1"/>
-                                <line x1="160" y1="130" x2="240" y2="75" stroke="#4b5563" stroke-width="1"/>
-                                <line x1="160" y1="130" x2="240" y2="125" stroke="#4b5563" stroke-width="1"/>
-                            </svg>
+
+                        <!-- Applications Section -->
+                        <div class="bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700">
+                            <h3 class="text-xl font-semibold text-white mb-4">تطبيقات عملية للتعلم العميق</h3>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <div class="bg-gray-700/50 p-4 rounded-lg">
+                                    <h4 class="text-sky-400 font-medium">الرعاية الصحية</h4>
+                                    <p class="text-xs text-gray-300 mt-1">تشخيص الأمراض، اكتشاف الأورام، اكتشاف الأدوية</p>
+                                </div>
+                                <div class="bg-gray-700/50 p-4 rounded-lg">
+                                    <h4 class="text-pink-400 font-medium">السيارات الذاتية</h4>
+                                    <p class="text-xs text-gray-300 mt-1">الملاحة، تجنب العوائق، التعرف على الإشارات</p>
+                                </div>
+                                <div class="bg-gray-700/50 p-4 rounded-lg">
+                                    <h4 class="text-amber-400 font-medium">المساعدات الصوتية</h4>
+                                    <p class="text-xs text-gray-300 mt-1">Siri، Google Assistant، Alexa</p>
+                                </div>
+                                <div class="bg-gray-700/50 p-4 rounded-lg">
+                                    <h4 class="text-emerald-400 font-medium">التجارة الإلكترونية</h4>
+                                    <p class="text-xs text-gray-300 mt-1">أنظمة التوصية، تحليل المشاعر، الكشف عن الاحتيال</p>
+                                </div>
+                                <div class="bg-gray-700/50 p-4 rounded-lg">
+                                    <h4 class="text-purple-400 font-medium">التمويل</h4>
+                                    <p class="text-xs text-gray-300 mt-1">تداول الخوارزميات، تقييم المخاطر، الكشف عن المعاملات المشبوهة</p>
+                                </div>
+                                <div class="bg-gray-700/50 p-4 rounded-lg">
+                                    <h4 class="text-red-400 font-medium">التصنيع</h4>
+                                    <p class="text-xs text-gray-300 mt-1">الصيانة التنبؤية، مراقبة الجودة، تحسين سلسلة التوريد</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Slide 5: مصادر ومراجع -->
-            <div class="slide" data-slide="5">
-                <div class="slide-content">
-                    <h2 class="text-2xl font-bold text-white mb-4"><span class="text-sky-400">5.</span> 📚 مصادر للمزيد من القراءة</h2>
-                    <p class="mb-4 text-gray-400">هذه المصادر ستساعدك على بناء أساس نظري وتطبيقي قوي في هذا المجال:</p>
-                    
-                    <div class="space-y-4">
-                        <div class="bg-gray-700 p-4 rounded-lg">
-                            <h4 class="font-semibold text-white">المنصات التعليمية (ابدأ بها)</h4>
-                            <p class="text-sm text-gray-300"><b>المصدر:</b> Coursera / edX (مثل "Machine Learning Specialization" لـ Andrew Ng).</p>
-                            <p class="text-sm text-gray-300"><b>القيمة:</b> توفر أساساً رياضياً وبرمجياً قوياً.</p>
-                        </div>
-                        <div class="bg-gray-700 p-4 rounded-lg">
-                            <h4 class="font-semibold text-white">الكتب التطبيقية (لفهم "كيف" تبني)</h4>
-                            <p class="text-sm text-gray-300"><b>المصدر:</b> "Hands-On Machine Learning with Scikit-Learn, Keras, & TensorFlow".</p>
-                            <p class="text-sm text-gray-300"><b>القيمة:</b> يركز على الجانب العملي وبناء النماذج خطوة بخطوة بأدوات بايثون.</p>
-                        </div>
-                        <div class="bg-gray-700 p-4 rounded-lg">
-                            <h4 class="font-semibold text-white">منصات التحديات (لتطبيق ما تعلمت)</h4>
-                            <p class="text-sm text-gray-300"><b>المصدر:</b> Kaggle.</p>
-                            <p class="text-sm text-gray-300"><b>القيمة:</b> تتيح لك العمل على بيانات حقيقية والمشاركة في مسابقات لتحسين مهاراتك.</p>
-                        </div>
-                        <div class="bg-gray-700 p-4 rounded-lg">
-                            <h4 class="font-semibold text-white">التوثيق الرسمي (للاحتراف)</h4>
-                            <p class="text-sm text-gray-300"><b>المصدر:</b> توثيق Keras / PyTorch / TensorFlow.</p>
-                            <p class="text-sm text-gray-300"><b>القيمة:</b> يزودك بأحدث الخوارزميات وكيفية تنفيذها بكفاءة.</p>
+                <!-- Slide 5: مصادر تعليمية -->
+                <div class="slide" data-slide="5">
+                    <div class="slide-content">
+                        <h2 class="text-2xl font-bold text-white mb-4"><span class="text-sky-400">5.</span> 📚 مصادر تعليمية شاملة</h2>
+                        <p class="mb-6 text-gray-400">مجموعة مختارة من أفضل المصادر لبناء مسارك في علوم البيانات</p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Column 1: Courses & Books -->
+                            <div class="space-y-6">
+                                <!-- Online Courses -->
+                                <div class="bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700 hover:border-sky-500 transition-all duration-300">
+                                    <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                                        <span class="text-sky-400 mr-2">🎓</span> دورات تعليمية
+                                    </h3>
+                                    <ul class="space-y-4">
+                                        <li>
+                                            <a href="https://www.coursera.org/learn/machine-learning" target="_blank" class="text-sky-400 hover:text-sky-300 font-medium block">Machine Learning - Andrew Ng</a>
+                                            <p class="text-sm text-gray-300 mt-1">أشهر دورة في تعلم الآلة من جامعة ستانفورد</p>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.coursera.org/specializations/data-science" target="_blank" class="text-sky-400 hover:text-sky-300 font-medium block">Data Science Specialization</a>
+                                            <p class="text-sm text-gray-300 mt-1">تخصص متكامل في علوم البيانات من جامعة جونز هوبكنز</p>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.udacity.com/course/data-analyst-nanodegree--nd002" target="_blank" class="text-sky-400 hover:text-sky-300 font-medium block">Data Analyst Nanodegree</a>
+                                            <p class="text-sm text-gray-300 mt-1">برنامج شامل لتحليل البيانات من Udacity</p>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- Books -->
+                                <div class="bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700 hover:border-pink-500 transition-all duration-300">
+                                    <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                                        <span class="text-pink-400 mr-2">📚</span> كتب أساسية
+                                    </h3>
+                                    <ul class="space-y-4">
+                                        <li>
+                                            <a href="https://www.amazon.com/Data-Science-Business-Data-Analytic-Thinking/dp/1449361323" target="_blank" class="text-pink-400 hover:text-pink-300 font-medium block">Data Science for Business</a>
+                                            <p class="text-sm text-gray-300 mt-1">فهم الجانب الاستراتيجي لعلوم البيانات</p>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.amazon.com/Python-Data-Analysis-Wrangling-IPython/dp/1491957662" target="_blank" class="text-pink-400 hover:text-pink-300 font-medium block">Python for Data Analysis</a>
+                                            <p class="text-sm text-gray-300 mt-1">دليل عملي لتحليل البيانات باستخدام Python</p>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.amazon.com/Storytelling-Data-Visualization-Business-Professionals/dp/1119002257" target="_blank" class="text-pink-400 hover:text-pink-300 font-medium block">Storytelling with Data</a>
+                                            <p class="text-sm text-gray-300 mt-1">فن عرض البيانات بشكل مؤثر</p>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Column 2: Practice & Documentation -->
+                            <div class="space-y-6">
+                                <!-- Practice Platforms -->
+                                <div class="bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700 hover:border-amber-500 transition-all duration-300">
+                                    <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                                        <span class="text-amber-400 mr-2">💻</span> منصات التطبيق العملي
+                                    </h3>
+                                    <ul class="space-y-4">
+                                        <li>
+                                            <a href="https://www.kaggle.com/" target="_blank" class="text-amber-400 hover:text-amber-300 font-medium block">Kaggle</a>
+                                            <p class="text-sm text-gray-300 mt-1">منصة للمسابقات ومجموعات البيانات المتنوعة</p>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.datacamp.com/" target="_blank" class="text-amber-400 hover:text-amber-300 font-medium block">DataCamp</a>
+                                            <p class="text-sm text-gray-300 mt-1">دروس تفاعلية في علوم البيانات</p>
+                                        </li>
+                                        <li>
+                                            <a href="https://colab.research.google.com/" target="_blank" class="text-amber-400 hover:text-amber-300 font-medium block">Google Colab</a>
+                                            <p class="text-sm text-gray-300 mt-1">منصة مجانية لتشغيل أكواد بايثون في السحابة</p>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- Documentation & Communities -->
+                                <div class="bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700 hover:border-emerald-500 transition-all duration-300">
+                                    <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                                        <span class="text-emerald-400 mr-2">🌐</span> مجتمعات وموارد
+                                    </h3>
+                                    <ul class="space-y-4">
+                                        <li>
+                                            <a href="https://towardsdatascience.com/" target="_blank" class="text-emerald-400 hover:text-emerald-300 font-medium block">Towards Data Science</a>
+                                            <p class="text-sm text-gray-300 mt-1">مقالات تعليمية متقدمة في علوم البيانات</p>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.kdnuggets.com/" target="_blank" class="text-emerald-400 hover:text-emerald-300 font-medium block">KDnuggets</a>
+                                            <p class="text-sm text-gray-300 mt-1">أخبار وموارد في تعلم الآلة وعلوم البيانات</p>
+                                        </li>
+                                        <li>
+                                            <a href="https://github.com/" target="_blank" class="text-emerald-400 hover:text-emerald-300 font-medium block">GitHub</a>
+                                            <p class="text-sm text-gray-300 mt-1">منصة للمشاريع المفتوحة المصدر والتعاون</p>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Slide 6: علم البيانات في المملكة العربية السعودية (New Section) -->
-            <div class="slide" data-slide="6">
-                <div class="slide-content">
-                    <h2 class="text-2xl font-bold text-white mb-4"><span class="text-sky-400">6.</span> 🇸🇦 من النفط إلى البيانات: رحلة المملكة نحو اقتصاد معرفي</h2>
-                    
-                    <div class="space-y-4">
-                        <div class="bg-gray-700 p-4 rounded-lg">
-                            <h3 class="text-lg font-semibold text-white mb-2">اقتصاد متحوّل عبر رؤية السعودية 2030</h3>
-                            <p class="text-gray-300 text-sm">المملكة وضعت هدفًا واضحًا: التنويع الاقتصادي، والابتعاد عن الاعتماد الكلي على النفط. هذا يعني أن البيانات والتحليلات تصبح “النفط الجديد”. فعلى سبيل المثال، القطاع الحكومي وقطاع الخدمات ينتقلان نحو اتخاذ القرارات استنادًا إلى البيانات.</p>
-                        </div>
-                        <div class="bg-gray-700 p-4 rounded-lg">
-                            <h3 class="text-lg font-semibold text-white mb-2">الأسواق في نمو هائل</h3>
-                            <ul class="list-disc pr-4 space-y-1 text-gray-300">
-                                <li>سوق البيانات الضخمة في السعودية كان حوالي 3.58 مليار دولار في 2024، ومن المتوقّع أن يصل إلى 12.24 مليار دولار بحلول عام 2030.</li>
-                                <li>مجال منصّات علم البيانات قد يصل إلى 50 مليار دولار بحلول عام 2033.</li>
-                                <li>هذا النموّ يعني فرصًا هائلة—أكثر شركات تحتاج متخصصين، أكثر مشاريع تحتاج تحليل بيانات، والمزيد من الابتكار.</li>
-                            </ul>
-                        </div>
-                        <div class="bg-gray-700 p-4 rounded-lg">
-                            <h3 class="text-lg font-semibold text-white mb-2">البنية التحتية والتوعية الرقمية تتسارع</h3>
-                            <p class="text-gray-300 text-sm">السعودية تستثمر في مراكز البيانات، والحوسبة السحابية، والمدن الذكية مثل NEOM، وبدأت بالفعل بإطلاق مشاريع ضخمة.</p>
+
+                <!-- Slide 6: علم البيانات في المملكة العربية السعودية -->
+                <div class="slide" data-slide="6">
+                    <div class="slide-content">
+                        <h2 class="text-2xl font-bold text-white mb-6"><span class="text-sky-400">6.</span> 🇸🇦 من النفط إلى البيانات: رحلة المملكة نحو اقتصاد معرفي</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Card 1 -->
+                            <div class="bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700 hover:border-sky-500 transition-all duration-300">
+                                <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                                    <span class="text-sky-400 mr-2">🏛️</span> اقتصاد متحوّل عبر رؤية 2030
+                                </h3>
+                                <p class="text-gray-300 text-sm leading-relaxed">
+                                    المملكة وضعت هدفًا واضحًا: التنويع الاقتصادي، والابتعاد عن الاعتماد الكلي على النفط. هذا يعني أن البيانات والتحليلات تصبح "النفط الجديد". فعلى سبيل المثال، القطاع الحكومي وقطاع الخدمات ينتقلان نحو اتخاذ القرارات استنادًا إلى البيانات.
+                                </p>
+                            </div>
+
+                            <!-- Card 2 -->
+                            <div class="bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700 hover:border-emerald-500 transition-all duration-300">
+                                <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                                    <span class="text-emerald-400 mr-2">📊</span> الأسواق في نمو هائل
+                                </h3>
+                                <ul class="space-y-3">
+                                    <li class="flex items-start">
+                                        <span class="text-emerald-400 text-xs mt-1 ml-2">•</span>
+                                        <span class="text-gray-300 text-sm">سوق البيانات الضخمة في السعودية كان حوالي 3.58 مليار دولار في 2024، ومن المتوقع أن يصل إلى 12.24 مليار دولار بحلول عام 2030.</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-emerald-400 text-xs mt-1 ml-2">•</span>
+                                        <span class="text-gray-300 text-sm">مجال منصات علم البيانات قد يصل إلى 50 مليار دولار بحلول عام 2033.</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-emerald-400 text-xs mt-1 ml-2">•</span>
+                                        <span class="text-gray-300 text-sm">هذا النمو يعني فرصًا هائلة - المزيد من الشركات تحتاج متخصصين، والمزيد من المشاريع تحتاج إلى تحليل بيانات.</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Card 3 -->
+                            <div class="md:col-span-2 bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700 hover:border-purple-500 transition-all duration-300">
+                                <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                                    <span class="text-purple-400 mr-2">🏗️</span> البنية التحتية والتوعية الرقمية
+                                </h3>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                                    <div class="bg-gray-700/50 p-4 rounded-lg">
+                                        <h4 class="text-sky-400 font-medium text-sm">مراكز البيانات</h4>
+                                        <p class="text-xs text-gray-300 mt-1">استثمارات ضخمة في البنية التحتية للبيانات</p>
+                                    </div>
+                                    <div class="bg-gray-700/50 p-4 rounded-lg">
+                                        <h4 class="text-amber-400 font-medium text-sm">الحوسبة السحابية</h4>
+                                        <p class="text-xs text-gray-300 mt-1">تطوير البنية التحتية السحابية</p>
+                                    </div>
+                                    <div class="bg-gray-700/50 p-4 rounded-lg">
+                                        <h4 class="text-pink-400 font-medium text-sm">المدن الذكية</h4>
+                                        <p class="text-xs text-gray-300 mt-1">مشاريع مثل نيوم والمدن الذكية</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card 4 -->
+                            <div class="md:col-span-2 bg-gradient-to-r from-sky-900/30 to-emerald-900/30 p-6 rounded-xl border border-gray-700 mt-2">
+                                <h3 class="text-lg font-semibold text-white mb-3">📈 فرص وظيفية واعدة</h3>
+                                <p class="text-gray-300 text-sm mb-4">مع تسارع التحول الرقمي في المملكة، تزداد الحاجة إلى:</p>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                    <div class="text-center p-3 bg-gray-800/50 rounded-lg">
+                                        <div class="text-sky-400 text-2xl mb-1">📊</div>
+                                        <p class="text-xs text-gray-300">محللي بيانات</p>
+                                    </div>
+                                    <div class="text-center p-3 bg-gray-800/50 rounded-lg">
+                                        <div class="text-amber-400 text-2xl mb-1">🤖</div>
+                                        <p class="text-xs text-gray-300">خبراء تعلم آلي</p>
+                                    </div>
+                                    <div class="text-center p-3 bg-gray-800/50 rounded-lg">
+                                        <div class="text-purple-400 text-2xl mb-1">📈</div>
+                                        <p class="text-xs text-gray-300">محللي أعمال</p>
+                                    </div>
+                                    <div class="text-center p-3 bg-gray-800/50 rounded-lg">
+                                        <div class="text-pink-400 text-2xl mb-1">🔍</div>
+                                        <p class="text-xs text-gray-300">محللي ذكاء اصطناعي</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -304,60 +1546,107 @@
 
         <!-- Slide Navigation -->
         <div class="flex justify-between items-center mt-6">
-            <button id="prev-btn" class="py-2 px-6 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+            <button id="prev-btn"
+                class="py-2 px-6 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                 السابق
             </button>
             <div id="pagination" class="flex-grow flex justify-center items-center space-x-2 px-4">
                 <!-- Dots will be inserted by JS -->
             </div>
-            <button id="next-btn" class="py-2 px-6 bg-sky-600 hover:bg-sky-500 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+            <button id="next-btn"
+                class="py-2 px-6 bg-sky-600 hover:bg-sky-500 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                 التالي
             </button>
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            let currentSlide = 0;
-            const slides = document.querySelectorAll('.slide');
-            const prevBtn = document.getElementById('prev-btn');
-            const nextBtn = document.getElementById('next-btn');
-            const pagination = document.getElementById('pagination');
-            const saudiDataLink = document.getElementById('saudi-data-link'); // New link for direct jump
-            let dots = [];
-            const totalSlides = slides.length; 
+        let currentSlide = 0;
+        let slides;
+        let prevBtn;
+        let nextBtn;
+        let pagination;
+        let totalSlides;
+        let dots;
 
-            // Initialize pagination dots (now handles 6 slides)
-            for (let i = 0; i < totalSlides; i++) {
-                const dot = document.createElement('button');
-                dot.className = 'pagination-dot';
-                dot.dataset.slide = i;
-                dot.addEventListener('click', () => goToSlide(i));
-                pagination.appendChild(dot);
-                dots.push(dot);
+        function showSlide(slideIndex) {
+            if (!slides || !dots || slideIndex < 0 || slideIndex >= totalSlides) {
+                console.error("Slider component not ready or slide index out of bounds.");
+                return;
             }
 
-            // Show first slide
-            showSlide(currentSlide);
+            // Hide all slides
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+
+            // Show the selected slide
+            slides[slideIndex].classList.add('active');
+
+            // Update pagination dots
+            dots.forEach((dot, index) => {
+                if (index === slideIndex) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+
+            // Update button states
+            prevBtn.disabled = slideIndex === 0;
+            nextBtn.disabled = slideIndex === totalSlides - 1;
+
+            currentSlide = slideIndex;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            slides = document.querySelectorAll('.slide');
+            prevBtn = document.getElementById('prev-btn');
+            nextBtn = document.getElementById('next-btn');
+            pagination = document.getElementById('pagination');
+            totalSlides = slides.length;
+
+            // Initialize pagination dots
+            if (pagination) {
+                pagination.innerHTML = ''; // Clear any existing dots
+                for (let i = 0; i < totalSlides; i++) {
+                    const dot = document.createElement('button');
+                    dot.classList.add('pagination-dot');
+                    dot.dataset.slide = i;
+                    dot.addEventListener('click', () => showSlide(i));
+                    pagination.appendChild(dot);
+                }
+                dots = pagination.querySelectorAll('button');
+            }
 
             // Event listeners for navigation buttons
-            prevBtn.addEventListener('click', () => {
-                if (currentSlide > 0) {
-                    showSlide(currentSlide - 1);
-                }
-            });
+            if (prevBtn) {
+                prevBtn.addEventListener('click', () => {
+                    if (currentSlide > 0) {
+                        showSlide(currentSlide - 1);
+                    }
+                });
+            }
 
-            nextBtn.addEventListener('click', () => {
-                if (currentSlide < totalSlides - 1) {
-                    showSlide(currentSlide + 1);
-                }
-            });
-            
-            // Event listener for the Saudi Data Link to jump to slide 6 (index 5)
-            saudiDataLink.addEventListener('click', () => {
-                const targetIndex = parseInt(saudiDataLink.dataset.targetSlide, 10);
-                showSlide(targetIndex);
-            });
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => {
+                    if (currentSlide < totalSlides - 1) {
+                        showSlide(currentSlide + 1);
+                    }
+                });
+            }
+
+            // Event listener for the new button
+            const saudiDataBtn = document.getElementById('saudi-data-link');
+            if (saudiDataBtn) {
+                saudiDataBtn.addEventListener('click', () => {
+                    const targetSlideIndex = parseInt(saudiDataBtn.dataset.targetSlide, 10);
+                    if (!isNaN(targetSlideIndex)) {
+                        showSlide(targetSlideIndex);
+                    }
+                });
+            }
+
 
             // Keyboard navigation
             document.addEventListener('keydown', (e) => {
@@ -368,33 +1657,46 @@
                 }
             });
 
-            function showSlide(index) {
-                // Hide all slides
-                slides.forEach(slide => slide.classList.remove('active'));
-                
-                // Show current slide
-                slides[index].classList.add('active');
-                
-                // Update pagination
-                dots.forEach((dot, i) => {
-                    if (i === index) {
-                        dot.classList.add('active');
-                    } else {
-                        dot.classList.remove('active');
+            // Show first slide (TOC)
+            if (totalSlides > 0) {
+                // Check if there's a slide in the URL hash
+                const hash = window.location.hash;
+                if (hash) {
+                    const targetSlide = document.querySelector(hash);
+                    if (targetSlide) {
+                        const slideIndex = parseInt(targetSlide.getAttribute('data-slide')) || 0;
+                        showSlide(slideIndex);
+                        return;
                     }
-                });
-                
-                // Update button states
-                prevBtn.disabled = index === 0;
-                nextBtn.disabled = index === totalSlides - 1;
-                
-                currentSlide = index;
-            }
-
-            function goToSlide(index) {
-                showSlide(index);
+                }
+                // Always show TOC (slide 0) on page load
+                showSlide(0);
             }
         });
+
+        // Make showSlide available globally for direct navigation from TOC
+        window.showSlide = showSlide;
+
+        // Update URL hash when changing slides
+        function updateURL(slideIndex) {
+            const slide = document.querySelector(`[data-slide="${slideIndex}"]`);
+            if (slide && slide.id) {
+                window.history.pushState(null, '', `#${slide.id}`);
+            } else if (slide) {
+                // If slide doesn't have an ID, add one
+                const slideId = `slide-${slideIndex}`;
+                slide.id = slideId;
+                window.history.pushState(null, '', `#${slideId}`);
+            }
+        }
+
+        // Update showSlide to also update URL
+        const originalShowSlide = showSlide;
+        window.showSlide = function(slideIndex) {
+            originalShowSlide(slideIndex);
+            updateURL(slideIndex);
+        };
     </script>
 </body>
+
 </html>
