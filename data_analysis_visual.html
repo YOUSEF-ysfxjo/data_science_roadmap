@@ -299,7 +299,9 @@
                             <li><button onclick="showSlide(1)">1. مراحل معالجة البيانات</button></li>
                             <li><button onclick="showSlide(2)">2. أنواع التحليل الإحصائي</button></li>
                             <li><button onclick="showSlide(3)">3. تصوير البيانات</button></li>
+                            <li><a href="analysis_simulations.html" class="block w-full h-full p-4 text-center text-lg text-gray-200 hover:text-orange-400">3.5. محاكاة تصوير البيانات</a></li>
                             <li><button onclick="showSlide(4)">4. الأدوات والمكتبات</button></li>
+                            <li><button onclick="showSlide(5)">5. محاكاة تنظيف البيانات</button></li>
                         </ul>
                     </div>
                 </div>
@@ -538,6 +540,65 @@
                     </div>
                 </div>
 
+                <!-- Slide 5: Interactive Simulation -->
+                <div class="slide" data-slide="5">
+                    <div class="slide-content">
+                        <h2 class="text-2xl font-bold text-white mb-4 text-center"><span class="text-orange-400">5.</span> 🎮 محاكاة تنظيف البيانات</h2>
+                        <p class="text-center text-gray-400 mb-8 max-w-3xl mx-auto">
+                            تجربة تفاعلية للمفاهيم الأساسية في تحليل البيانات.
+                        </p>
+                        <!-- Data Cleaning Simulation -->
+                        <div class="simulation-container bg-gray-800 p-6 rounded-lg border border-gray-700">
+                            <h3 class="text-xl font-semibold text-white mb-4">تنظيف البيانات (Data Cleaning)</h3>
+                            <p class="text-gray-400 mb-4">جدول بيانات يحتوي على أخطاء وقيم مفقودة. اضغط على زر "تنظيف" لإصلاحها.</p>
+                            <div class="flex justify-center mb-4">
+                                <button id="clean-data-btn" class="py-2 px-6 bg-orange-600 hover:bg-orange-500 text-white font-semibold rounded-lg transition-colors">تنظيف</button>
+                            </div>
+                            <table id="data-table" class="styled-table w-full">
+                                <thead>
+                                    <tr>
+                                        <th>الاسم</th>
+                                        <th>العمر</th>
+                                        <th>المدينة</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>أحمد</td>
+                                        <td>25</td>
+                                        <td>الرياض</td>
+                                    </tr>
+                                    <tr>
+                                        <td>فاطمة</td>
+                                        <td></td>
+                                        <td>جدة</td>
+                                    </tr>
+                                    <tr>
+                                        <td>خالد</td>
+                                        <td>30</td>
+                                        <td>الدمام</td>
+                                    </tr>
+                                    <tr>
+                                        <td>نورة</td>
+                                        <td>22</td>
+                                        <td>الرياض</td>
+                                    </tr>
+                                    <tr>
+                                        <td>محمد</td>
+                                        <td>35</td>
+                                        <td>جدة</td>
+                                    </tr>
+                                     <tr>
+                                        <td>سارة</td>
+                                        <td>28</td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -650,6 +711,25 @@
 
         // جعل الدالة متاحة عالمياً للتنقل من الفهرس
         window.showSlide = showSlide;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const cleanBtn = document.getElementById('clean-data-btn');
+            if (cleanBtn) {
+                cleanBtn.addEventListener('click', () => {
+                    const table = document.getElementById('data-table');
+                    const rows = table.getElementsByTagName('tr');
+                    for (let i = 1; i < rows.length; i++) {
+                        const cells = rows[i].getElementsByTagName('td');
+                        if (cells[1].innerHTML.trim() === '') {
+                            cells[1].innerHTML = '<i>29</i>'; // Impute with mean/median
+                        }
+                        if (cells[2].innerHTML.trim() === '') {
+                            cells[2].innerHTML = '<i>الرياض</i>'; // Impute with mode
+                        }
+                    }
+                });
+            }
+        });
     </script>
 </body>
 

@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محاكاة اختبار A/B</title>
+    
+    <!-- جلب الخطوط -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #2a303c;
+            --card-dark: #364152;
+            --text-light: #e5e7eb;
+            --text-muted: #9ca3af;
+            --border-color: #4b5563;
+            --accent-orange: #f97316;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-yellow: #f59e0b;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: 'Tajawal', 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 2rem;
+            box-sizing: border-box;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        .dashboard-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: var(--card-dark);
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: var(--accent-green);
+            border-bottom: 3px solid var(--accent-green);
+            padding-bottom: 10px;
+        }
+
+        .controls, .results {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background-color: #3e4a5e;
+            border-radius: 0.75rem;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            align-items: flex-end;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            min-width: 150px;
+        }
+
+        .input-group label {
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .input-group input {
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: 'Inter', sans-serif;
+            text-align: right;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            flex-grow: 1;
+            min-width: 150px;
+            margin-top: 1.5rem;
+        }
+
+        #runAnalysis {
+            background-color: var(--accent-orange);
+            color: white;
+        }
+
+        #runAnalysis:hover {
+            background-color: #d96515;
+            transform: translateY(-2px);
+        }
+
+        #resetSim {
+            background-color: var(--text-muted);
+            color: var(--bg-dark);
+        }
+
+        #resetSim:hover {
+            background-color: #88929e;
+            transform: translateY(-2px);
+        }
+
+        .result-card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .result-card {
+            background-color: var(--card-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            text-align: right;
+            position: relative;
+        }
+        
+        .result-card h3 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-green);
+        }
+        
+        .result-card p {
+            margin: 0.5rem 0;
+        }
+        
+        .metric-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-light);
+        }
+
+        .win-indicator {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: var(--accent-yellow);
+            color: var(--bg-dark);
+            padding: 5px 10px;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 700;
+            display: none;
+        }
+
+        #finalResult {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            text-align: center;
+            border-radius: 0.75rem;
+            font-weight: 700;
+            font-size: 1.2rem;
+            background-color: var(--bg-dark);
+            border: 2px solid var(--border-color);
+        }
+
+        .confidence {
+            font-weight: 600;
+            margin-top: 1rem;
+            color: var(--accent-orange);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <h1>محاكاة اختبار A/B التفاعلية: زر CTA</h1>
+        <p class="text-center text-muted mb-4">
+            قم بإدخال بيانات المشاهدات والتحويلات لكل نسخة (A و B) لتحديد النسخة الفائزة بناءً على الدلالة الإحصائية.
+        </p>
+
+        <div class="controls">
+            <!-- مجموعة A (النسخة الأصلية) -->
+            <div class="card-inputs">
+                <h3 style="color: var(--accent-red); margin-top: 0; border-bottom: 1px solid var(--accent-red); padding-bottom: 5px;">النسخة A (الأصلية - زر أحمر)</h3>
+                <div class="input-group">
+                    <label for="visitsA">عدد المشاهدات (Visits)</label>
+                    <input type="number" id="visitsA" value="10000" min="100">
+                </div>
+                <div class="input-group" style="margin-top: 10px;">
+                    <label for="conversionsA">عدد التحويلات (Conversions)</label>
+                    <input type="number" id="conversionsA" value="250" min="0">
+                </div>
+            </div>
+
+            <!-- مجموعة B (النسخة الجديدة) -->
+            <div class="card-inputs">
+                <h3 style="color: var(--accent-green); margin-top: 0; border-bottom: 1px solid var(--accent-green); padding-bottom: 5px;">النسخة B (المُعدّلة - زر أخضر)</h3>
+                <div class="input-group">
+                    <label for="visitsB">عدد المشاهدات (Visits)</label>
+                    <input type="number" id="visitsB" value="10000" min="100">
+                </div>
+                <div class="input-group" style="margin-top: 10px;">
+                    <label for="conversionsB">عدد التحويلات (Conversions)</label>
+                    <input type="number" id="conversionsB" value="280" min="0">
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 1rem; flex-basis: 250px;">
+                <button id="runAnalysis" class="btn">تشغيل التحليل</button>
+                <button id="resetSim" class="btn">إعادة تعيين البيانات</button>
+            </div>
+        </div>
+
+        <div class="results">
+            <h2>نتائج الاختبار</h2>
+            <div class="result-card-container">
+                <!-- نتائج المجموعة A -->
+                <div class="result-card" id="cardA">
+                    <span class="win-indicator" id="winA">النسخة الفائزة</span>
+                    <h3>النسخة A (الأصلية)</h3>
+                    <p>معدل التحويل (CR): <span id="crA" class="metric-value">2.50%</span></p>
+                    <p>زيادة عن B: <span id="liftA" class="metric-value text-red-500">-10.71%</span></p>
+                </div>
+                <!-- نتائج المجموعة B -->
+                <div class="result-card" id="cardB">
+                    <span class="win-indicator" id="winB">النسخة الفائزة</span>
+                    <h3>النسخة B (المعدلة)</h3>
+                    <p>معدل التحويل (CR): <span id="crB" class="metric-value">2.80%</span></p>
+                    <p>زيادة عن A: <span id="liftB" class="metric-value text-green-500">+12.00%</span></p>
+                </div>
+                <!-- النتيجة الإحصائية -->
+                <div class="result-card">
+                    <h3>التحليل الإحصائي</h3>
+                    <p>احتمالية (P-Value): <span id="pValue" class="metric-value">0.170</span></p>
+                    <p>مستوى الدلالة (Alpha): <span class="metric-value">0.05</span></p>
+                    <p class="confidence">مستوى الثقة: <span id="confidenceLevel">83.0%</span></p>
+                </div>
+            </div>
+            
+            <div id="finalResult" style="border-color: var(--accent-red);">
+                <span id="resultText">
+                    النتائج غير حاسمة (مستوى الثقة أقل من 95%). يجب جمع المزيد من البيانات أو إعادة تقييم الفرضية.
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // دالة رياضية أساسية (Z-score test for two proportions, simplified)
+        function calculatePValue(c1, n1, c2, n2) {
+            if (n1 === 0 || n2 === 0) return 1;
+            const p1 = c1 / n1;
+            const p2 = c2 / n2;
+            const pooledP = (c1 + c2) / (n1 + n2);
+            const z = (p2 - p1) / Math.sqrt(pooledP * (1 - pooledP) * (1 / n1 + 1 / n2));
+            
+            // تحويل Z-score إلى P-value (باستخدام تقريب بسيط لـ CDF)
+            // هذا التابع يستخدم لتقريب الدالة التوزيعية التراكمية الطبيعية (CDF)
+            const cdf = (x) => {
+                const p = 0.3275911;
+                const a1 = 0.254829592;
+                const a2 = -0.284496736;
+                const a3 = 1.421413741;
+                const a4 = -1.453152027;
+                const a5 = 1.061405429;
+                
+                const sign = x < 0 ? -1 : 1;
+                const absX = Math.abs(x);
+                const t = 1.0 / (1.0 + p * absX);
+                const y = 1.0 - ((((a5 * t + a4) * t + a3) * t + a2) * t + a1) * t * Math.exp(-absX * absX / 2.0);
+                return 0.5 * (1.0 + sign * y);
+            };
+
+            // P-value لـ Two-tailed test
+            const pValue = 2 * (1 - cdf(Math.abs(z)));
+            return pValue;
+        }
+
+        // دالة لتوليد أرقام عشوائية ضمن نطاق معين
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        // دالة لإعادة تعيين البيانات بقيم عشوائية منطقية
+        function resetData() {
+            const baseVisits = getRandomInt(10000, 20000);
+            const crA = (getRandomInt(20, 30) / 100).toFixed(2); // 2.0% to 3.0%
+            const crB = (parseFloat(crA) + getRandomInt(5, 15) / 100).toFixed(2); // B is slightly higher
+
+            const conversionsA = Math.round(baseVisits * parseFloat(crA) / 100);
+            const conversionsB = Math.round(baseVisits * parseFloat(crB) / 100);
+
+            document.getElementById('visitsA').value = baseVisits;
+            document.getElementById('conversionsA').value = conversionsA;
+            document.getElementById('visitsB').value = baseVisits;
+            document.getElementById('conversionsB').value = conversionsB;
+
+            runAnalysis();
+        }
+
+        // دالة تشغيل التحليل وتحديث الواجهة
+        function runAnalysis() {
+            const visitsA = parseInt(document.getElementById('visitsA').value);
+            const conversionsA = parseInt(document.getElementById('conversionsA').value);
+            const visitsB = parseInt(document.getElementById('visitsB').value);
+            const conversionsB = parseInt(document.getElementById('conversionsB').value);
+
+            // تأكد من أننا نستخدم قيمة CSS صحيحة في JavaScript
+            const accentRed = getComputedStyle(document.documentElement).getPropertyValue('--accent-red').trim();
+            const accentGreen = getComputedStyle(document.documentElement).getPropertyValue('--accent-green').trim();
+            const accentYellow = getComputedStyle(document.documentElement).getPropertyValue('--accent-yellow').trim();
+
+            if (visitsA <= 0 || visitsB <= 0 || conversionsA > visitsA || conversionsB > visitsB) {
+                document.getElementById('finalResult').style.borderColor = accentRed;
+                document.getElementById('resultText').textContent = 'يرجى إدخال قيم صحيحة ومنطقية لعدد المشاهدات والتحويلات.';
+                return;
+            }
+
+            const crA = (conversionsA / visitsA) * 100;
+            const crB = (conversionsB / visitsB) * 100;
+            
+            // حساب الـ P-Value
+            const pValue = calculatePValue(conversionsA, visitsA, conversionsB, visitsB);
+            const alpha = 0.05; // مستوى الدلالة (95% ثقة)
+            const confidence = (1 - pValue) * 100;
+
+            // حساب الرفع (Lift)
+            const liftBToA = ((crB - crA) / crA) * 100;
+            const liftAToB = ((crA - crB) / crB) * 100;
+
+
+            // تحديث البطاقات
+            document.getElementById('crA').textContent = crA.toFixed(2) + '%';
+            document.getElementById('crB').textContent = crB.toFixed(2) + '%';
+            document.getElementById('pValue').textContent = pValue.toFixed(3);
+            document.getElementById('confidenceLevel').textContent = confidence.toFixed(1) + '%';
+
+            document.getElementById('winA').style.display = 'none';
+            document.getElementById('winB').style.display = 'none';
+            document.getElementById('cardA').style.border = '1px solid var(--border-color)';
+            document.getElementById('cardB').style.border = '1px solid var(--border-color)';
+
+            document.getElementById('liftA').textContent = (crA > crB) ? `+${liftAToB.toFixed(2)}%` : `${liftAToB.toFixed(2)}%`;
+            document.getElementById('liftA').style.color = (crA > crB) ? accentGreen : accentRed;
+
+            document.getElementById('liftB').textContent = (crB > crA) ? `+${liftBToA.toFixed(2)}%` : `${liftBToA.toFixed(2)}%`;
+            document.getElementById('liftB').style.color = (crB > crA) ? accentGreen : accentRed;
+
+
+            // تحديث النتيجة النهائية
+            const resultDiv = document.getElementById('finalResult');
+            const resultText = document.getElementById('resultText');
+
+            if (pValue < alpha) {
+                // النتيجة ذات دلالة إحصائية
+                resultDiv.style.borderColor = (crB > crA) ? accentGreen : accentRed;
+                
+                if (crB > crA) {
+                    resultText.innerHTML = `
+                        <strong>النسخة B (المعدلة) هي الفائزة!</strong>
+                        <br> حققت زيادة قدرها <strong>${liftBToA.toFixed(2)}%</strong>.
+                        <br> مستوى الثقة: <strong>${confidence.toFixed(1)}%</strong>.
+                    `;
+                    document.getElementById('winB').style.display = 'block';
+                    document.getElementById('cardB').style.border = `2px solid ${accentGreen}`;
+                } else {
+                    resultText.innerHTML = `
+                        <strong>النسخة A (الأصلية) هي الفائزة!</strong>
+                        <br> حققت زيادة قدرها <strong>${liftAToB.toFixed(2)}%</strong>.
+                        <br> مستوى الثقة: <strong>${confidence.toFixed(1)}%</strong>.
+                    `;
+                    document.getElementById('winA').style.display = 'block';
+                    document.getElementById('cardA').style.border = `2px solid ${accentGreen}`;
+                }
+
+            } else {
+                // النتيجة غير ذات دلالة إحصائية
+                resultDiv.style.borderColor = accentYellow;
+                resultText.innerHTML = `
+                    <strong>النتائج غير حاسمة!</strong>
+                    <br> لم نصل إلى الدلالة الإحصائية المطلوبة (P < 0.05).
+                    <br> مستوى الثقة: <strong>${confidence.toFixed(1)}%</strong>. يجب جمع المزيد من البيانات.
+                `;
+            }
+        }
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // تشغيل التحليل بالبيانات الافتراضية عند التحميل
+            runAnalysis(); 
+
+            document.getElementById('runAnalysis').addEventListener('click', runAnalysis);
+            document.getElementById('resetSim').addEventListener('click', resetData);
+        });
+    </script>
+</body>
+</html>

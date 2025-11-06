@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محاكاة التصور البياني</title>
+    
+    <!-- جلب الخطوط -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root {
+            --bg-dark: #2a303c;
+            --card-dark: #364152;
+            --text-light: #e5e7eb;
+            --text-muted: #9ca3af;
+            --border-color: #4b5563;
+            --accent-blue: #3b82f6;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: 'Tajawal', 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 2rem;
+            box-sizing: border-box;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            transition: background-color 0.2s;
+            margin-bottom: 2rem;
+        }
+
+        .back-button:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+
+        .dashboard-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .simulation-area {
+            background-color: var(--card-dark);
+            border-radius: 0.5rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: var(--accent-blue);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 2rem 0;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-blue);
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: var(--card-dark);
+            color: var(--text-light);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .chart-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .option-card {
+            background-color: rgba(59, 130, 246, 0.1);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-color: var(--accent-blue);
+        }
+
+        .option-card h3 {
+            color: var(--accent-blue);
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+        }
+
+        .option-card p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <a href="data_analysis_visual_simulation.html" class="back-button">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            العودة إلى صفحة المحاكاة
+        </a>
+
+        <h1>محاكاة التصور البياني</h1>
+        
+        <div class="simulation-area">
+            <h2>اختر نوع الرسم البياني المناسب</h2>
+            <p>اختر نوع الرسم البياني الأفضل لتمثيل البيانات المعروضة.</p>
+            
+            <div class="chart-options">
+                <div class="option-card" data-chart="bar">
+                    <h3>مخطط أعمدة</h3>
+                    <p>مثالي لمقارنة القيم بين فئات مختلفة</p>
+                </div>
+                <div class="option-card" data-chart="line">
+                    <h3>مخطط خطي</h3>
+                    <p>مثالي لعرض الاتجاهات عبر الزمن</p>
+                </div>
+                <div class="option-card" data-chart="pie">
+                    <h3>مخطط دائري</h3>
+                    <p>مثالي لعرض النسب المئوية</p>
+                </div>
+                <div class="option-card" data-chart="scatter">
+                    <h3>مخطط مبعثر</h3>
+                    <p>مثالي لعرض العلاقة بين متغيرين</p>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="dataChart"></canvas>
+            </div>
+
+            <div class="controls">
+                <button id="applyChart" class="btn btn-primary">تطبيق الرسم البياني</button>
+                <button id="resetChart" class="btn btn-secondary">إعادة تعيين</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // بيانات المبيعات
+        const salesData = {
+            labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'],
+            datasets: [{
+                label: 'مبيعات 2023',
+                data: [65, 59, 80, 81, 56, 55],
+                backgroundColor: [
+                    'rgba(59, 130, 246, 0.5)',
+                    'rgba(255, 99, 132, 0.5)',
+                    'rgba(54, 162, 235, 0.5)',
+                    'rgba(255, 206, 86, 0.5)',
+                    'rgba(75, 192, 192, 0.5)',
+                    'rgba(153, 102, 255, 0.5)'
+                ],
+                borderColor: [
+                    'rgba(59, 130, 246, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+
+        // إعداد الرسم البياني
+        const ctx = document.getElementById('dataChart').getContext('2d');
+        let chart = new Chart(ctx, {
+            type: 'bar',
+            data: salesData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        rtl: true,
+                        labels: {
+                            font: {
+                                family: 'Tajawal',
+                                size: 14
+                            },
+                            color: '#9ca3af'
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: '#9ca3af',
+                            font: {
+                                family: 'Tajawal'
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#9ca3af',
+                            font: {
+                                family: 'Tajawal'
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // تغيير نوع الرسم البياني
+        function changeChartType(type) {
+            chart.destroy();
+            chart = new Chart(ctx, {
+                type: type,
+                data: salesData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            rtl: true,
+                            labels: {
+                                font: {
+                                    family: 'Tajawal',
+                                    size: 14
+                                },
+                                color: '#9ca3af'
+                            }
+                        }
+                    },
+                    scales: type === 'pie' || type === 'doughnut' ? {} : {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#9ca3af',
+                                font: {
+                                    family: 'Tajawal'
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#9ca3af',
+                                font: {
+                                    family: 'Tajawal'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // إضافة تأثيرات عند اختيار نوع الرسم البياني
+        document.querySelectorAll('.option-card').forEach(card => {
+            card.addEventListener('click', function() {
+                // إزالة التحديد من جميع البطاقات
+                document.querySelectorAll('.option-card').forEach(c => {
+                    c.style.borderColor = 'var(--border-color)';
+                    c.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+                });
+                
+                // تحديد البطاقة المختارة
+                this.style.borderColor = 'var(--accent-blue)';
+                this.style.backgroundColor = 'rgba(59, 130, 246, 0.2)';
+                
+                // تعيين نوع الرسم البياني المحدد
+                const chartType = this.getAttribute('data-chart');
+                document.getElementById('applyChart').setAttribute('data-chart', chartType);
+            });
+        });
+
+        // تطبيق تغيير الرسم البياني
+        document.getElementById('applyChart').addEventListener('click', function() {
+            const chartType = this.getAttribute('data-chart');
+            if (chartType) {
+                changeChartType(chartType);
+            } else {
+                alert('الرجاء اختيار نوع الرسم البياني أولاً');
+            }
+        });
+
+        // إعادة تعيين الرسم البياني
+        document.getElementById('resetChart').addEventListener('click', function() {
+            // إزالة التحديد من البطاقات
+            document.querySelectorAll('.option-card').forEach(c => {
+                c.style.borderColor = 'var(--border-color)';
+                c.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+            });
+            
+            // إعادة تعيين الزر
+            document.getElementById('applyChart').removeAttribute('data-chart');
+            
+            // إعادة تعيين الرسم البياني
+            chart.destroy();
+            chart = new Chart(ctx, {
+                type: 'bar',
+                data: salesData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            rtl: true,
+                            labels: {
+                                font: {
+                                    family: 'Tajawal',
+                                    size: 14
+                                },
+                                color: '#9ca3af'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#9ca3af',
+                                font: {
+                                    family: 'Tajawal'
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#9ca3af',
+                                font: {
+                                    family: 'Tajawal'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

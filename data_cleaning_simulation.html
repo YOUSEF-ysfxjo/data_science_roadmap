@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محاكاة تنظيف البيانات</title>
+    
+    <!-- جلب الخطوط -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #2a303c;
+            --card-dark: #364152;
+            --text-light: #e5e7eb;
+            --text-muted: #9ca3af;
+            --border-color: #4b5563;
+            --accent-orange: #f97316;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: 'Tajawal', 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 2rem;
+            box-sizing: border-box;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent-orange);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            transition: background-color 0.2s;
+            margin-bottom: 2rem;
+        }
+
+        .back-button:hover {
+            background-color: rgba(249, 115, 22, 0.1);
+        }
+
+        .dashboard-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .simulation-area {
+            background-color: var(--card-dark);
+            border-radius: 0.5rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: var(--accent-orange);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        .data-table th, .data-table td {
+            border: 1px solid var(--border-color);
+            padding: 0.75rem;
+            text-align: right;
+        }
+
+        .data-table th {
+            background-color: rgba(249, 115, 22, 0.1);
+            color: var(--accent-orange);
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-orange);
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: var(--card-dark);
+            color: var(--text-light);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .missing {
+            background-color: rgba(239, 68, 68, 0.2);
+            position: relative;
+        }
+
+        .missing::after {
+            content: 'مفقود';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ef4444;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+
+        .outlier {
+            background-color: rgba(245, 158, 11, 0.2);
+        }
+
+        .cleaned {
+            background-color: rgba(16, 185, 129, 0.2);
+            transition: background-color 0.5s;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <a href="data_analysis_visual_simulation.html" class="back-button">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            العودة إلى صفحة المحاكاة
+        </a>
+
+        <h1>محاكاة تنظيف البيانات</h1>
+        
+        <div class="simulation-area">
+            <h2>بيانات المبيعات</h2>
+            <p>فيما يلي مجموعة بيانات تحتوي على قيم مفقودة وقيم متطرفة. جرب أدوات التنظيف أدناه.</p>
+            
+            <div class="controls">
+                <button id="detectMissing" class="btn btn-primary">اكتشف القيم المفقودة</button>
+                <button id="detectOutliers" class="btn btn-primary">اكتشف القيم المتطرفة</button>
+                <button id="cleanData" class="btn btn-secondary">نظف البيانات</button>
+                <button id="resetData" class="btn btn-secondary">إعادة تعيين</button>
+            </div>
+
+            <div class="table-container" style="overflow-x: auto;">
+                <table class="data-table" id="dataTable">
+                    <thead>
+                        <tr>
+                            <th>المعرف</th>
+                            <th>المنتج</th>
+                            <th>الكمية المباعة</th>
+                            <th>السعر</th>
+                            <th>التاريخ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- سيتم ملء الجدول بالبيانات عبر JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // بيانات المبيعات الأولية
+        let salesData = [
+            { id: 1, product: 'حاسوب محمول', quantity: 12, price: 2500, date: '2023-01-15' },
+            { id: 2, product: 'هاتف ذكي', quantity: 25, price: 1800, date: '2023-01-16' },
+            { id: 3, product: 'سماعات لاسلكية', quantity: 30, price: 350, date: '2023-01-17' },
+            { id: 4, product: 'لوحة مفاتيح', quantity: 18, price: 200, date: '2023-01-18' },
+            { id: 5, product: 'ماوس', quantity: 45, price: 120, date: '2023-01-19' },
+            { id: 6, product: 'شاشة', quantity: 8, price: 1500, date: '2023-01-20' },
+            { id: 7, product: 'طابعة', quantity: 5, price: 800, date: '2023-01-21' },
+            { id: 8, product: 'سماعات رأس', quantity: 28, price: 450, date: '2023-01-22' },
+            { id: 9, product: 'قرص صلب خارجي', quantity: 15, price: 600, date: '2023-01-23' },
+            { id: 10, product: 'كاميرا ويب', quantity: 20, price: 300, date: '2023-01-24' }
+        ];
+
+        // إضافة بعض القيم المفقودة والمتطرفة
+        salesData[1].quantity = null;
+        salesData[3].price = null;
+        salesData[5].date = '';
+        salesData[7].quantity = 150; // قيمة متطرفة
+        salesData[2].price = 3500;   // قيمة متطرفة
+
+        // عرض البيانات في الجدول
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            salesData.forEach(item => {
+                const tr = document.createElement('tr');
+                
+                // إضافة فئات للقيم المفقودة
+                const quantityClass = item.quantity === null || item.quantity === '' ? 'missing' : '';
+                const priceClass = item.price === null || item.price === '' ? 'missing' : '';
+                const dateClass = item.date === null || item.date === '' ? 'missing' : '';
+                
+                tr.innerHTML = `
+                    <td>${item.id}</td>
+                    <td>${item.product || ''}</td>
+                    <td class="${quantityClass}">${item.quantity || 'N/A'}</td>
+                    <td class="${priceClass}">${item.price ? item.price + ' ر.س' : 'N/A'}</td>
+                    <td class="${dateClass}">${item.date || 'N/A'}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // اكتشاف القيم المفقودة
+        function detectMissing() {
+            const cells = document.querySelectorAll('td');
+            cells.forEach(cell => {
+                if (cell.textContent === 'N/A' || cell.textContent === '') {
+                    cell.classList.add('missing');
+                }
+            });
+        }
+
+        // اكتشاف القيم المتطرفة
+        function detectOutliers() {
+            // حساب المتوسط والانحراف المعياري للكميات
+            const quantities = salesData
+                .map(item => item.quantity)
+                .filter(q => q !== null && !isNaN(q));
+                
+            const prices = salesData
+                .map(item => item.price)
+                .filter(p => p !== null && !isNaN(p));
+
+            const qMean = quantities.reduce((a, b) => a + b, 0) / quantities.length;
+            const qStd = Math.sqrt(quantities.reduce((a, b) => a + Math.pow(b - qMean, 2), 0) / quantities.length);
+            
+            const pMean = prices.reduce((a, b) => a + b, 0) / prices.length;
+            const pStd = Math.sqrt(prices.reduce((a, b) => a + Math.pow(b - pMean, 2), 0) / prices.length);
+
+            // تحديد القيم المتطرفة (أكثر من 2 انحراف معياري عن المتوسط)
+            document.querySelectorAll('tr').forEach((row, index) => {
+                if (index > 0) { // تخطي رأس الجدول
+                    const quantity = salesData[index-1].quantity;
+                    const price = salesData[index-1].price;
+                    
+                    if (quantity !== null && (quantity > qMean + 2 * qStd || quantity < qMean - 2 * qStd)) {
+                        row.cells[2].classList.add('outlier');
+                    }
+                    
+                    if (price !== null && (price > pMean + 2 * pStd || price < pMean - 2 * pStd)) {
+                        row.cells[3].classList.add('outlier');
+                    }
+                }
+            });
+        }
+
+        // تنظيف البيانات
+        function cleanData() {
+            // حساب المتوسط للكميات والأسعار
+            const quantities = salesData
+                .map(item => item.quantity)
+                .filter(q => q !== null && !isNaN(q));
+                
+            const prices = salesData
+                .map(item => item.price)
+                .filter(p => p !== null && !isNaN(p));
+
+            const qMean = Math.round(quantities.reduce((a, b) => a + b, 0) / quantities.length);
+            const pMean = Math.round(prices.reduce((a, b) => a + b, 0) / prices.length);
+
+            // استبدال القيم المفقودة بالمتوسط
+            salesData = salesData.map(item => ({
+                ...item,
+                quantity: item.quantity === null ? qMean : item.quantity,
+                price: item.price === null ? pMean : item.price,
+                date: item.date === '' ? '2023-01-25' : item.date // قيمة افتراضية للتاريخ
+            }));
+
+            // إزالة القيم المتطرفة
+            const qStd = Math.sqrt(quantities.reduce((a, b) => a + Math.pow(b - qMean, 2), 0) / quantities.length);
+            const pStd = Math.sqrt(prices.reduce((a, b) => a + Math.pow(b - pMean, 2), 0) / prices.length);
+
+            salesData = salesData.map(item => ({
+                ...item,
+                quantity: Math.abs(item.quantity - qMean) > 2 * qStd ? qMean : item.quantity,
+                price: Math.abs(item.price - pMean) > 2 * pStd ? pMean : item.price
+            }));
+
+            renderTable();
+            
+            // إضافة تأثير التنظيف
+            document.querySelectorAll('td').forEach(cell => {
+                if (cell.classList.contains('missing') || cell.classList.contains('outlier')) {
+                    cell.classList.add('cleaned');
+                    cell.classList.remove('missing', 'outlier');
+                }
+            });
+        }
+
+        // إعادة تعيين البيانات
+        function resetData() {
+            // إعادة تعيين البيانات الأصلية
+            salesData = [
+                { id: 1, product: 'حاسوب محمول', quantity: 12, price: 2500, date: '2023-01-15' },
+                { id: 2, product: 'هاتف ذكي', quantity: null, price: 1800, date: '2023-01-16' },
+                { id: 3, product: 'سماعات لاسلكية', quantity: 30, price: 3500, date: '2023-01-17' },
+                { id: 4, product: 'لوحة مفاتيح', quantity: 18, price: null, date: '2023-01-18' },
+                { id: 5, product: 'ماوس', quantity: 45, price: 120, date: '2023-01-19' },
+                { id: 6, product: 'شاشة', quantity: 8, price: 1500, date: '' },
+                { id: 7, product: 'طابعة', quantity: 5, price: 800, date: '2023-01-21' },
+                { id: 8, product: 'سماعات رأس', quantity: 150, price: 450, date: '2023-01-22' },
+                { id: 9, product: 'قرص صلب خارجي', quantity: 15, price: 600, date: '2023-01-23' },
+                { id: 10, product: 'كاميرا ويب', quantity: 20, price: 300, date: '2023-01-24' }
+            ];
+
+            renderTable();
+        }
+
+        // تهيئة الصفحة
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTable();
+
+            // إضافة معالجات الأحداث
+            document.getElementById('detectMissing').addEventListener('click', detectMissing);
+            document.getElementById('detectOutliers').addEventListener('click', detectOutliers);
+            document.getElementById('cleanData').addEventListener('click', cleanData);
+            document.getElementById('resetData').addEventListener('click', resetData);
+        });
+    </script>
+</body>
+</html>

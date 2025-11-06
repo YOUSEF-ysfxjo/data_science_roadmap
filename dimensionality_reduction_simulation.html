@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محاكاة تقليل الأبعاد</title>
+    
+    <!-- جلب الخطوط -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #2a303c;
+            --card-dark: #364152;
+            --text-light: #e5e7eb;
+            --text-muted: #9ca3af;
+            --border-color: #4b5563;
+            --accent-cyan: #06b6d4; /* لون سماوي مميز لتقليل الأبعاد */
+            --accent-blue: #3b82f6;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: 'Tajawal', 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 2rem;
+            box-sizing: border-box;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        .dashboard-container {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: var(--card-dark);
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: var(--accent-cyan);
+            border-bottom: 3px solid var(--accent-cyan);
+            padding-bottom: 10px;
+        }
+        
+        .simulation-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .data-panel {
+            padding: 1.5rem;
+            background-color: #3e4a5e;
+            border-radius: 0.75rem;
+        }
+
+        .data-panel h2 {
+            margin-top: 0;
+            color: var(--accent-cyan);
+            font-size: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        #originalData, #reducedData {
+            height: 350px;
+            overflow-y: auto;
+            background-color: var(--bg-dark);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            direction: ltr;
+            white-space: pre;
+            margin-top: 1rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .action-area {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            background-color: var(--bg-dark);
+            margin-bottom: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        #runPCA {
+            background-color: var(--accent-cyan);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+        }
+
+        #runPCA:hover {
+            background-color: #0d9488;
+            transform: translateY(-2px);
+        }
+
+        .variance-info {
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+        
+        .btn-secondary {
+            background-color: var(--card-dark);
+            color: var(--text-light);
+            border: 1px solid var(--border-color);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            transition: all 0.2s;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary:hover {
+            background-color: #3e4a5e;
+            border-color: #6b7280;
+            transform: translateY(-2px);
+        }
+        
+        /* --- Modal Styles --- */
+        .modal {
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7);
+            display: none; 
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--card-dark);
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--accent-cyan);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: var(--accent-cyan);
+            font-size: 1.5rem;
+            border-bottom: none;
+        }
+
+        .close-btn {
+            color: var(--text-muted);
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s;
+            background: none;
+            border: none;
+            padding: 0;
+            line-height: 1;
+        }
+        .close-btn:hover { color: var(--text-light); }
+
+        .modal-body p {
+            margin-bottom: 1.5rem;
+            color: var(--text-light);
+        }
+
+        @media (max-width: 768px) {
+            .simulation-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <a href="data_analysis_visual_simulation.html" class="back-button">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            العودة إلى المحاكاة الرئيسية
+        </a>
+
+        <h1>محاكاة تحليل المكونات الرئيسية (PCA)</h1>
+        <p class="text-center text-muted mb-4">
+            شاهد كيف يقوم تحليل PCA بتقليل الأبعاد من 3 إلى 2 مع الحفاظ على معظم التباين.
+        </p>
+
+        <div class="action-area">
+            <p style="margin: 0;"><strong>تفسير PCA:</strong> نقوم بتحويل البيانات من 3 متغيرات مترابطة إلى متغيرين جديدين يمثلان أفضل زاوية عرض للبيانات.</p>
+            <button id="runPCA">تطبيق تحليل PCA</button>
+            <button id="infoButton" class="btn-secondary">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                </svg>
+                شرح المفاهيم
+            </button>
+            <div class="variance-info">نسبة التباين المحفوظة (محاكاة): <span id="varianceRatio">85%</span></div>
+        </div>
+
+        <div class="simulation-grid">
+            <div class="data-panel">
+                <h2>البيانات الأصلية (3 أبعاد: X, Y, Z)</h2>
+                <pre id="originalData">جارٍ توليد البيانات...</pre>
+            </div>
+
+            <div class="data-panel">
+                <h2>البيانات بعد تقليل الأبعاد (2 بعد: PC1, PC2)</h2>
+                <pre id="reducedData">اضغط على الزر لتطبيق PCA...</pre>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for Info -->
+    <div id="infoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>شرح تقليل الأبعاد (PCA)</h2>
+                <button class="close-btn" onclick="document.getElementById('infoModal').style.display='none';">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p><strong>تقليل الأبعاد (Dimensionality Reduction):</strong> هي عملية تقليل عدد المتغيرات العشوائية المدروسة للحصول على مجموعة من المتغيرات الرئيسية، مع الحفاظ على أهم المعلومات الإحصائية في البيانات.</p>
+                <p><strong>تحليل المكونات الرئيسية (PCA):</strong> هو أسلوب إحصائي غير خاضع للرقابة (Unsupervised) يستخدم لتحويل مجموعة من المتغيرات المترابطة إلى مجموعة جديدة من المتغيرات غير المترابطة تسمى **المكونات الرئيسية (Principal Components)**.</p>
+                <p><strong>الهدف:</strong> يتيح لك PCA الاحتفاظ بأكبر قدر من تباين البيانات (المعلومات) في عدد قليل من الأبعاد، مما يسرع عملية النمذجة ويحسن تصور البيانات.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let originalPoints = [];
+        const infoButton = document.getElementById('infoButton');
+        const infoModal = document.getElementById('infoModal');
+
+        // 1. توليد بيانات وهمية (3 أبعاد)
+        function generateOriginalData() {
+            const data = [];
+            for (let i = 0; i < 25; i++) {
+                // X و Y مرتبطان قليلاً
+                const x = 50 + Math.random() * 100; 
+                const y = 60 + x * 0.5 + Math.random() * 30; 
+                // Z مرتبط بـ X و Y مع ضوضاء عالية
+                const z = 10 + x * 0.2 + y * 0.3 + Math.random() * 50; 
+                data.push({ x: x.toFixed(1), y: y.toFixed(1), z: z.toFixed(1) });
+            }
+            originalPoints = data;
+        }
+
+        // 2. محاكاة تطبيق PCA لتقليل الأبعاد إلى 2
+        function applySimulatedPCA(data) {
+            // المحاكاة: المكونات الرئيسية (PC1, PC2) هي مزيج خطي من X, Y, Z
+            const reducedData = data.map(p => {
+                const x = parseFloat(p.x);
+                const y = parseFloat(p.y);
+                const z = parseFloat(p.z);
+                
+                // PC1: يحمل معظم التباين
+                const pc1 = (x * 0.6 + y * 0.4 + z * 0.1) / 100; 
+                
+                // PC2: يحمل التباين المتبقي
+                const pc2 = (x * 0.2 + y * -0.1 + z * 0.7) / 100;
+                
+                return { pc1: pc1.toFixed(3), pc2: pc2.toFixed(3) };
+            });
+            return reducedData;
+        }
+
+        // 3. تحديث عرض البيانات في الجداول
+        function updateDisplay(data, elementId, headers) {
+            let dataText = headers.map(h => h.padEnd(10)).join('| ') + '\n' + headers.map(h => '--------').join(' | ') + '\n';
+            data.forEach(p => {
+                const values = Object.values(p).map(v => v.toString().padEnd(10));
+                dataText += values.join('| ') + '\n';
+            });
+            document.getElementById(elementId).textContent = dataText;
+        }
+
+        // 4. وظيفة تشغيل المحاكاة
+        function runSimulation() {
+            const reducedPoints = applySimulatedPCA(originalPoints);
+            
+            updateDisplay(reducedPoints, 'reducedData', ['PC1', 'PC2']);
+            
+            document.getElementById('runPCA').textContent = "إعادة تشغيل المحاكاة";
+        }
+        
+        // 5. تهيئة الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            generateOriginalData();
+            
+            // عرض البيانات الأصلية قبل تطبيق التحليل لأول مرة
+            updateDisplay(originalPoints, 'originalData', ['Feature X', 'Feature Y', 'Feature Z']);
+            
+            document.getElementById('runPCA').addEventListener('click', runSimulation);
+
+            // Modal setup
+            infoButton.addEventListener('click', () => {
+                infoModal.style.display = 'flex';
+            });
+            window.addEventListener('click', (event) => {
+                if (event.target === infoModal) {
+                    infoModal.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

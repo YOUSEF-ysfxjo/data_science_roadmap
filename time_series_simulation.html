@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محاكاة تحليل السلاسل الزمنية</title>
+    
+    <!-- جلب الخطوط -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #2a303c;
+            --card-dark: #364152;
+            --text-light: #e5e7eb;
+            --text-muted: #9ca3af;
+            --border-color: #4b5563;
+            --accent-teal: #14b8a6; /* لون تركوازي مميز للسلاسل الزمنية */
+            --forecast-color: #f59e0b; /* أصفر للتوقعات */
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: 'Tajawal', 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 2rem;
+            box-sizing: border-box;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent-teal);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            transition: background-color 0.2s;
+            margin-bottom: 2rem;
+        }
+
+        .back-button:hover {
+            background-color: rgba(20, 184, 166, 0.1);
+        }
+
+        .back-button svg {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        .dashboard-container {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: var(--card-dark);
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: var(--accent-teal);
+            border-bottom: 3px solid var(--accent-teal);
+            padding-bottom: 10px;
+        }
+        
+        .simulation-area {
+            padding: 1.5rem;
+            background-color: #3e4a5e;
+            border-radius: 0.75rem;
+        }
+
+        #chartCanvas {
+            background-color: var(--bg-dark);
+            border-radius: 0.5rem;
+            border: 2px solid var(--border-color);
+            width: 100%;
+            height: 450px;
+            margin-top: 1.5rem;
+        }
+
+        #runForecast {
+            background-color: var(--accent-teal);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            margin-top: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        #runForecast:hover {
+            background-color: #0d9488;
+            transform: translateY(-2px);
+        }
+
+        .legend {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            font-size: 0.95rem;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+        }
+        .legend-color {
+            width: 20px;
+            height: 2px;
+            display: inline-block;
+            margin-left: 5px;
+            border: 1px solid;
+        }
+        #salesColor { background-color: var(--accent-teal); border-color: var(--accent-teal); }
+        #forecastColor { background-color: var(--forecast-color); border-color: var(--forecast-color); border-style: dashed; }
+
+        @media (max-width: 768px) {
+            #chartCanvas {
+                height: 300px;
+            }
+        }
+        
+        /* --- Modal Styles --- */
+        .modal {
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7);
+            display: none; 
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--card-dark);
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--accent-teal);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: var(--accent-teal);
+            font-size: 1.5rem;
+            border-bottom: none;
+        }
+
+        .close-btn {
+            color: var(--text-muted);
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s;
+            background: none;
+            border: none;
+            padding: 0;
+            line-height: 1;
+        }
+        .close-btn:hover { color: var(--text-light); }
+
+        .modal-body p {
+            margin-bottom: 1.5rem;
+            color: var(--text-light);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <a href="data_analysis_visual_simulation.html" class="back-button">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            العودة إلى المحاكاة الرئيسية
+        </a>
+        <h1>محاكاة تحليل السلاسل الزمنية: التنبؤ بالمبيعات</h1>
+        <p class="text-center text-muted mb-4">
+            شاهد كيف يمكن لنموذج السلاسل الزمنية (محاكى) تحليل بيانات المبيعات التاريخية والتنبؤ بـ 12 شهراً مستقبلياً.
+        </p>
+
+        <div class="simulation-area">
+            <h2>التحليل والتوقعات</h2>
+            <canvas id="chartCanvas"></canvas>
+            
+            <div class="legend">
+                <div class="legend-item">البيانات التاريخية (المبيعات الفعلية) <span class="legend-color" id="salesColor"></span></div>
+                <div class="legend-item">التوقعات المستقبلية <span class="legend-color" id="forecastColor" style="border-style: dashed;"></span></div>
+            </div>
+
+            <button id="runForecast">تشغيل التنبؤ (12 شهراً)</button>
+        </div>
+        <button id="infoButton" class="btn-secondary" style="margin-top: 1.5rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+            </svg>
+            شرح المفاهيم
+        </button>
+    </div>
+    
+    <!-- Modal for Info -->
+    <div id="infoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>شرح تحليل السلاسل الزمنية</h2>
+                <button class="close-btn" onclick="document.getElementById('infoModal').style.display='none';">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p><strong>تعريف:</strong> هو أسلوب لتحليل البيانات التي يتم جمعها بمرور الوقت بترتيب زمني (مثل أسعار الأسهم، أو بيانات الطقس، أو المبيعات الشهرية).</p>
+                <p><strong>الهدف:</strong> يهدف إلى فهم الأنماط والاتجاهات الموسمية في البيانات، واستخدامها للتنبؤ بالقيم المستقبلية بدقة عالية.</p>
+                <p><strong>المكونات الرئيسية:</strong> تتضمن مكونات السلاسل الزمنية الاتجاه (Trend)، الموسمية (Seasonality)، والضوضاء (Noise).</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('chartCanvas');
+        const ctx = canvas.getContext('2d');
+        const infoButton = document.getElementById('infoButton');
+        const infoModal = document.getElementById('infoModal');
+        
+        const numMonths = 24; // 24 شهر من البيانات التاريخية
+        const numForecast = 12; // 12 شهر للتنبؤ
+
+        let historicalData = [];
+        let forecastData = [];
+        let dataReady = false;
+
+        // 1. توليد بيانات مبيعات وهمية (بها اتجاه وموسمية وضوضاء)
+        function generateHistoricalData() {
+            historicalData = [];
+            for (let i = 0; i < numMonths; i++) {
+                const monthIndex = i % 12;
+                const yearFactor = i / 12;
+                
+                // الاتجاه (Trend): نمو خطي بطيء
+                const trend = 500 + yearFactor * 100;
+                
+                // الموسمية (Seasonality): ارتفاع في الصيف (شهري 6-8) ونهاية العام (11-12)
+                let seasonality = 0;
+                if (monthIndex >= 5 && monthIndex <= 7) seasonality = 150; // Summer boost
+                if (monthIndex === 10 || monthIndex === 11) seasonality = 250; // Q4 boost
+                
+                // الضوضاء (Noise): تقلبات عشوائية
+                const noise = (Math.random() - 0.5) * 80;
+                
+                const value = Math.round(trend + seasonality + noise);
+                historicalData.push(Math.max(100, value)); // لا تقل عن 100
+            }
+        }
+        
+        // 2. دالة محاكاة التنبؤ (تعتمد على الاتجاه الموسمي الأخير)
+        function generateForecastData(lastYearData) {
+            forecastData = [];
+            const lastDataPoint = historicalData[historicalData.length - 1];
+            
+            // استخدام نموذج بسيط للغاية: آخر قيمة + آخر نمو موسمي + نمو سنوي متوقع
+            const trendGrowth = 15; // نمو شهري بسيط
+            
+            for (let i = 0; i < numForecast; i++) {
+                const lastMonthValue = forecastData.length > 0 ? forecastData[forecastData.length - 1] : lastDataPoint;
+                const monthIndex = (numMonths + i) % 12;
+
+                let seasonality = 0;
+                if (monthIndex >= 5 && monthIndex <= 7) seasonality = 150;
+                if (monthIndex === 10 || monthIndex === 11) seasonality = 250;
+                
+                const forecastValue = lastMonthValue + trendGrowth + seasonality / 2 + (Math.random() - 0.5) * 50;
+
+                forecastData.push(Math.round(forecastValue));
+            }
+        }
+
+        // 3. دالة الرسم البياني
+        function drawChart() {
+            const allData = historicalData.concat(forecastData);
+            const maxVal = Math.max(...allData);
+            const totalPoints = numMonths + numForecast;
+            
+            const width = canvas.width;
+            const height = canvas.height;
+            const padding = 50;
+            
+            ctx.clearRect(0, 0, width, height);
+
+            // حساب مقياس المحاور
+            const scaleX = (width - 2 * padding) / (totalPoints - 1);
+            const scaleY = (height - 2 * padding) / maxVal;
+
+            // الحصول على الألوان من CSS
+            const accentTeal = getComputedStyle(document.documentElement).getPropertyValue('--accent-teal').trim();
+            const forecastColor = getComputedStyle(document.documentElement).getPropertyValue('--forecast-color').trim();
+            const textLight = getComputedStyle(document.documentElement).getPropertyValue('--text-light').trim();
+            const textMuted = getComputedStyle(document.documentElement).getPropertyValue('--text-muted').trim();
+            
+
+            // رسم الخطوط (Historical Data)
+            ctx.beginPath();
+            ctx.strokeStyle = accentTeal;
+            ctx.lineWidth = 3;
+            ctx.moveTo(padding, height - padding - historicalData[0] * scaleY);
+            
+            for (let i = 1; i < historicalData.length; i++) {
+                ctx.lineTo(padding + i * scaleX, height - padding - historicalData[i] * scaleY);
+            }
+            ctx.stroke();
+
+            // رسم النقاط التاريخية
+            ctx.fillStyle = accentTeal;
+            for (let i = 0; i < historicalData.length; i++) {
+                ctx.beginPath();
+                ctx.arc(padding + i * scaleX, height - padding - historicalData[i] * scaleY, 4, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // رسم الخطوط (Forecast Data - Dashed)
+            if (forecastData.length > 0) {
+                const startX = padding + (historicalData.length - 1) * scaleX;
+                const startY = height - padding - historicalData[historicalData.length - 1] * scaleY;
+
+                ctx.beginPath();
+                ctx.strokeStyle = forecastColor;
+                ctx.setLineDash([5, 5]); // خط متقطع
+                ctx.lineWidth = 3;
+                
+                // بدء الخط المتقطع من آخر نقطة تاريخية
+                ctx.moveTo(startX, startY);
+
+                for (let i = 0; i < forecastData.length; i++) {
+                    const x = padding + (historicalData.length + i) * scaleX;
+                    const y = height - padding - forecastData[i] * scaleY;
+                    ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+                ctx.setLineDash([]); // إزالة الخط المتقطع
+
+                // رسم نقاط التوقعات
+                ctx.fillStyle = forecastColor;
+                for (let i = 0; i < forecastData.length; i++) {
+                    const x = padding + (historicalData.length + i) * scaleX;
+                    const y = height - padding - forecastData[i] * scaleY;
+                    ctx.beginPath();
+                    ctx.arc(x, y, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+
+            // رسم المحاور والتسميات
+            ctx.strokeStyle = textMuted;
+            ctx.fillStyle = textLight;
+            ctx.font = '14px Tajawal';
+            
+            // Y Axis
+            ctx.beginPath();
+            ctx.moveTo(padding, height - padding);
+            ctx.lineTo(padding, padding);
+            ctx.stroke();
+            
+            // X Axis
+            ctx.beginPath();
+            ctx.moveTo(padding, height - padding);
+            ctx.lineTo(width - padding, height - padding);
+            ctx.stroke();
+
+            // تسميات المحور Y (المبيعات)
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'middle';
+            const yTicks = 5;
+            for (let i = 0; i <= yTicks; i++) {
+                const val = Math.round(maxVal / yTicks * i);
+                const y = height - padding - val * scaleY;
+                ctx.fillText(val.toString(), padding - 5, y);
+                // خطوط الشبكة
+                ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(width - padding, y);
+                ctx.stroke();
+            }
+
+            // تسميات المحور X (الزمن)
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+            for (let i = 0; i < totalPoints; i += 6) { // كل 6 أشهر
+                const x = padding + i * scaleX;
+                const label = (i < numMonths) ? `ش ${i + 1}` : `ت ${i + 1 - numMonths}`;
+                ctx.fillText(label, x, height - padding + 5);
+            }
+            
+            // خط فاصل بين التاريخ والتوقع
+            ctx.strokeStyle = textMuted;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(padding + (numMonths - 1) * scaleX, height - padding);
+            ctx.lineTo(padding + (numMonths - 1) * scaleX, padding);
+            ctx.stroke();
+            ctx.setLineDash([]);
+        }
+
+        function runForecastSimulation() {
+            const runForecastButton = document.getElementById('runForecast');
+            
+            if (!dataReady) {
+                generateHistoricalData();
+                dataReady = true;
+                runForecastButton.textContent = 'تشغيل التنبؤ (12 شهراً)';
+                forecastData = []; // مسح التوقعات عند البدء الأول
+            } else {
+                generateForecastData(historicalData.slice(12)); // التنبؤ
+                runForecastButton.textContent = 'إعادة التنبؤ';
+            }
+            drawChart();
+        }
+
+        // تهيئة حجم الكانفاس عند التحميل وتغيير الحجم
+        function setupCanvas() {
+            canvas.width = canvas.clientWidth;
+            canvas.height = 450;
+            if (dataReady) {
+                 drawChart();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('runForecast').addEventListener('click', runForecastSimulation);
+            infoButton.addEventListener('click', () => {
+                infoModal.style.display = 'flex';
+            });
+            window.addEventListener('click', (event) => {
+                if (event.target === infoModal) {
+                    infoModal.style.display = 'none';
+                }
+            });
+            
+            // التهيئة الأولية للبيانات والرسم
+            generateHistoricalData();
+            dataReady = true;
+            setupCanvas();
+            window.addEventListener('resize', setupCanvas);
+        });
+    </script>
+</body>
+</html>

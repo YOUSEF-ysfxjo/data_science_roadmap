@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محاكاة التحليل الإحصائي</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Load Tajawal Font from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Tajawal:wght@400;500;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- MathJax for statistical formulas -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            /* ألوان الثيم الموحد */
+            --bg-dark: #111827;
+            --card-dark: #364152;
+            --text-light: #e5e7eb;
+            --text-muted: #9ca3af;
+            --border-color: #4b5563;
+            --accent-orange: #f97316;
+            /* لون برتقالي مميز للتحليل */
+            --accent-green: #10b981;
+            /* لون أخضر للنجاح */
+            --accent-yellow: #f59e0b;
+            /* لون أصفر للقيم */
+            --accent-blue: #3b82f6;
+            /* لون أزرق للبيانات */
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--bg-dark);
+            direction: rtl;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            flex: 1;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent-orange);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: rgba(249, 115, 22, 0.1);
+            color: #fb923c;
+        }
+
+        h1 {
+            color: var(--accent-orange);
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .card {
+            background-color: var(--card-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .card:hover {
+            border-color: var(--accent-orange);
+            box-shadow: 0 6px 15px rgba(249, 115, 22, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        input[type="number"],
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: rgba(31, 41, 55, 0.7);
+            /* Darker input bg */
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="number"]:focus,
+        input[type="text"]:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--accent-orange);
+            color: white;
+            font-weight: 600;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+
+        .btn:hover {
+            background-color: #ea580c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(249, 115, 22, 0.3);
+        }
+
+        .chart-container {
+            background-color: rgba(17, 24, 39, 0.7);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            height: 350px;
+            /* Increased height for better visualization */
+            position: relative;
+            border: 1px solid var(--border-color);
+        }
+
+        .results {
+            background-color: var(--card-dark);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            border-right: 4px solid var(--accent-orange);
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .result-value {
+            color: var(--accent-yellow);
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            text-align: left;
+            /* Ensure numbers are left-aligned for clarity */
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-weight: 500;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab:hover {
+            color: var(--text-light);
+        }
+
+        .tab.active {
+            color: var(--accent-orange);
+            border-bottom-color: var(--accent-orange);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .formula {
+            background-color: rgba(17, 24, 39, 0.7);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+            direction: ltr;
+            overflow-x: auto;
+        }
+
+      .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+}
+
+.data-table th,
+.data-table td {
+    padding: 0.6rem;
+    border: 1px solid rgba(30, 144, 255, 0.3);
+    color: var(--text-light);
+    text-align: center;
+}
+
+.data-table th {
+    background-color: rgba(30, 144, 255, 0.2);
+    font-weight: 600;
+    color: #fff;
+    border-bottom: 2px solid rgba(30, 144, 255, 0.5);
+}
+
+.data-table tbody tr:nth-child(even) {
+    background-color: rgba(30, 144, 255, 0.1);
+}
+
+.data-table tbody tr:hover {
+    background-color: rgba(30, 144, 255, 0.15);
+}
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .grid-cols-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+            }
+
+            .tab {
+                white-space: nowrap;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .chart-container {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mx-auto px-4 py-8">
+        <div class="mb-8">
+            <!-- Note: Assuming 'data_analysis_visual_simulation.html' is the dashboard file -->
+            <a href="data_analysis_visual_simulation.html" class="back-button">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                العودة للوحة التحكم
+            </a>
+        </div>
+
+        <div class="card bg-gray-800/50 backdrop-blur-sm p-6 mb-8">
+            <div class="flex items-center justify-center mb-6">
+                <svg class="w-12 h-12 text-orange-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                    </path>
+                </svg>
+                <h1 class="text-white">محاكاة التحليل الإحصائي</h1>
+            </div>
+            <p class="text-center text-gray-300 max-w-3xl mx-auto mb-2">
+                أداة متكاملة لإجراء التحليلات الإحصائية المختلفة وتصور النتائج بشكل تفاعلي
+            </p>
+        </div>
+
+        <div class="tabs border-b border-gray-700 mb-8">
+            <button class="tab active" data-tab="descriptive">
+                <svg class="w-5 h-5 inline-block ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                    </path>
+                </svg>
+                الوصف الإحصائي (Descriptive)
+            </button>
+            <button class="tab" data-tab="inference">
+                <svg class="w-5 h-5 inline-block ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+                الاستدلال الإحصائي (Inference)
+            </button>
+            <button class="tab" data-tab="regression">
+                <svg class="w-5 h-5 inline-block ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path>
+                </svg>
+                تحليل الانحدار (Regression)
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="card">
+                <div class="tab-content active" id="descriptive-tab">
+                    <div class="flex items-center mb-6">
+                        <svg class="w-8 h-8 text-orange-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                            </path>
+                        </svg>
+                        <h2 class="text-white">تحليل البيانات الوصفية</h2>
+                    </div>
+                    <div class="mb-6">
+                        <label for="dataInput">أدخل البيانات (مفصولة بفواصل):</label>
+                        <div class="relative rounded-md shadow-sm">
+                            <input type="text" id="dataInput"
+                                class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-2.5"
+                                placeholder="مثال: 12, 15, 18, 22, 24, 25, 25, 26, 27, 29, 30, 35"
+                                value="12, 15, 18, 22, 24, 25, 25, 26, 27, 29, 30, 35">
+                        </div>
+                        <p class="mt-1 text-xs text-gray-400">يمكنك إدخال الأرقام مفصولة بفواصل</p>
+                    </div>
+                    <button id="analyzeBtn" class="btn">
+                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                            </path>
+                        </svg>
+                        حلل البيانات
+                    </button>
+
+                    <div class="results hidden" id="descriptiveResults">
+                        <div class="flex items-center mb-4">
+                            <svg class="w-6 h-6 text-green-400 mr-2" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <h3>النتائج الوصفية</h3>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-gray-800/70 p-4 rounded-lg border border-gray-700">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-300 text-sm">المتوسط الحسابي</span>
+                                    <span class="result-value" id="meanValue">-</span>
+                                </div>
+                            </div>
+                            <div class="bg-gray-800/70 p-4 rounded-lg border border-gray-700">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-300 text-sm">الوسيط</span>
+                                    <span class="result-value" id="medianValue">-</span>
+                                </div>
+                            </div>
+                            <div class="bg-gray-800/70 p-4 rounded-lg border border-gray-700">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-300 text-sm">المنوال</span>
+                                    <span class="result-value" id="modeValue">-</span>
+                                </div>
+                            </div>
+                            <div class="bg-gray-800/70 p-4 rounded-lg border border-gray-700">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-300 text-sm">الانحراف المعياري</span>
+                                    <span class="result-value" id="stdDevValue">-</span>
+                                </div>
+                            </div>
+                            <div class="bg-gray-800/70 p-4 rounded-lg border border-gray-700">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-300 text-sm">التباين</span>
+                                    <span class="result-value" id="varianceValue">-</span>
+                                </div>
+                            </div>
+                            <div class="bg-gray-800/70 p-4 rounded-lg border border-gray-700">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-300 text-sm">المدى</span>
+                                    <span class="result-value" id="rangeValue">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="inference-tab">
+                    <div class="flex items-center mb-6">
+                        <svg class="w-8 h-8 text-orange-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                        <h2 class="text-white">اختبار الفرضيات الإحصائية</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-4 mb-6">
+                        <div class="form-group">
+                            <label for="sample1">العينة الأولى (مفصولة بفواصل):</label>
+                            <input type="text" id="sample1" placeholder="مثال: 12, 15, 18, 22, 24, 25"
+                                value="12, 15, 18, 22, 24, 25">
+                        </div>
+                        <div class="form-group">
+                            <label for="sample2">العينة الثانية (مفصولة بفواصل):</label>
+                            <input type="text" id="sample2" placeholder="مثال: 25, 26, 27, 29, 30, 35"
+                                value="25, 26, 27, 29, 30, 35">
+                        </div>
+                        <div class="form-group">
+                            <label for="testType">نوع الاختبار:</label>
+                            <select id="testType">
+                                <option value="t-test">اختبار ت (t-test)</option>
+                                <option value="anova">تحليل التباين (ANOVA) - محاكاة</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button id="testBtn" class="btn">إجراء الاختبار</button>
+
+                    <div class="results hidden" id="inferenceResults">
+                        <div class="flex items-center mb-4">
+                            <svg class="w-6 h-6 text-green-400 mr-2" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <h3>نتائج الاختبار الإحصائي</h3>
+                        </div>
+                        <div id="testResults" class="space-y-4"></div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="regression-tab">
+                    <div class="flex items-center mb-6">
+                        <svg class="w-8 h-8 text-orange-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z">
+                            </path>
+                        </svg>
+                        <h2 class="text-white">تحليل الانحدار الخطي البسيط</h2>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="xValues">قيم X (المتغير المستقل):</label>
+                        <input type="text" id="xValues" placeholder="مثال: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10"
+                            value="1, 2, 3, 4, 5, 6, 7, 8, 9, 10">
+                    </div>
+                    <div class="form-group">
+                        <label for="yValues">قيم Y (المتغير التابع):</label>
+                        <input type="text" id="yValues" placeholder="مثال: 2, 4, 5, 4, 5, 6, 7, 8, 10, 9"
+                            value="2, 4, 5, 4, 5, 6, 7, 8, 10, 9">
+                    </div>
+                    <button id="regressBtn" class="btn">إجراء تحليل الانحدار</button>
+
+                    <div class="results hidden" id="regressionResults">
+                        <h3>نتائج الانحدار</h3>
+                        <div class="formula">
+                            $$ y = \beta_0 + \beta_1x $$
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">الميل (β₁):</span>
+                            <span class="result-value" id="slopeValue">-</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">الجزء المقطوع (β₀):</span>
+                            <span class="result-value" id="interceptValue">-</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">معامل التحديد ($R^2$):</span>
+                            <span class="result-value" id="rSquaredValue">-</span>
+                        </div>
+                        <div id="equationDisplay" class="formula mt-4">
+                            <!-- Equation will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="mb-4">التمثيل البياني والتفاصيل</h2>
+                <div class="chart-container">
+                    <canvas id="analysisChart"></canvas>
+                </div>
+
+                <div id="dataTableContainer" class="mt-8 hidden">
+                    <h3 class="mb-4 border-b border-gray-700 pb-2">تفاصيل البيانات الوصفية</h3>
+                    <div
+                        style="max-height: 300px; overflow-y: auto; background: rgba(31, 41, 55, 0.5); border-radius: 0.5rem;">
+                        <table class="data-table" id="dataTable">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>القيمة</th>
+                                    <th>الانحراف عن المتوسط ($x - \bar{x}$)</th>
+                                    <th>الانحراف التربيعي ($ (x - \bar{x})^2 $)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dataTableBody">
+                                <!-- Will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="mt-8 text-center text-sm text-gray-400">
+            <p>تم تطوير هذه الأداة لمساعدتك في إجراء التحليلات الإحصائية بشكل تفاعلي وسهل</p>
+            <p class="mt-1">جميع الحقوق محفوظة &copy; <span id="currentYear">2023</span> - مسار علم البيانات</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Set current year in footer
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+            // Tab switching
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs and contents
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+
+                    // Add active class to clicked tab and corresponding content
+                    tab.classList.add('active');
+                    const tabId = tab.getAttribute('data-tab') + '-tab';
+                    document.getElementById(tabId).classList.add('active');
+
+                    // Reset chart and results based on the new tab
+                    resetAnalysis(tab.getAttribute('data-tab'));
+                });
+            });
+
+            // Initial chart setup (Scatter plot default)
+            const ctx = document.getElementById('analysisChart').getContext('2d');
+            let analysisChart;
+
+            function createChart(type = 'scatter', data = { datasets: [] }, options = {}) {
+                if (analysisChart) {
+                    analysisChart.destroy();
+                }
+
+                // Base options for dark theme and Tajawal font
+                const baseOptions = {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: { duration: 1000, easing: 'easeOutQuart' },
+                    backgroundColor: 'var(--bg-dark)',
+                    borderColor: 'var(--border-color)',
+                    color: 'var(--text-light)',
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'X', color: 'var(--text-muted)', font: { family: 'Tajawal', weight: '500' } },
+                            grid: { color: 'var(--border-color)', drawBorder: true },
+                            ticks: {
+                                color: 'var(--text-light)',
+                                font: { family: 'Tajawal', size: 12 },
+                                backdropColor: 'var(--bg-dark)'
+                            }
+                        },
+                        y: {
+                            title: { display: true, text: 'Y', color: 'var(--text-muted)', font: { family: 'Tajawal', weight: '500' } },
+                            grid: { color: 'var(--border-color)', drawBorder: true },
+                            ticks: {
+                                color: 'var(--text-light)',
+                                font: { family: 'Tajawal', size: 12 },
+                                backdropColor: 'var(--bg-dark)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            rtl: true,
+                            labels: {
+                                color: 'var(--text-light)',
+                                font: { family: 'Tajawal', size: 13 },
+                                padding: 20,
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            },
+                            align: 'center'
+                        },
+                        tooltip: {
+                            rtl: true,
+                            backgroundColor: 'var(--card-dark)',
+                            titleColor: 'var(--accent-orange)',
+                            bodyColor: 'var(--text-light)',
+                            borderColor: 'var(--border-color)',
+                            borderWidth: 1,
+                            padding: 12,
+                            titleFont: { family: 'Tajawal', size: 13, weight: 'bold' },
+                            bodyFont: { family: 'Tajawal', size: 13 },
+                            displayColors: true,
+                            boxPadding: 4,
+                            usePointStyle: true,
+                            callbacks: {
+                                label: function (context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y.toFixed(4);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    ...options // Merge with custom options
+                };
+
+                analysisChart = new Chart(ctx, {
+                    type: type,
+                    data: data,
+                    options: baseOptions
+                });
+                return analysisChart;
+            }
+
+            // Helper function to parse input data
+            function parseInputData(input) {
+                return input.split(',')
+                    .map(item => parseFloat(item.trim()))
+                    .filter(item => !isNaN(item));
+            }
+
+            // Helper function to calculate descriptive statistics
+            function calculateDescriptiveStats(data) {
+                if (data.length === 0) return {};
+
+                const sorted = [...data].sort((a, b) => a - b);
+                const n = sorted.length;
+
+                // Mean
+                const mean = sorted.reduce((a, b) => a + b, 0) / n;
+
+                // Median
+                let median;
+                if (n % 2 === 0) {
+                    median = (sorted[n / 2 - 1] + sorted[n / 2]) / 2;
+                } else {
+                    median = sorted[Math.floor(n / 2)];
+                }
+
+                // Mode
+                const frequency = {};
+                sorted.forEach(num => { frequency[num] = (frequency[num] || 0) + 1; });
+
+                let maxFreq = 0;
+                let modes = [];
+                for (const num in frequency) {
+                    if (frequency[num] > maxFreq) {
+                        modes = [parseFloat(num)];
+                        maxFreq = frequency[num];
+                    } else if (frequency[num] === maxFreq && maxFreq > 1) {
+                        modes.push(parseFloat(num));
+                    }
+                }
+
+                const mode = maxFreq > 1 ? modes : 'لا يوجد منوال';
+
+                // Variance & Standard Deviation
+                const variance = sorted.reduce((sum, num) => sum + Math.pow(num - mean, 2), 0) / n;
+                const stdDev = Math.sqrt(variance);
+
+                // Range
+                const range = sorted[n - 1] - sorted[0];
+
+                return {
+                    mean: mean,
+                    median: median,
+                    mode: Array.isArray(mode) ? mode.join(', ') : mode,
+                    variance: variance,
+                    stdDev: stdDev,
+                    range: range,
+                    sortedData: sorted
+                };
+            }
+
+            // Function to calculate Independent Samples T-Test (Simplified for simulation)
+            function calculateTTest(sample1, sample2) {
+                const n1 = sample1.length;
+                const n2 = sample2.length;
+
+                if (n1 < 2 || n2 < 2) {
+                    return { error: 'يجب أن تحتوي كل عينة على عنصرين على الأقل' };
+                }
+
+                const stats1 = calculateDescriptiveStats(sample1);
+                const stats2 = calculateDescriptiveStats(sample2);
+
+                const mean1 = stats1.mean;
+                const mean2 = stats2.mean;
+                const variance1 = stats1.variance * (n1 / (n1 - 1)); // Unbiased variance (S^2)
+                const variance2 = stats2.variance * (n2 / (n2 - 1)); // Unbiased variance (S^2)
+
+                // Pooled Standard Error
+                const stdError = Math.sqrt((variance1 / n1) + (variance2 / n2));
+
+                // T-Statistic
+                const tStat = (mean1 - mean2) / stdError;
+
+                // Degrees of Freedom (Satterthwaite approximation complexity avoided for simulation)
+                const df = n1 + n2 - 2;
+
+                // Simple P-Value simulation logic (if |t| > 2, usually p < 0.05)
+                const pValue = 2 * (1 / (1 + Math.exp(0.7 * Math.abs(tStat)))) * 0.5; // Quick approximation, always small for large t
+
+                const isSignificant = Math.abs(tStat) > 2.0; // Critical value approximation
+
+                return {
+                    mean1: mean1,
+                    mean2: mean2,
+                    tStat: tStat,
+                    df: df,
+                    pValue: pValue,
+                    isSignificant: isSignificant
+                };
+            }
+
+            // Helper function to calculate simple linear regression
+            function calculateRegression(x, y) {
+                const n = x.length;
+                if (n !== y.length || n < 2) return null;
+
+                const sumX = x.reduce((a, b) => a + b, 0);
+                const sumY = y.reduce((a, b) => a + b, 0);
+                const meanX = sumX / n;
+                const meanY = sumY / n;
+
+                const sumXY = x.reduce((sum, val, i) => sum + val * y[i], 0);
+                const sumX2 = x.reduce((sum, val) => sum + val * val, 0);
+
+                // Calculate Slope (β₁)
+                const numerator = n * sumXY - sumX * sumY;
+                const denominator = n * sumX2 - sumX * sumX;
+                const slope = denominator === 0 ? 0 : numerator / denominator;
+
+                // Calculate Intercept (β₀)
+                const intercept = meanY - slope * meanX;
+
+                // Calculate R-squared
+                const ssTotal = y.reduce((sum, val) => sum + Math.pow(val - meanY, 2), 0);
+                const ssResidual = y.reduce((sum, val, i) => {
+                    const yPred = slope * x[i] + intercept;
+                    return sum + Math.pow(val - yPred, 2);
+                }, 0);
+                const rSquared = 1 - (ssResidual / ssTotal);
+
+                return {
+                    slope: slope,
+                    intercept: intercept,
+                    rSquared: rSquared,
+                    predict: val => slope * val + intercept
+                };
+            }
+
+            // Function to reset the analysis
+            function resetAnalysis(tab) {
+                if (analysisChart) {
+                    analysisChart.destroy();
+                }
+
+                document.getElementById('descriptiveResults').classList.add('hidden');
+                document.getElementById('inferenceResults').classList.add('hidden');
+                document.getElementById('regressionResults').classList.add('hidden');
+                document.getElementById('dataTableContainer').classList.add('hidden');
+
+                if (tab === 'descriptive' || tab === 'regression') {
+                    // Re-initialize chart for scatter/descriptive view
+                    createChart('scatter', {
+                        datasets: [{
+                            label: 'نقاط البيانات',
+                            data: [],
+                            backgroundColor: 'var(--accent-blue)',
+                            pointRadius: 6,
+                            pointHoverRadius: 8
+                        }]
+                    }, {
+                        scales: { x: { title: { text: 'المتغير المستقل (X)' } }, y: { title: { text: 'القيمة (Y)' } } }
+                    });
+                } else if (tab === 'inference') {
+                    // Initialize empty bar chart for inference results
+                    createChart('bar', { labels: ['العينة 1', 'العينة 2'], datasets: [] }, {
+                        scales: { x: { title: { text: 'العينة' } }, y: { title: { text: 'المتوسط' } } }
+                    });
+                }
+            }
+
+            // Event listeners for buttons
+            document.getElementById('analyzeBtn').addEventListener('click', function () {
+                const inputData = document.getElementById('dataInput').value;
+                const data = parseInputData(inputData);
+
+                if (data.length === 0) {
+                    alert('الرجاء إدخال بيانات رقمية صالحة مفصولة بفواصل.');
+                    return;
+                }
+
+                const stats = calculateDescriptiveStats(data);
+
+                // Update UI with results
+                document.getElementById('meanValue').textContent = stats.mean.toFixed(4);
+                document.getElementById('medianValue').textContent = stats.median.toFixed(4);
+                document.getElementById('modeValue').textContent = stats.mode;
+                document.getElementById('stdDevValue').textContent = stats.stdDev.toFixed(4);
+                document.getElementById('varianceValue').textContent = stats.variance.toFixed(4);
+                document.getElementById('rangeValue').textContent = stats.range.toFixed(4);
+
+                // Show results
+                document.getElementById('descriptiveResults').classList.remove('hidden');
+
+                // Update chart (Histogram/Scatter proxy)
+                analysisChart = createChart('scatter', {
+                    datasets: [{
+                        label: 'توزيع القيم',
+                        data: stats.sortedData.map((y, x) => ({ x: x + 1, y: y })),
+                        backgroundColor: 'var(--accent-blue)',
+                        borderColor: 'var(--accent-blue)',
+                        pointBackgroundColor: 'var(--accent-blue)',
+                        pointBorderColor: 'white',
+                        pointHoverBackgroundColor: 'white',
+                        pointHoverBorderColor: 'var(--accent-blue)',
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        borderWidth: 1
+                    }]
+                }, {
+                    scales: {
+                        x: {
+                            title: {
+                                text: 'الترتيب (Index)',
+                                color: 'var(--text-muted)'
+                            },
+                            type: 'linear',
+                            position: 'bottom',
+                            grid: {
+                                color: 'var(--border-color)',
+                                drawBorder: true
+                            }
+                        },
+                        y: {
+                            title: {
+                                text: 'القيمة',
+                                color: 'var(--text-muted)'
+                            },
+                            grid: {
+                                color: 'var(--border-color)',
+                                drawBorder: true
+                            }
+                        }
+                    }
+                });
+
+                // Update data table
+                const tableBody = document.getElementById('dataTableBody');
+                tableBody.innerHTML = '';
+
+                stats.sortedData.forEach((value, index) => {
+                    const row = document.createElement('tr');
+                    const deviation = (value - stats.mean).toFixed(4);
+                    const squaredDeviation = Math.pow(value - stats.mean, 2).toFixed(4);
+
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${value}</td>
+                        <td>${deviation}</td>
+                        <td>${squaredDeviation}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+                document.getElementById('dataTableContainer').classList.remove('hidden');
+            });
+
+            document.getElementById('testBtn').addEventListener('click', function () {
+                const sample1 = parseInputData(document.getElementById('sample1').value);
+                const sample2 = parseInputData(document.getElementById('sample2').value);
+                const testType = document.getElementById('testType').value;
+
+                document.getElementById('dataTableContainer').classList.add('hidden'); // Hide Descriptive table
+
+                if (sample1.length < 2 || sample2.length < 2) {
+                    alert('الرجاء إدخال بيانات صالحة. يجب أن تحتوي كل عينة على عنصرين على الأقل.');
+                    return;
+                }
+
+                let testOutput = '';
+
+                if (testType === 't-test') {
+                    const tTestResults = calculateTTest(sample1, sample2);
+
+                    if (tTestResults.error) {
+                        alert(tTestResults.error);
+                        return;
+                    }
+
+                    const tStat = tTestResults.tStat.toFixed(4);
+                    const pValue = tTestResults.pValue.toFixed(4);
+                    const resultColor = tTestResults.isSignificant ? 'var(--accent-green)' : 'var(--accent-yellow)';
+                    const resultText = tTestResults.isSignificant ? 'توجد دلالة إحصائية (ارفض الفرضية الصفرية)' : 'لا توجد دلالة إحصائية (اقبل الفرضية الصفرية)';
+
+                    testOutput = `
+                        <div class="result-item">
+                            <span class="result-label">قيمة t:</span>
+                            <span class="result-value">${tStat}</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">درجات الحرية (df):</span>
+                            <span class="result-value">${tTestResults.df}</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">قيمة p التقريبية:</span>
+                            <span class="result-value">${pValue}</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">النتيجة الإحصائية:</span>
+                            <span class="result-value" style="color: ${resultColor};">${resultText}</span>
+                        </div>
+                        <div class="formula mt-4">
+                            $$ t = \\frac{\\bar{x}_1 - \\bar{x}_2}{\\sqrt{\\frac{s_1^2}{n_1} + \\frac{s_2^2}{n_2}}} $$
+                        </div>
+                    `;
+
+                    // Update chart to show mean comparison
+                    analysisChart = createChart('bar', {
+    labels: ['العينة 1', 'العينة 2'],
+    datasets: [{
+        label: 'متوسط العينات',
+        data: [tTestResults.mean1, tTestResults.mean2],
+        backgroundColor: ['#1E90FF', '#FFA500'],  // Blue and Orange
+        borderColor: ['#1E90FF', '#FFA500'],      // Match border to background
+        borderWidth: 2,
+        borderRadius: 4,
+        barPercentage: 0.6,
+        categoryPercentage: 0.8,
+        hoverBackgroundColor: ['#63B3FF', '#FFB84D'],  // Lighter shades on hover
+        hoverBorderColor: ['#1E90FF', '#FFA500']      // Keep original colors on hover border
+    }]
+                    }, {
+                        scales: {
+                            x: {
+                                title: {
+                                    text: 'العينة',
+                                    color: 'var(--text-muted)'
+                                },
+                                grid: {
+                                    display: false
+                                }
+                            },
+                            y: {
+                                title: {
+                                    text: 'المتوسط',
+                                    color: 'var(--text-muted)'
+                                },
+                                grid: {
+                                    color: 'var(--border-color)'
+                                }
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: (context) => {
+                                        return `المتوسط: ${context.raw.toFixed(4)}`;
+                                    }
+                                }
+                            },
+                            legend: {
+                                display: false
+                            }
+                        }
+                    });
+
+                } else if (testType === 'anova') {
+                    // ANOVA is complex, keep it as a structured simulation for educational purposes
+                    const F = (Math.random() * 10 + 5).toFixed(4);
+                    const pValue = (Math.random() * 0.05).toFixed(4);
+                    const isSignificant = parseFloat(pValue) < 0.05;
+                    const resultColor = isSignificant ? 'var(--accent-green)' : 'var(--accent-yellow)';
+                    const resultText = isSignificant ? 'توجد دلالة إحصائية بين متوسطات المجموعات' : 'لا توجد دلالة إحصائية بين متوسطات المجموعات';
+
+                    testOutput = `
+                        <div class="result-item">
+                            <span class="result-label">قيمة F:</span>
+                            <span class="result-value">${F}</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">درجات الحرية (بين المجموعات):</span>
+                            <span class="result-value">1</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">درجات الحرية (داخل المجموعات):</span>
+                            <span class="result-value">${sample1.length + sample2.length - 2}</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">قيمة p:</span>
+                            <span class="result-value">${pValue}</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">النتيجة:</span>
+                            <span class="result-value" style="color: ${resultColor};">${resultText}</span>
+                        </div>
+                        <div class="formula mt-4">
+                            $$ F = \\frac{MS_{Between}}{MS_{Within}} $$
+                        </div>
+                    `;
+
+                    // Update chart to show box plot representation (as a scatter proxy)
+                    const mean1 = calculateDescriptiveStats(sample1).mean;
+                    const mean2 = calculateDescriptiveStats(sample2).mean;
+
+                   analysisChart = createChart('bar', {
+    labels: ['المجموعة 1', 'المجموعة 2'],
+    datasets: [{
+        label: 'متوسط المجموعات',
+        data: [mean1, mean2],
+        backgroundColor: ['#1E90FF', '#FFA500'],  // Blue and Orange
+        borderColor: ['#1E90FF', '#FFA500'],      // Match border to background
+        borderWidth: 2,
+        borderRadius: 4,
+        barPercentage: 0.6,
+        categoryPercentage: 0.8,
+        hoverBackgroundColor: ['#63B3FF', '#FFB84D'],  // Lighter shades on hover
+        hoverBorderColor: ['#1E90FF', '#FFA500']      // Keep original colors on hover border
+    }]
+                    }, {
+                        scales: {
+                            x: {
+                                title: {
+                                    text: 'المجموعة',
+                                    color: 'var(--text-muted)'
+                                },
+                                grid: {
+                                    display: false
+                                }
+                            },
+                            y: {
+                                title: {
+                                    text: 'المتوسط',
+                                    color: 'var(--text-muted)'
+                                },
+                                grid: {
+                                    color: 'var(--border-color)'
+                                }
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: (context) => {
+                                        return `المتوسط: ${context.raw.toFixed(4)}`;
+                                    }
+                                }
+                            },
+                            legend: {
+                                display: false
+                            }
+                        }
+                    });
+                }
+
+                document.getElementById('testResults').innerHTML = testOutput;
+                document.getElementById('inferenceResults').classList.remove('hidden');
+
+                // Render MathJax for formulas
+                if (window.MathJax) {
+                    MathJax.typeset();
+                }
+            });
+
+            document.getElementById('regressBtn').addEventListener('click', function () {
+                const xValues = parseInputData(document.getElementById('xValues').value);
+                const yValues = parseInputData(document.getElementById('yValues').value);
+
+                document.getElementById('dataTableContainer').classList.add('hidden'); // Hide Descriptive table
+
+                if (xValues.length < 2 || yValues.length < 2 || xValues.length !== yValues.length) {
+                    alert('الرجاء إدخال بيانات صالحة للمتغيرين X و Y (يجب أن يكونا بنفس الطول وبعنصرين على الأقل).');
+                    return;
+                }
+
+                const regression = calculateRegression(xValues, yValues);
+
+                if (!regression) {
+                    alert('حدث خطأ في حساب معاملات الانحدار.');
+                    return;
+                }
+
+                // Update UI with results
+                document.getElementById('slopeValue').textContent = regression.slope.toFixed(4);
+                document.getElementById('interceptValue').textContent = regression.intercept.toFixed(4);
+                document.getElementById('rSquaredValue').textContent = regression.rSquared.toFixed(4);
+
+                // Show results
+                document.getElementById('regressionResults').classList.remove('hidden');
+
+                // Prepare regression line data
+                const minX = Math.min(...xValues);
+                const maxX = Math.max(...xValues);
+                const range = maxX - minX;
+
+                const lineData = [
+                    { x: minX - 0.1 * range, y: regression.predict(minX - 0.1 * range) },
+                    { x: maxX + 0.1 * range, y: regression.predict(maxX + 0.1 * range) }
+                ];
+
+                // Update chart
+                analysisChart = createChart('scatter', {
+    datasets: [
+       {
+    label: 'نقاط البيانات',
+    data: xValues.map((x, i) => ({ x: x, y: yValues[i] })),
+    backgroundColor: '#1E90FF',  // Blue
+    borderColor: '#1E90FF',      // Blue
+    pointBackgroundColor: '#1E90FF',
+    pointBorderColor: 'white',
+    pointHoverBackgroundColor: 'white',
+    pointHoverBorderColor: '#1E90FF',
+    pointRadius: 6,
+    pointHoverRadius: 8,
+    borderWidth: 2,
+    type: 'scatter'
+},
+        {
+    label: 'خط الانحدار',
+    data: lineData,
+    type: 'line',
+    borderColor: '#FFA500',  // Orange
+    borderWidth: 3,
+    pointRadius: 0,
+    pointHoverRadius: 0,
+    borderDash: [0],
+    fill: false,
+    tension: 0.1,
+    pointBackgroundColor: '#FFA500',
+    pointBorderColor: 'white',
+    pointHoverBackgroundColor: 'white',
+    pointHoverBorderColor: '#FFA500'
+}
+    ]
+}, {
+    scales: {
+    x: { 
+        title: { 
+            text: 'المتغير المستقل (X)',
+            color: 'var(--text-muted)'
+        },
+        grid: {
+            color: 'rgba(30, 144, 255, 0.1)',  // Subtle blue grid
+            drawBorder: true
+        }
+    },
+    y: { 
+        title: { 
+            text: 'المتغير التابع (Y)',
+            color: 'var(--text-muted)'
+        },
+        grid: {
+            color: 'rgba(30, 144, 255, 0.1)',  // Subtle blue grid
+            drawBorder: true
+        }
+    }
+},
+    plugins: {
+    legend: {
+        labels: {
+            usePointStyle: true,
+            pointStyle: 'circle',
+            padding: 20,
+            color: 'var(--text-light)'
+        }
+    }
+}
+});
+
+                // Update regression equation
+                const sign = regression.slope >= 0 ? '+' : '';
+                document.getElementById('equationDisplay').innerHTML = `
+                    $$ y = ${regression.intercept.toFixed(4)} ${sign} ${regression.slope.toFixed(4)}x $$
+                    <div style="margin-top: 10px; font-size: 0.9em; color: var(--text-muted);">
+                        معامل التحديد ($R^2$): ${regression.rSquared.toFixed(4)}
+                    </div>
+                `;
+
+                // Render MathJax
+                if (window.MathJax) {
+                    MathJax.typeset();
+                }
+            });
+
+            // Initial chart setup and analysis run
+            resetAnalysis('descriptive');
+            document.getElementById('analyzeBtn').click();
+        });
+    </script>
+</body>
+
+</html>
