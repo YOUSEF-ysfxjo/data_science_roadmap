@@ -14,6 +14,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
 
     <style>
+        /*
+        ========================================
+        التعديلات الهيكلية المطبقة
+        ========================================
+        */
         body {
             font-family: 'Tajawal', sans-serif;
             background-color: #111827;
@@ -23,18 +28,18 @@
             flex-direction: column;
         }
 
-        /* Main container styles */
-        .slide-container {
+        /* Main container styles - أبعاد أكبر لتتناسب مع التصميم الجديد */
+         .slide-container {
             display: flex;
             width: 100%;
-            max-width: 1200px;
+            max-width: 1700px; 
             margin: 0 auto;
             position: relative;
             flex: 1;
             overflow: visible;
             padding: 2rem 1rem;
             min-height: 70vh;
-            height: 90vh;
+            height: 95vh; 
         }
 
         .slide {
@@ -50,8 +55,8 @@
             bottom: 0;
             padding: 1.5rem 0;
             display: flex;
-            align-items: center;
-            justify-content: center;
+            align-items: center; 
+            justify-content: center; 
             height: 100%;
             box-sizing: border-box;
         }
@@ -63,23 +68,25 @@
             height: 100%;
             padding: 1.5rem 0;
             display: flex;
-            flex-direction: column;
+            flex-direction: column; 
         }
 
+        /* تنسيق بطاقة المحتوى */
         .slide-content {
             background-color: #1f2937;
             border-radius: 0.75rem;
             padding: 2rem;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             width: 100%;
-            max-width: 1000px;
-            height: 100%;
+            max-width: 2000px;
             max-height: 100%;
             display: flex;
             flex-direction: column;
             margin: 0 auto;
             overflow-y: auto;
             box-sizing: border-box;
+            min-height: 70vh;
+            height: 90vh;
         }
 
         .slide-content ul {
@@ -98,12 +105,13 @@
             cursor: pointer;
         }
 
-        /* استخدام اللون الوردي الخاص بقسم الرياضيات */
+        /* اللون الأساسي هو الوردي (pink) */
         .pagination-dot.active {
             background-color: #ec4899; /* pink-500 */
             width: 2rem;
         }
 
+        /* مربع الرسم التوضيحي */
         .illustration-box {
             background-color: #111827;
             border: 1px solid #374151;
@@ -117,10 +125,12 @@
             align-items: center;
             justify-content: center;
             transition: all 0.2s ease;
+            box-shadow: 0 0 10px rgba(236, 72, 153, 0.1); 
         }
         
         .illustration-box:hover {
             border-color: #ec4899; /* pink-500 */
+            box-shadow: 0 0 15px rgba(236, 72, 153, 0.3), 0 4px 6px -1px rgba(0, 0, 0, 0.2);
         }
 
         /* أنماط شريحة الفهرس */
@@ -129,7 +139,10 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 3rem 2rem;
+            padding: 5rem 2rem 3rem; 
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            border: 1px solid #ec4899; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
         }
 
         .slide[data-slide="0"] h2 {
@@ -137,6 +150,10 @@
             margin-bottom: 2rem;
             text-align: center;
             color: #ec4899; /* pink-500 */
+            border-bottom: 2px solid #ec4899; /* pink-500 */
+            padding-bottom: 1rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
         }
 
         .slide[data-slide="0"] h3 {
@@ -153,13 +170,14 @@
             width: 100%;
             margin: 0;
             padding: 1rem;
+            list-style: none; 
         }
 
         .slide[data-slide="0"] li {
-            background-color: #1f2937;
+            background-color: rgba(30, 41, 59, 0.8);
             border: 1px solid #374151;
             border-radius: 0.75rem;
-            padding: 1.5rem;
+            padding: 0; 
             transition: all 0.3s ease;
             text-align: center;
             position: relative;
@@ -182,10 +200,29 @@
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
                 0 4px 6px -2px rgba(0, 0, 0, 0.05);
             border-color: #ec4899; /* pink-500 */
+            background-color: rgba(30, 41, 59, 0.9);
         }
         
         .slide[data-slide="0"] li:hover::before {
             width: 8px;
+        }
+        
+        .slide[data-slide="0"] button {
+            background: none;
+            border: none;
+            color: #e5e7eb;
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+            text-align: right; 
+            padding: 1.5rem; 
+            font-family: 'Tajawal', sans-serif;
+            transition: color 0.3s ease;
+        }
+
+        .slide[data-slide="0"] button:hover {
+            color: #f472b6; /* pink-400 */
         }
 
         /* تنسيقات الجدول */
@@ -195,6 +232,9 @@
             margin-top: 1.5rem;
             font-size: 0.9rem;
             text-align: right;
+            border: 1px solid #374151; 
+            border-radius: 0.5rem;
+            overflow: hidden; 
         }
         
         .styled-table th,
@@ -217,10 +257,62 @@
             color: #f472b6; /* pink-400 */
             text-decoration: none;
             font-weight: 500;
+            transition: color 0.2s ease;
         }
         
         .styled-table td a:hover {
             text-decoration: underline;
+            color: #ec4899; /* pink-500 */
+        }
+
+        /* أنماط إضافية */
+        .slide-title-icon {
+            font-size: 1.8rem; 
+            margin-left: 0.75rem;
+            display: inline-block;
+            transform: translateY(2px);
+        }
+        
+        .highlight-term {
+            color: #f472b6; /* pink-400 */
+            font-weight: 600;
+            background-color: rgba(236, 72, 153, 0.1); 
+            padding: 0 0.3rem;
+            border-radius: 0.25rem;
+            white-space: nowrap;
+        }
+
+        /* أنماط البطاقات الداخلية */
+        /* تم إزالة أنماط الأيقونة SVG content-icon */
+        .content-card-h3 {
+             transition: color 0.3s ease;
+        }
+        .content-card-h3:hover {
+            color: #a78bfa; /* violet-400 */
+        }
+
+        /* تم إزالة أنماط content-icon */
+
+        @media (max-width: 768px) {
+            .slide[data-slide="0"] ul {
+                grid-template-columns: 1fr;
+            }
+
+            .slide[data-slide="0"] h2 {
+                font-size: 2rem;
+            }
+
+            .slide[data-slide="0"] h3 {
+                font-size: 1.25rem;
+            }
+            
+            .styled-table {
+                font-size: 0.8rem;
+            }
+            .styled-table th,
+            .styled-table td {
+                padding: 0.75rem 0.5rem;
+            }
         }
     </style>
 </head>
@@ -246,7 +338,7 @@
                 <div class="slide active" data-slide="0">
                     <div class="slide-content">
                         <h2 class="text-3xl font-bold mb-6 border-b border-pink-500 pb-2">
-                            <span class="text-pink-500">الرياضيات والإحصاء لعلم البيانات</span>
+                            <span class="text-pink-500">الرياضيات والإحصاء لعلم البيانات 🧮</span>
                         </h2>
                         <h3 class="text-xl font-semibold text-white mb-4">المفهوم الأساسي</h3>
                         <p class="text-center text-gray-300 mb-8 max-w-3xl mx-auto">
@@ -254,11 +346,11 @@
                         </p>
                         <h3 class="text-xl font-semibold text-white mb-6">فهرس الوحدة</h3>
                         <ul class="space-y-3 text-gray-300 grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <li><button onclick="showSlide(1)" class="hover:text-pink-400 w-full text-right p-4">1. الجبر الخطي (Linear Algebra)</button></li>
-                            <li><button onclick="showSlide(2)" class="hover:text-pink-400 w-full text-right p-4">2. حساب التفاضل والتكامل (Calculus)</button></li>
-                            <li><button onclick="showSlide(3)" class="hover:text-pink-400 w-full text-right p-4">3. الإحصاء والاحتمالات (Statistics)</button></li>
-                            <li><button onclick="showSlide(4)" class="hover:text-pink-400 w-full text-right p-4">4. نظرية التحسين (Optimization)</button></li>
-                            <li><button onclick="showSlide(5)" class="hover:text-pink-400 w-full text-right p-4">5. مصادر ومراجع</button></li>
+                            <li><button onclick="showSlide(1)">1. الجبر الخطي (Linear Algebra) 📐</button></li>
+                            <li><button onclick="showSlide(2)">2. حساب التفاضل والتكامل (Calculus) 📈</button></li>
+                            <li><button onclick="showSlide(3)">3. الإحصاء والاحتمالات (Statistics) 🎲</button></li>
+                            <li><button onclick="showSlide(4)">4. نظرية التحسين (Optimization) 🎯</button></li>
+                            <li><button onclick="showSlide(5)">5. مصادر ومراجع 📚</button></li>
                         </ul>
                     </div>
                 </div>
@@ -266,38 +358,53 @@
                 <!-- Slide 1: الجبر الخطي -->
                 <div class="slide" data-slide="1">
                     <div class="slide-content">
-                        <h2 class="text-2xl font-bold text-white mb-4"><span class="text-pink-400">1.</span> الجبر الخطي (Linear Algebra)</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <h2 class="text-3xl font-bold text-white mb-6 flex items-center">
+                            <span class="slide-title-icon text-pink-400">📐</span>
+                            الجبر الخطي (Linear Algebra)
+                        </h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
                             <div class="space-y-4">
-                                <div>
-                                    <h3 class="text-lg font-semibold text-white mb-2">الماهية</h3>
-                                    <p class="text-gray-400 leading-relaxed">دراسة المتجهات (Vectors)، والمصفوفات (Matrices)، والتحويلات الخطية.</p>
-                                </div>
-                                <div>
-                                    <h3 class="text-lg font-semibold text-white mb-2">الدور في علم البيانات</h3>
+                                <!-- بطاقة الماهية مع إيموجي -->
+                                <div class="bg-gray-800/80 p-4 rounded-lg border border-gray-700 hover:border-pink-500 transition-colors">
+                                    <h3 class="text-lg font-semibold text-white mb-2 flex items-center content-card-h3">
+                                        <span class="text-xl ml-2">💡</span>
+                                        الماهية
+                                    </h3>
                                     <p class="text-gray-400 leading-relaxed">
-                                        جميع البيانات في النماذج (Datasets) تُمثَّل في شكل مصفوفات. يوفر الجبر الخطي الأدوات اللازمة لمعالجة هذه المصفوفات بكفاءة، وهو أساس خوارزميات مثل تحليل المكونات الرئيسية (PCA) لتقليل الأبعاد، وأيضاً عمليات الضرب بين الأوزان والمدخلات في الشبكات العصبية.
+                                        دراسة <span class="highlight-term">المتجهات (Vectors)</span>، و<span class="highlight-term">المصفوفات (Matrices)</span>، و<span class="highlight-term">التحويلات الخطية</span>.
+                                    </p>
+                                </div>
+                                <!-- بطاقة الدور مع إيموجي -->
+                                <div class="bg-gray-800/80 p-4 rounded-lg border border-gray-700 hover:border-pink-500 transition-colors">
+                                    <h3 class="text-lg font-semibold text-white mb-2 flex items-center content-card-h3">
+                                        <span class="text-xl ml-2">⚙️</span>
+                                        الدور في علم البيانات
+                                    </h3>
+                                    <p class="text-gray-400 leading-relaxed">
+                                        جميع البيانات في النماذج (Datasets) تُمثَّل في شكل مصفوفات. يوفر الجبر الخطي الأدوات اللازمة لمعالجة هذه المصفوفات بكفاءة، وهو أساس خوارزميات مثل <span class="highlight-term">تحليل المكونات الرئيسية (PCA)</span> لتقليل الأبعاد، وأيضاً عمليات الضرب بين الأوزان والمدخلات في <span class="highlight-term">الشبكات العصبية</span>.
                                     </p>
                                 </div>
                             </div>
                             <div class="illustration-box">
                                 <!-- SVG لمصفوفة -->
-                                <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg" class="text-gray-400" fill="currentColor">
+                                <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg" class="w-full h-full text-gray-300" fill="currentColor">
                                     <title>رسم توضيحي لمصفوفة</title>
-                                    <text x="20" y="40" font-size="20" fill="#ec4899">[</text>
-                                    <text x="170" y="120" font-size="20" fill="#ec4899">]</text>
+                                    <text x="20" y="40" font-size="20" fill="#ec4899" font-weight="bold">[</text>
+                                    <text x="170" y="120" font-size="20" fill="#ec4899" font-weight="bold">]</text>
                                     
-                                    <text x="40" y="40" font-size="14">X₁₁</text>
-                                    <text x="80" y="40" font-size="14">X₁₂</text>
-                                    <text x="120" y="40" font-size="14">...</text>
+                                    <text x="40" y="40" font-size="16" fill="#f472b6">X₁₁</text>
+                                    <text x="80" y="40" font-size="16">X₁₂</text>
+                                    <text x="120" y="40" font-size="16">...</text>
                                     
-                                    <text x="40" y="80" font-size="14">X₂₁</text>
-                                    <text x="80" y="80" font-size="14">X₂₂</text>
-                                    <text x="120" y="80" font-size="14">...</text>
+                                    <text x="40" y="80" font-size="16">X₂₁</text>
+                                    <text x="80" y="80" font-size="16" fill="#f472b6">X₂₂</text>
+                                    <text x="120" y="80" font-size="16">...</text>
                                     
-                                    <text x="40" y="120" font-size="14">...</text>
-                                    <text x="80" y="120" font-size="14">...</text>
-                                    <text x="120" y="120" font-size="14">Xₙₘ</text>
+                                    <text x="40" y="120" font-size="16">...</text>
+                                    <text x="80" y="120" font-size="16">...</text>
+                                    <text x="120" y="120" font-size="16" fill="#f472b6">Xₙₘ</text>
+                                    
+                                    <text x="90" y="15" fill="#ec4899" font-size="16" font-weight="bold" text-anchor="middle">مصفوفة البيانات</text>
                                 </svg>
                             </div>
                         </div>
@@ -307,17 +414,28 @@
                 <!-- Slide 2: حساب التفاضل والتكامل -->
                 <div class="slide" data-slide="2">
                     <div class="slide-content">
-                        <h2 class="text-2xl font-bold text-white mb-4"><span class="text-pink-400">2.</span> حساب التفاضل والتكامل (Calculus)</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <h2 class="text-3xl font-bold text-white mb-6 flex items-center">
+                            <span class="slide-title-icon text-pink-400">📈</span>
+                            حساب التفاضل والتكامل (Calculus)
+                        </h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
                             <div class="space-y-4">
-                                <div>
-                                    <h3 class="text-lg font-semibold text-white mb-2">الماهية</h3>
-                                    <p class="text-gray-400 leading-relaxed">دراسة معدل التغير (Rate of Change) باستخدام المشتقات (Derivatives) والتكاملات.</p>
+                                <!-- بطاقة الماهية مع إيموجي -->
+                                <div class="bg-gray-800/80 p-4 rounded-lg border border-gray-700 hover:border-pink-500 transition-colors">
+                                    <h3 class="text-lg font-semibold text-white mb-2 flex items-center content-card-h3">
+                                        <span class="text-xl ml-2">📉</span>
+                                        الماهية
+                                    </h3>
+                                    <p class="text-gray-400 leading-relaxed">دراسة <span class="highlight-term">معدل التغير (Rate of Change)</span> باستخدام المشتقات (Derivatives) والتكاملات.</p>
                                 </div>
-                                <div>
-                                    <h3 class="text-lg font-semibold text-white mb-2">الدور في علم البيانات</h3>
+                                <!-- بطاقة الدور مع إيموجي -->
+                                <div class="bg-gray-800/80 p-4 rounded-lg border border-gray-700 hover:border-pink-500 transition-colors">
+                                    <h3 class="text-lg font-semibold text-white mb-2 flex items-center content-card-h3">
+                                        <span class="text-xl ml-2">🚀</span>
+                                        الدور في علم البيانات
+                                    </h3>
                                     <p class="text-gray-400 leading-relaxed">
-                                        يُستخدم تحديداً في مفهوم التفاضل (Differentiation). المشتقة (Slope) تُستخدم لمعرفة اتجاه الانحدار في خوارزمية انحدار التدرج (Gradient Descent). هذه الخوارزمية هي أساس تدريب معظم نماذج ML و DL للعثور على أقل قيمة لـ "دالة الخسارة" (Loss Function).
+                                        يُستخدم تحديداً في مفهوم <span class="highlight-term">التفاضل (Differentiation)</span>. المشتقة (Slope) تُستخدم لمعرفة اتجاه الانحدار في خوارزمية <span class="highlight-term">انحدار التدرج (Gradient Descent)</span>. هذه الخوارزمية هي أساس تدريب معظم نماذج ML و DL للعثور على أقل قيمة لـ "<span class="highlight-term">دالة الخسارة</span>" (Loss Function).
                                     </p>
                                 </div>
                             </div>
@@ -325,13 +443,14 @@
                                 <!-- SVG لمشتقة (خط مماس) -->
                                 <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
                                     <title>رسم توضيحي للمشتقة (Gradient)</title>
-                                    <!-- المنحنى -->
+                                    <!-- المنحنى (لون بنفسجي) -->
                                     <path d="M 20 120 Q 50 20, 100 80 T 180 60" stroke="#a78bfa" stroke-width="3" fill="none" />
-                                    <!-- النقطة -->
+                                    <!-- النقطة (لون وردي) -->
                                     <circle cx="100" cy="80" r="5" fill="#ec4899" />
-                                    <!-- خط المماس (المشتقة) -->
-                                    <line x1="60" y1="110" x2="140" y2="50" stroke="#ec4899" stroke-width="2" stroke-dasharray="4 4" />
-                                    <text x="145" y="50" fill="#ec4899" font-size="12">المشتقة</text>
+                                    <!-- خط المماس (المشتقة - لون وردي) -->
+                                    <line x1="60" y1="110" x2="140" y2="50" stroke="#f472b6" stroke-width="2" stroke-dasharray="4 4" />
+                                    <text x="145" y="50" fill="#f472b6" font-size="12">المشتقة</text>
+                                    <text x="100" y="140" fill="#a78bfa" font-size="12" text-anchor="middle">دالة الخسارة</text>
                                 </svg>
                             </div>
                         </div>
@@ -341,18 +460,31 @@
                 <!-- Slide 3: الإحصاء والاحتمالات -->
                 <div class="slide" data-slide="3">
                     <div class="slide-content">
-                        <h2 class="text-2xl font-bold text-white mb-4"><span class="text-pink-400">3.</span> الإحصاء والاحتمالات (Statistics & Probability)</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <h2 class="text-3xl font-bold text-white mb-6 flex items-center">
+                            <span class="slide-title-icon text-pink-400">🎲</span>
+                            الإحصاء والاحتمالات (Statistics & Probability)
+                        </h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
                             <div class="space-y-4">
-                                <div>
-                                    <h3 class="text-lg font-semibold text-white mb-2">الماهية</h3>
-                                    <p class="text-gray-400 leading-relaxed">الإحصاء هو أداة لوصف وتلخيص البيانات. الاحتمالات هي أداة لنمذجة عدم اليقين (Uncertainty) وتحديد فرصة وقوع الأحداث.</p>
+                                <!-- بطاقة الماهية مع إيموجي -->
+                                <div class="bg-gray-800/80 p-4 rounded-lg border border-gray-700 hover:border-pink-500 transition-colors">
+                                    <h3 class="text-lg font-semibold text-white mb-2 flex items-center content-card-h3">
+                                        <span class="text-xl ml-2">📜</span>
+                                        الماهية
+                                    </h3>
+                                    <p class="text-gray-400 leading-relaxed">
+                                        الإحصاء هو أداة لوصف وتلخيص البيانات. الاحتمالات هي أداة لنمذجة <span class="highlight-term">عدم اليقين (Uncertainty)</span> وتحديد فرصة وقوع الأحداث.
+                                    </p>
                                 </div>
-                                <div>
-                                    <h3 class="text-lg font-semibold text-white mb-2">الدور في علم البيانات</h3>
+                                <!-- بطاقة الدور مع إيموجي -->
+                                <div class="bg-gray-800/80 p-4 rounded-lg border border-gray-700 hover:border-pink-500 transition-colors">
+                                    <h3 class="text-lg font-semibold text-white mb-2 flex items-center content-card-h3">
+                                        <span class="text-xl ml-2">🔮</span>
+                                        الدور في علم البيانات
+                                    </h3>
                                     <ul class="list-disc pr-4 space-y-2 text-gray-400">
-                                        <li><b>الإحصاء:</b> يُستخدم في التحليل الاستكشافي للبيانات (EDA) لفهم خصائصها (المتوسط، التباين).</li>
-                                        <li><b>الاحتمالات:</b> هي أساس النماذج الإحصائية مثل الانحدار اللوجستي (Logistic Regression) و Naive Bayes، وتُستخدم لقياس الثقة في تنبؤات النموذج.</li>
+                                        <li><b>الإحصاء:</b> يُستخدم في <span class="highlight-term">التحليل الاستكشافي للبيانات (EDA)</span> لفهم خصائصها (المتوسط، التباين).</li>
+                                        <li><b>الاحتمالات:</b> هي أساس النماذج الإحصائية مثل <span class="highlight-term">الانحدار اللوجستي (Logistic Regression)</span> و Naive Bayes، وتُستخدم لقياس الثقة في تنبؤات النموذج.</li>
                                     </ul>
                                 </div>
                             </div>
@@ -360,8 +492,9 @@
                                 <!-- SVG للتوزيع الطبيعي (Bell Curve) -->
                                 <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
                                     <title>رسم توضيحي للتوزيع الطبيعي</title>
+                                    <!-- المنحنى (لون بنفسجي) -->
                                     <path d="M 10 130 C 40 130, 40 20, 100 20 C 160 20, 160 130, 190 130" stroke="#a78bfa" stroke-width="3" fill="rgba(167, 139, 250, 0.2)" />
-                                    <!-- خط المتوسط -->
+                                    <!-- خط المتوسط (لون وردي) -->
                                     <line x1="100" y1="20" x2="100" y2="130" stroke="#ec4899" stroke-width="2" stroke-dasharray="4 4" />
                                     <text x="105" y="80" fill="#ec4899" font-size="12">المتوسط</text>
                                     <!-- المحور السيني -->
@@ -375,30 +508,43 @@
                 <!-- Slide 4: نظرية التحسين -->
                 <div class="slide" data-slide="4">
                     <div class="slide-content">
-                        <h2 class="text-2xl font-bold text-white mb-4"><span class="text-pink-400">4.</span> نظرية التحسين (Optimization Theory)</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <h2 class="text-3xl font-bold text-white mb-6 flex items-center">
+                            <span class="slide-title-icon text-pink-400">🎯</span>
+                            نظرية التحسين (Optimization Theory)
+                        </h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
                             <div class="space-y-4">
-                                <div>
-                                    <h3 class="text-lg font-semibold text-white mb-2">الماهية</h3>
-                                    <p class="text-gray-400 leading-relaxed">مجموعة من التقنيات الرياضية لإيجاد الحل الأمثل (Maximum or Minimum) لدالة ما.</p>
-                                </div>
-                                <div>
-                                    <h3 class="text-lg font-semibold text-white mb-2">الدور في علم البيانات</h3>
+                                <!-- بطاقة الماهية مع إيموجي -->
+                                <div class="bg-gray-800/80 p-4 rounded-lg border border-gray-700 hover:border-pink-500 transition-colors">
+                                    <h3 class="text-lg font-semibold text-white mb-2 flex items-center content-card-h3">
+                                        <span class="text-xl ml-2">🔬</span>
+                                        الماهية
+                                    </h3>
                                     <p class="text-gray-400 leading-relaxed">
-                                        إن الهدف من تدريب أي نموذج هو إيجاد مجموعة الأوزان والمعاملات التي تقلل من "دالة الخسارة" (Loss Function) إلى أدنى حد ممكن (Minimum). انحدار التدرج هو التطبيق الأكثر شيوعاً لنظرية التحسين في التعلم الآلي.
+                                        مجموعة من التقنيات الرياضية لإيجاد <span class="highlight-term">الحل الأمثل (Maximum or Minimum)</span> لدالة ما.
+                                    </p>
+                                </div>
+                                <!-- بطاقة الدور مع إيموجي -->
+                                <div class="bg-gray-800/80 p-4 rounded-lg border border-gray-700 hover:border-pink-500 transition-colors">
+                                    <h3 class="text-lg font-semibold text-white mb-2 flex items-center content-card-h3">
+                                        <span class="text-xl ml-2">✨</span>
+                                        الدور في علم البيانات
+                                    </h3>
+                                    <p class="text-gray-400 leading-relaxed">
+                                        إن الهدف من تدريب أي نموذج هو إيجاد مجموعة الأوزان والمعاملات التي تقلل من "<span class="highlight-term">دالة الخسارة</span>" (Loss Function) إلى أدنى حد ممكن (Minimum). <span class="highlight-term">انحدار التدرج</span> هو التطبيق الأكثر شيوعاً لنظرية التحسين في التعلم الآلي.
                                     </p>
                                 </div>
                             </div>
                             <div class="illustration-box">
-                                <!-- SVG لـ Gradient Descent -->
+                                <!-- SVG لـ Gradient Descent - تم تحسين الألوان للتناسق -->
                                 <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
                                     <title>رسم توضيحي لانحدار التدرج (Optimization)</title>
-                                    <!-- دالة الخسارة (Loss Function) -->
+                                    <!-- دالة الخسارة (Loss Function) - لون بنفسجي -->
                                     <path d="M 10 120 Q 50 130, 100 40 T 190 100" stroke="#a78bfa" stroke-width="3" fill="none" />
-                                    <!-- النقطة الدنيا (Minimum) -->
+                                    <!-- النقطة الدنيا (Minimum) - لون أخضر (للدلالة على النجاح/الحل) -->
                                     <circle cx="100" cy="40" r="5" fill="#10b981" />
                                     <text x="85" y="30" fill="#10b981" font-size="12">الحل الأمثل</text>
-                                    <!-- خطوات الانحدار -->
+                                    <!-- خطوات الانحدار (لون وردي) -->
                                     <circle cx="30" cy="110" r="5" fill="#ec4899" />
                                     <path d="M 32 110 C 40 100, 60 70, 70 70" stroke="#ec4899" stroke-width="2" fill="none" stroke-dasharray="3 3" />
                                     <circle cx="70" cy="70" r="4" fill="#ec4899" />
@@ -412,7 +558,10 @@
                 <!-- Slide 5: مصادر ومراجع -->
                 <div class="slide" data-slide="5">
                     <div class="slide-content">
-                        <h2 class="text-2xl font-bold text-white mb-6"><span class="text-pink-400">5.</span> 📚 مصادر ومراجع مقترحة</h2>
+                        <h2 class="text-3xl font-bold text-white mb-6 flex items-center">
+                            <span class="slide-title-icon text-pink-400">📚</span>
+                            مصادر ومراجع مقترحة
+                        </h2>
                         <div class="overflow-x-auto">
                             <table class="styled-table">
                                 <thead>
@@ -472,6 +621,7 @@
             <div id="pagination" class="flex-grow flex justify-center items-center space-x-2 px-4">
                 <!-- Dots will be inserted by JS -->
             </div>
+            <!-- تم تحديث لون زر التالي ليتوافق مع اللون الأساسي الوردي -->
             <button id="next-btn"
                 class="py-2 px-6 bg-pink-600 hover:bg-pink-500 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                 التالي
@@ -557,9 +707,10 @@
 
             // التنقل باستخدام لوحة المفاتيح
             document.addEventListener('keydown', (e) => {
-                if (e.key === 'ArrowRight' && currentSlide < totalSlides - 1) {
+                // استخدام السهم الأيسر للتقدم والسهم الأيمن للعودة (وفقاً لاتجاه RTL)
+                if (e.key === 'ArrowLeft' && currentSlide < totalSlides - 1) { 
                     showSlide(currentSlide + 1);
-                } else if (e.key === 'ArrowLeft' && currentSlide > 0) {
+                } else if (e.key === 'ArrowRight' && currentSlide > 0) {
                     showSlide(currentSlide - 1);
                 }
             });
