@@ -279,12 +279,32 @@
                             </div>
 
                             <div class="illustration-box">
-                                <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
-                                    <title>أيقونة بيئة العمل</title>
-                                    <rect x="10" y="20" width="180" height="110" rx="8" fill="#0f172a"></rect>
-                                    <text x="30" y="55" fill="#f97316" font-size="14">Jupyter / Colab</text>
-                                    <text x="30" y="80" fill="#e5e7eb" font-size="12">VS Code • GitHub • virtualenv</text>
-                                </svg>
+                                <!-- SVG محسن لبيئة العمل -->
+                               <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+                                   <title>أيقونات بيئة العمل</title>
+                                   <!-- Jupyter Icon -->
+                                   <g transform="translate(20, 40)">
+                                       <circle cx="25" cy="25" r="20" fill="#1f2937" stroke="#f97316" stroke-width="2"/>
+                                       <circle cx="25" cy="25" r="5" fill="#f97316"/>
+                                       <circle cx="43" cy="15" r="3" fill="#e5e7eb"/>
+                                       <circle cx="38" cy="40" r="3" fill="#e5e7eb"/>
+                                       <circle cx="12" cy="40" r="3" fill="#e5e7eb"/>
+                                       <text x="25" y="70" font-size="10" fill="#e5e7eb" text-anchor="middle">Jupyter</text>
+                                   </g>
+                                   <!-- VS Code Icon -->
+                                   <g transform="translate(80, 40)">
+                                       <path d="M 25 0 L 0 15 L 0 35 L 25 50 L 50 35 L 50 15 Z M 25 5 L 45 18 L 25 30 L 5 18 Z" fill="#3b82f6"/>
+                                       <text x="25" y="70" font-size="10" fill="#e5e7eb" text-anchor="middle">VS Code</text>
+                                   </g>
+                                   <!-- Git Icon -->
+                                   <g transform="translate(140, 40)">
+                                       <path d="M 48 25 A 23 23 0 1 0 25 48 L 25 2 Z M 2 25 L 48 25" fill="none" stroke="#e5e7eb" stroke-width="3"/>
+                                       <circle cx="48" cy="25" r="5" fill="#e5e7eb"/>
+                                       <circle cx="2" cy="25" r="5" fill="#e5e7eb"/>
+                                       <circle cx="25" cy="2" r="5" fill="#e5e7eb"/>
+                                       <text x="25" y="70" font-size="10" fill="#e5e7eb" text-anchor="middle">Git/GitHub</text>
+                                   </g>
+                               </svg>
                             </div>
                         </div>
 
@@ -301,36 +321,53 @@
                 <div class="slide" data-slide="2">
                     <div class="slide-content">
                         <h2 class="text-2xl font-bold text-white mb-4"><span class="text-orange-400">2.</span> 🧮 مكتبات معالجة البيانات</h2>
-
-                        <h3 class="text-lg font-semibold">التقسيمات الرئيسية</h3>
-                        <ul class="mt-2">
-                            <li><strong>NumPy:</strong> مصفوفات عالية الأداء وعمليات عددية.</li>
-                            <li><strong>Pandas:</strong> DataFrame لقراءة، تنظيف، وتجهيز البيانات.</li>
-                            <li><strong>التعامل مع البيانات المعقدة:</strong> نصوص، تواريخ، وتحويل الميزات (Feature Engineering).</li>
-                        </ul>
-
-                        <h3 class="mt-4 text-lg font-semibold">روابط وأمثلة</h3>
-                        <table class="styled-table">
-                            <thead>
-                                <tr>
-                                    <th>المكتبة</th>
-                                    <th>الوصف</th>
-                                    <th>رابط</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>NumPy</td>
-                                    <td>Arrays وعمليات عددية</td>
-                                    <td><a href="https://numpy.org" target="_blank">numpy.org</a></td>
-                                </tr>
-                                <tr>
-                                    <td>Pandas</td>
-                                    <td>DataFrame وEDA</td>
-                                    <td><a href="https://pandas.pydata.org" target="_blank">pandas.pydata.org</a></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <p class="text-center text-gray-400 mb-6 max-w-3xl mx-auto">
+                            هذه المكتبات هي الأدوات الأساسية التي ستقضي معها معظم وقتك كعالم بيانات لمعالجة وتحليل البيانات.
+                        </p>
+                        <div class="illustration-box mb-8 h-64">
+                            <!-- SVG محسن يوضح الفرق بين NumPy و Pandas -->
+                            <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+                                <title>NumPy Array vs Pandas DataFrame</title>
+                                <!-- NumPy Array -->
+                                <g transform="translate(30, 50)">
+                                    <rect x="0" y="0" width="150" height="100" rx="8" fill="#1f2937" stroke="#3b82f6" stroke-width="2"/>
+                                    <text x="75" y="-15" font-size="14" fill="#60a5fa" text-anchor="middle" font-weight="bold">NumPy Array</text>
+                                    <text x="75" y="40" font-size="16" fill="#e5e7eb" text-anchor="middle" font-family="monospace">[ [1, 2, 3],</text>
+                                    <text x="75" y="70" font-size="16" fill="#e5e7eb" text-anchor="middle" font-family="monospace">  [4, 5, 6] ]</text>
+                                </g>
+                                <!-- Pandas DataFrame -->
+                                <g transform="translate(220, 50)">
+                                    <rect x="0" y="0" width="150" height="100" rx="8" fill="#1f2937" stroke="#10b981" stroke-width="2"/>
+                                    <text x="75" y="-15" font-size="14" fill="#34d399" text-anchor="middle" font-weight="bold">Pandas DataFrame</text>
+                                    <text x="15" y="25" font-size="11" fill="#9ca3af" font-family="monospace">   ID  Name   Age</text>
+                                    <line x1="10" y1="35" x2="140" y2="35" stroke="#4b5563" stroke-width="1"/>
+                                    <text x="15" y="55" font-size="12" fill="#e5e7eb" font-family="monospace">0  Ali    25</text>
+                                    <text x="15" y="80" font-size="12" fill="#e5e7eb" font-family="monospace">1  Sara   30</text>
+                                </g>
+                            </svg>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- NumPy Card -->
+                            <div class="bg-gray-800/50 p-6 rounded-xl border border-gray-700 hover:border-blue-500/80 transition-all duration-300">
+                                <h3 class="text-xl font-semibold text-blue-400 mb-3">NumPy (Numerical Python)</h3>
+                                <p class="text-gray-300 text-sm mb-3">توفر كائن "المصفوفة" (Array) الفعال، وهو أساس العمليات الرياضية السريعة على كميات كبيرة من الأرقام.</p>
+                                <ul class="text-xs text-gray-400 list-disc pl-5 space-y-1">
+                                    <li>عمليات رياضية موجهة (Vectorized).</li>
+                                    <li>توليد أرقام عشوائية.</li>
+                                    <li>أساس لمكتبات أخرى مثل Pandas.</li>
+                                </ul>
+                            </div>
+                            <!-- Pandas Card -->
+                            <div class="bg-gray-800/50 p-6 rounded-xl border border-gray-700 hover:border-green-500/80 transition-all duration-300">
+                                <h3 class="text-xl font-semibold text-green-400 mb-3">Pandas</h3>
+                                <p class="text-gray-300 text-sm mb-3">توفر كائن "DataFrame"، وهو جدول بيانات فائق القوة في بايثون، يسمح بقراءة البيانات وتنظيفها وتحليلها بسهولة.</p>
+                                <ul class="text-xs text-gray-400 list-disc pl-5 space-y-1">
+                                    <li>قراءة وكتابة ملفات (CSV, Excel, SQL).</li>
+                                    <li>تنظيف البيانات المفقودة.</li>
+                                    <li>تجميع وتلخيص البيانات (Group By).</li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -368,21 +405,36 @@
                 <div class="slide" data-slide="4">
                     <div class="slide-content">
                         <h2 class="text-2xl font-bold text-white mb-4"><span class="text-orange-400">4.</span> 🌐 التعامل مع البيانات ومصادرها</h2>
-
-                        <h3 class="text-lg font-semibold">التقسيمات الرئيسية</h3>
-                        <ul class="mt-2">
-                            <li><strong>التعامل مع البيانات الهيكلية:</strong> SQL للاستعلام عن البيانات باستخدام SELECT و JOIN.</li>
-                            <li><strong>Git / GitHub:</strong> تتبع الإصدارات، التعاون، ورفع المشاريع.</li>
-                        </ul>
-
-                        <h3 class="mt-4 text-lg font-semibold">الهدف</h3>
-                        <p class="text-gray-400">تجهيز البيانات للاستعمال في التحليل والنمذجة، والعمل بشكل منظم مع فرق التطوير عبر Git.</p>
-
-                        <h3 class="mt-4 text-lg font-semibold">روابط سريعة</h3>
-                        <ul class="mt-2">
-                            <li><a class="inline-link" href="https://www.postgresql.org/docs/" target="_blank">دليل SQL — PostgreSQL</a></li>
-                            <li><a class="inline-link" href="https://docs.github.com/" target="_blank">GitHub Documentation</a></li>
-                        </ul>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-4">
+                                <div>
+                                    <h3 class="text-lg font-semibold text-white mb-2">جلب البيانات وإدارة الكود</h3>
+                                    <p class="text-gray-400 leading-relaxed">
+                                        لا توجد البيانات دائماً في ملفات CSV. تعلم كيفية استخراجها من قواعد البيانات وإدارة كودك بفعالية هي مهارات لا غنى عنها.
+                                    </p>
+                                </div>
+                                <div class="bg-gray-800 p-4 rounded-lg">
+                                    <h4 class="font-semibold text-orange-300 mb-1">SQL (Structured Query Language)</h4>
+                                    <p class="text-sm text-gray-300">لغة الاستعلام القياسية للتفاعل مع قواعد البيانات. أساسية لجلب البيانات التي تحتاجها وتصفيتها ودمجها من مصادر متعددة.</p>
+                                </div>
+                                <div class="bg-gray-800 p-4 rounded-lg">
+                                    <h4 class="font-semibold text-orange-300 mb-1">Git / GitHub</h4>
+                                    <p class="text-sm text-gray-300">Git هو نظام التحكم في الإصدارات لتتبع التغييرات في الكود. GitHub هي منصة لاستضافة مستودعات Git والتعاون مع الآخرين.</p>
+                                </div>
+                            </div>
+                            <div class="illustration-box">
+                                <!-- SVG يوضح سير العمل: SQL -> Python -> Git -->
+                                <svg viewBox="0 0 400 150" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+                                    <title>Data Workflow</title>
+                                    <g><rect x="30" y="50" width="60" height="50" rx="5" fill="#1f2937" stroke="#3b82f6" stroke-width="1.5"/><ellipse cx="60" cy="50" rx="30" ry="8" fill="#1f2937" stroke="#3b82f6" stroke-width="1.5"/><text x="60" y="75" font-size="12" fill="#e5e7eb" text-anchor="middle">SQL DB</text></g>
+                                    <path d="M 95 75 L 145 75" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow)"/>
+                                    <g><rect x="150" y="50" width="100" height="50" rx="5" fill="#1f2937" stroke="#facc15" stroke-width="1.5"/><text x="200" y="78" font-size="12" fill="#e5e7eb" text-anchor="middle">Pandas/Python</text></g>
+                                    <path d="M 255 75 L 305 75" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow)"/>
+                                    <g><circle cx="340" cy="75" r="25" fill="#1f2937" stroke="#e5e7eb" stroke-width="1.5"/><path d="M330 75h20m-10-10v20" stroke="#e5e7eb" stroke-width="1.5"/><text x="340" y="115" font-size="12" fill="#e5e7eb" text-anchor="middle">Git/GitHub</text></g>
+                                    <defs><marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#4b5563"/></marker></defs>
+                                </svg>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
