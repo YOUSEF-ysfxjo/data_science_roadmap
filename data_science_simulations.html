@@ -250,24 +250,28 @@
         /* 4. Dimensionality Reduction */
         .dim-red-layout {
             display: grid;
-            grid-template-columns: 1.5fr 1fr;
+            grid-template-columns: 1fr 1.5fr; /* 2D projections on left, main 2D view on right */
             grid-template-rows: 1fr 1fr;
-            gap: 1rem;
+            gap: 1.5rem;
+            height: 500px;
         }
         .dim-red-box {
             background-color: var(--bg-dark);
             border: 1px solid var(--border-color);
             border-radius: 0.5rem;
-            padding: 1rem;
+            padding: 1.25rem;
             position: relative;
+            display: flex; /* Use flex to make SVG fill available space */
+            flex-direction: column;
         }
         .dim-red-box.main-view {
-            grid-row: span 2;
+            grid-row: span 2; /* Main view takes up two rows */
+            display: flex;
+            flex-direction: column;
         }
         .dim-red-svg {
             width: 100%;
-            height: 100%;
-            min-height: 150px;
+            flex-grow: 1; /* SVG يملأ المساحة المتبقية */
         }
         .dim-red-box .dim-red-label {
             position: absolute;
@@ -276,6 +280,8 @@
             font-size: 0.8rem;
             color: var(--text-muted);
             font-weight: 600;
+            background-color: var(--bg-dark); /* خلفية لضمان الوضوح */
+            padding: 0 0.25rem;
         }
 
         /* 5. Association Rules */
@@ -420,18 +426,17 @@
              font-weight: 700;
         }
 
-        /* تعديل التخطيط ليكون عموداً واحداً على الشاشات الصغيرة ثم صفين (تحت بعض) على الشاشات الكبيرة */
+        /* تخطيط الشبكة العصبية: عمود واحد على الجوال، وعمودان على الشاشات الأكبر */
         .grid-layout-nn {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: 1fr; /* عمود واحد افتراضيًا */
             gap: 2rem;
             margin-top: 2rem;
         }
-        /* على الشاشات الأكبر (متوسط وما فوق) */
-        @media (min-width: 768px) {
+        /* على الشاشات الأكبر (1024px فأكثر)، استخدم عمودين */
+        @media (min-width: 1024px) {
             .grid-layout-nn {
-                display: grid; 
-                grid-template-columns: 1fr; /* عمود واحد */
+                grid-template-columns: 1fr 1fr; /* عمودان متساويان */
             }
         }
 
@@ -535,19 +540,30 @@
 
             <!-- ========================== --><!-- 4. تقليل الأبعاد (Dim Red) --><!-- ========================== --><div id="tab-dim-red" class="tab-pane">
                 <h2>تقليل الأبعاد (Dimensionality Reduction)</h2>
-                <p>تبسيط البيانات عن طريق "إسقاطها" من أبعاد أعلى لأبعاد أقل، كما يظهر "الظل" على الجدار.</p>
-                <div class="dim-red-layout" style="grid-template-columns: 1fr 1fr;">
-                    <!-- اللوحة الرئيسية (3D) --><div class="dim-red-box main-view" style="grid-row: auto;">
-                        <span class="dim-red-label">البيانات الأصلية (3D)</span>
+                <p>تبسيط البيانات عن طريق "إسقاطها" من أبعاد أعلى لأبعاد أقل، كما يظهر "الظل" على الجدار. هنا، نسقط بيانات ثلاثية الأبعاد (3D) على مستويات ثنائية الأبعاد (2D).</p>
+                <div class="simulation-controls">
+                    <button id="btn-dimred-generate" class="sim-btn">توليد بيانات جديدة</button>
+                </div>
+                <div class="dim-red-layout">
+                    <!-- Main 3D-like view -->
+                    <div class="dim-red-box main-view">
+                        <span class="dim-red-label">عرض ثلاثي الأبعاد (محاكاة)</span>
                         <svg id="dimred-svg-main" class="dim-red-svg"></svg>
                     </div>
-                    <!-- الإسقاط الأول (X-Y) --><div class="dim-red-box">
-                        <span class="dim-red-label">الإسقاط (X-Y)</span>
+                    <!-- XY Projection -->
+                    <div class="dim-red-box">
+                        <span class="dim-red-label">إسقاط على مستوى X-Y</span>
                         <svg id="dimred-svg-xy" class="dim-red-svg"></svg>
                     </div>
-                    <!-- الإسقاط الثاني (Y-Z) --><div class="dim-red-box">
-                        <span class="dim-red-label">الإسقاط (Y-Z)</span>
+                    <!-- YZ Projection -->
+                    <div class="dim-red-box">
+                        <span class="dim-red-label">إسقاط على مستوى Y-Z</span>
                         <svg id="dimred-svg-yz" class="dim-red-svg"></svg>
+                    </div>
+                     <!-- XZ Projection -->
+                    <div class="dim-red-box">
+                        <span class="dim-red-label">إسقاط على مستوى X-Z</span>
+                        <svg id="dimred-svg-xz" class="dim-red-svg"></svg>
                     </div>
                 </div>
             </div>
@@ -628,9 +644,6 @@
                             <div id="epochCount" class="font-bold">0</div>
                         </div>
                         <button id="btnStart" class="sim-btn">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor" style="width: 1.25rem; height: 1.25rem; margin-left: 0.5rem; display: inline-block;">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
-                            </svg>
                             بدء التدريب
                         </button>
                         <button id="btnReset" class="sim-btn secondary">إعادة التعيين</button>
@@ -638,24 +651,23 @@
 
                     <!-- المنطقة المرئية للمحاكاة -->
                     <div class="grid-layout-nn">
-                        <!-- عمود الإخراج والنتائج (الآن يصبح الصف الأول) -->
+                        <!-- عمود الإخراج والنتائج -->
                         <div class="w-full mx-auto" style="max-width: 600px;">
                             <h3 style="font-size: 1.25rem; text-align: center;">بيانات التدريب والنتائج</h3>
                             <canvas id="outputCanvas" width="600" height="400" style="display: block; margin: 0 auto;"></canvas>
                             <div id="lossValue" class="mt-4 text-lg" style="text-align: center;">
-                                الخسارة (Loss): <span class="font-bold">---</span>
+                                الخسارة (Loss): <span>---</span>
                             </div>
                             <div class="mt-2 text-sm" style="color: var(--text-muted); font-size: 0.875rem; text-align: center;">
-                                <p>النقاط الملونة: بيانات التدريب الحقيقية. تدرج الخلفية: تنبؤات الشبكة (الخط الفاصل هو 0.5).</p>
+                                <p>النقاط الملونة: بيانات التدريب الحقيقية. تدرج الخلفية: تنبؤات الشبكة.</p>
                             </div>
                         </div>
 
-                        <!-- عمود الشبكة (الآن يصبح الصف الثاني) -->
+                        <!-- عمود الشبكة -->
                         <div class="flex flex-col items-center w-full mx-auto" style="display: flex; flex-direction: column; align-items: center; max-width: 600px;">
                             <h3 style="font-size: 1.25rem;">بنية الشبكة</h3>
                             <div id="networkVizContainer" class="relative w-full h-96" style="position: relative; width: 100%; height: 24rem; display: flex; justify-content: center;">
                                 <svg id="connection-svg" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: 0; right: 0; width: 100%; height: 100%; z-index: 5;"></svg>
-                                <!-- سيتم توليد طبقات الشبكة هنا بواسطة JavaScript -->
                                 <div class="flex justify-between items-center w-full h-full absolute top-0 right-0 p-4" style="display: flex; justify-content: space-around; align-items: center; width: 100%; height: 100%; position: absolute; top: 0; right: 0; padding: 1rem;">
                                     <div class="layer">
                                         <p class="text-center font-semibold mb-2" style="font-weight: 600; font-size: 1rem; color: var(--text-light); margin-bottom: 0.5rem;">الإدخال</p>
@@ -680,161 +692,91 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // --- تنقل بين التبويبات ---
             const tabButtons = document.querySelectorAll('.tab-btn');
             const tabPanes = document.querySelectorAll('.tab-pane');
-            
+
+            const simulations = {
+                'tab-kmeans': { init: initKMeans, draw: () => window.runKMeansSimulation?.() },
+                'tab-classification': { init: initClassification, draw: () => window.runClassificationSimulation?.() },
+                'tab-regression': { init: initRegression, draw: () => window.runRegressionSimulation?.() },
+                'tab-dim-red': { init: initDimRed, draw: () => setTimeout(() => window.runDimRedSimulation?.(), 50) },
+                'tab-assoc-rules': { init: initAssocRules, draw: () => {} },
+                'tab-bias-variance': { init: initBiasVariance, draw: () => window.runBiasVarianceSimulation?.() },
+                'tab-neural-network': { init: initializeNN, draw: () => setTimeout(() => window.drawVisualization?.(), 50) }
+            };
+            const initializedTabs = new Set();
+
+            function activateTab(tabId) {
+                const activeTabButton = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
+                const activePane = document.getElementById(tabId);
+                if (!activeTabButton || !activePane) return;
+
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabPanes.forEach(pane => pane.classList.remove('active'));
+
+                activeTabButton.classList.add('active');
+                activePane.classList.add('active');
+
+                if (simulations[tabId]) {
+                    if (!initializedTabs.has(tabId)) {
+                        simulations[tabId].init();
+                        initializedTabs.add(tabId);
+                    } else if (simulations[tabId].draw) {
+                        simulations[tabId].draw();
+                    }
+                }
+            }
+
             tabButtons.forEach(button => {
                 button.addEventListener('click', () => {
-                    // إزالة الفئة النشطة من جميع الأزهار
-                    tabButtons.forEach(btn => btn.classList.remove('active'));
-                    tabPanes.forEach(pane => pane.classList.remove('active'));
-                    
-                    // إضافة الفئة النشطة للزر المحدد
-                    button.classList.add('active');
                     const tabId = button.getAttribute('data-tab');
-                    document.getElementById(tabId).classList.add('active');
-                    
-                    // تحديث الرسم بعد تغيير التبويب (خاص بالشبكة العصبية)
-                    if (tabId === 'tab-neural-network' && window.drawVisualization) {
-                         // تأخير بسيط لضمان رسم عناصر DOM قبل حساب الإحداثيات
-                        setTimeout(window.drawVisualization, 50); 
-                    }
+                    activateTab(tabId);
                 });
             });
 
-            // --- 1. محاكاة K-Means ---
             function initKMeans() {
                 const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
                 const svg = document.getElementById('kmeans-svg');
                 const startBtn = document.getElementById('btn-kmeans-start');
                 const resetBtn = document.getElementById('btn-kmeans-reset');
                 
-                const svgWidth = 500;
-                const svgHeight = 400;
-                const padding = 50;
+                const svgWidth = 500, svgHeight = 400, padding = 50, k = 3;
+                let points = [], centroids = [], clusters = [], step = 0; // 0: assign, 1: update
                 
-                let points = [];
-                let centroids = [];
-                let clusters = [];
-                let step = 0; // 0: إعادة تعيين, 1: تعيين النقاط, 2: تحديث المراكز
-                const k = 3; // عدد المجموعات
-                
-                // توليد النقاط العشوائية
-                function generatePoints() {
-                    points = [];
-                    for (let i = 0; i < 50; i++) {
-                        points.push({
-                            x: Math.random() * (svgWidth - 2 * padding) + padding,
-                            y: Math.random() * (svgHeight - 2 * padding) + padding
-                        });
-                    }
-                }
-                
-                // تهيئة المراكز العشوائية
-                function initCentroids() {
-                    centroids = [];
-                    const usedIndices = new Set();
-                    
-                    while (centroids.length < k) {
-                        const idx = Math.floor(Math.random() * points.length);
-                        if (!usedIndices.has(idx)) {
-                            usedIndices.add(idx);
-                            centroids.push({
-                                x: points[idx].x,
-                                y: points[idx].y,
-                                color: getColorForCluster(centroids.length)
-                            });
-                        }
-                    }
-                }
-                
-                // تعيين النقاط إلى أقرب مركز
-                function assignPointsToClusters() {
-                    clusters = Array(k).fill().map(() => []);
-                    
-                    points.forEach(point => {
-                        let minDist = Infinity;
-                        let closestCentroidIdx = 0;
-                        
-                        centroids.forEach((centroid, idx) => {
-                            const dx = point.x - centroid.x;
-                            const dy = point.y - centroid.y;
-                            const dist = dx * dx + dy * dy; // المسافة التربيعية
-                            
-                            if (dist < minDist) {
-                                minDist = dist;
-                                closestCentroidIdx = idx;
-                            }
-                        });
-                        
-                        clusters[closestCentroidIdx].push(point);
-                        point.cluster = closestCentroidIdx;
-                    });
-                }
-                
-                // تحديث مواقع المراكز
-                function updateCentroids() {
-                    let hasMoved = false;
-                    
-                    centroids.forEach((centroid, idx) => {
-                        const clusterPoints = clusters[idx];
-                        if (clusterPoints.length === 0) return;
-                        
-                        const sum = clusterPoints.reduce((acc, p) => ({
-                            x: acc.x + p.x,
-                            y: acc.y + p.y
-                        }), { x: 0, y: 0 });
-                        
-                        const newX = sum.x / clusterPoints.length;
-                        const newY = sum.y / clusterPoints.length;
-                        
-                        // التحقق مما إذا كان المركز قد تحرك بشكل كبير
-                        const dx = newX - centroid.x;
-                        const dy = newY - centroid.y;
-                        if (dx * dx + dy * dy > 1) {
-                            hasMoved = true;
-                        }
-                        
-                        centroid.x = newX;
-                        centroid.y = newY;
-                    });
-                    
-                    return hasMoved;
-                }
-                
-                // رسم المشهد
+                const getColorForCluster = (idx) => ['#3b82f6', '#ef4444', '#10b981'][idx % 3];
+
                 function draw() {
-                    // مسح SVG
+                    // =======================================================
+                    // START: تعديل الكلسترنج (إضافة الظل)
+                    // 1. إضافة مناطق الظل لكل مجموعة قبل رسم أي شيء آخر
+                    // =======================================================
+                    if (!svg) return;
                     svg.innerHTML = '';
-                    
-                    // رسم المناطق (Voronoi cells مبسطة)
-                    if (step > 0) {
-                        centroids.forEach((centroid, idx) => {
-                            // رسم منطقة تقريبية (في الواقع، هذا ليس Voronoi حقيقي)
-                            const area = document.createElementNS(SVG_NAMESPACE, 'circle');
-                            area.setAttribute('cx', centroid.x);
-                            area.setAttribute('cy', centroid.y);
-                            area.setAttribute('r', 150);
-                            area.setAttribute('fill', centroid.color);
-                            area.setAttribute('opacity', 0.1);
-                            area.setAttribute('class', 'cluster-area');
-                            svg.appendChild(area);
-                        });
-                    }
-                    
-                    // رسم النقاط
                     points.forEach(point => {
                         const circle = document.createElementNS(SVG_NAMESPACE, 'circle');
                         circle.setAttribute('cx', point.x);
                         circle.setAttribute('cy', point.y);
                         circle.setAttribute('r', 5);
-                        circle.setAttribute('fill', centroids[point.cluster]?.color || '#999');
+                        circle.setAttribute('fill', centroids[point.cluster]?.color || '#9ca3af');
                         svg.appendChild(circle);
                     });
-                    
-                    // رسم المراكز
+                    // رسم مناطق الظل (Voronoi-like areas)
                     centroids.forEach((centroid, idx) => {
+                        const clusterPoints = points.filter(p => p.cluster === idx);
+                        if (clusterPoints.length > 0) {
+                            // حساب متوسط نصف قطر المجموعة
+                            const distances = clusterPoints.map(p => Math.hypot(p.x - centroid.x, p.y - centroid.y));
+                            const avgRadius = distances.reduce((a, b) => a + b, 0) / distances.length;
+                            const circle = document.createElementNS(SVG_NAMESPACE, 'circle');
+                            circle.setAttribute('cx', centroid.x);
+                            circle.setAttribute('cy', centroid.y);
+                            circle.setAttribute('r', avgRadius + 30); // نصف قطر الظل أكبر قليلاً
+                            circle.setAttribute('fill', centroid.color);
+                            circle.setAttribute('class', 'cluster-area');
+                            svg.insertBefore(circle, svg.firstChild); // إدراجه في الخلف
+                        }
+                    });
+                    centroids.forEach((centroid) => {
                         const circle = document.createElementNS(SVG_NAMESPACE, 'circle');
                         circle.setAttribute('cx', centroid.x);
                         circle.setAttribute('cy', centroid.y);
@@ -842,137 +784,116 @@
                         circle.setAttribute('fill', centroid.color);
                         circle.setAttribute('class', 'centroid');
                         svg.appendChild(circle);
-                        
-                        // إضافة رقم للمجموعة
-                        const text = document.createElementNS(SVG_NAMESPACE, 'text');
-                        text.setAttribute('x', centroid.x + 15);
-                        text.setAttribute('y', centroid.y + 5);
-                        text.setAttribute('fill', 'white');
-                        text.setAttribute('font-size', '12');
-                        text.setAttribute('font-weight', 'bold');
-                        text.textContent = `المجموعة ${idx + 1}`;
-                        svg.appendChild(text);
+                    });
+                    // =======================================================
+                    // END: تعديل الكلسترنج
+                    // =======================================================
+                }
+
+                function assignPointsToClusters() {
+                    clusters = Array(k).fill().map(() => []);
+                    points.forEach(point => {
+                        let minDist = Infinity, closestCentroidIdx = 0;
+                        centroids.forEach((centroid, idx) => {
+                            const dist = Math.hypot(point.x - centroid.x, point.y - centroid.y);
+                            if (dist < minDist) { minDist = dist; closestCentroidIdx = idx; }
+                        });
+                        clusters[closestCentroidIdx].push(point);
+                        point.cluster = closestCentroidIdx;
                     });
                 }
-                
-                // الدالة الرئيسية للخطوة التالية
+
+                function updateCentroids() {
+                    let hasMoved = false;
+                    centroids.forEach((centroid, idx) => {
+                        const clusterPoints = clusters[idx];
+                        if (clusterPoints.length === 0) return;
+                        const sum = clusterPoints.reduce((acc, p) => ({ x: acc.x + p.x, y: acc.y + p.y }), { x: 0, y: 0 });
+                        const newX = sum.x / clusterPoints.length;
+                        const newY = sum.y / clusterPoints.length;
+                        if (Math.hypot(newX - centroid.x, newY - centroid.y) > 1) hasMoved = true;
+                        centroid.x = newX;
+                        centroid.y = newY;
+                    });
+                    return hasMoved;
+                }
+
                 function nextStep() {
-                    if (step === 0) {
-                        // إعادة تعيين
-                        generatePoints();
-                        initCentroids();
+                    startBtn.disabled = true;
+                    if (step === -1) { // If ended, restart
+                        window.runKMeansSimulation();
+                        return;
+                    }
+
+                    if (step === 0) { // Assign points
                         assignPointsToClusters();
+                        startBtn.textContent = 'الخطوة 2: تحديث المراكز';
                         step = 1;
-                        startBtn.textContent = 'الخطوة التالية';
-                    } else if (step === 1) {
-                        // تحديث المراكز
+                    } else { // Update centroids
                         const hasMoved = updateCentroids();
-                        assignPointsToClusters();
                         if (!hasMoved) {
-                            startBtn.textContent = 'الانتهاء! اضغط لإعادة التشغيل';
+                            startBtn.textContent = 'اكتمل! اضغط للإعادة';
                             startBtn.disabled = false;
-                            step = 0;
+                            step = -1; // End state
+                            draw();
                             return;
                         }
+                        startBtn.textContent = 'الخطوة 1: تعيين النقاط';
+                        step = 0;
                     }
-                    
                     draw();
                     startBtn.disabled = false;
                 }
                 
-                // معاودة الضبط
-                function reset() {
+                window.runKMeansSimulation = function() {
                     step = 0;
-                    startBtn.textContent = 'ابدأ';
+                    startBtn.textContent = 'الخطوة 1: تعيين النقاط';
                     startBtn.disabled = false;
-                    nextStep();
+                    points = Array.from({ length: 50 }, () => ({
+                        x: Math.random() * (svgWidth - 2 * padding) + padding,
+                        y: Math.random() * (svgHeight - 2 * padding) + padding
+                    }));
+                    const usedIndices = new Set();
+                    centroids = [];
+                    while (centroids.length < k) {
+                        const idx = Math.floor(Math.random() * points.length);
+                        if (!usedIndices.has(idx)) {
+                            usedIndices.add(idx);
+                            centroids.push({ x: points[idx].x, y: points[idx].y, color: getColorForCluster(centroids.length) });
+                        }
+                    }
+                    // Initial assignment before first draw
+                    assignPointsToClusters();
+                    draw();
                 }
                 
-                // مساعد: الحصول على لون لكل مجموعة
-                function getColorForCluster(idx) {
-                    const colors = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6'];
-                    return colors[idx % colors.length];
-                }
+                startBtn.addEventListener('click', nextStep);
+                resetBtn.addEventListener('click', window.runKMeansSimulation);
                 
-                // إضافة معالجات الأحداث
-                startBtn.addEventListener('click', () => {
-                    startBtn.disabled = true;
-                    nextStep();
-                });
-                
-                resetBtn.addEventListener('click', reset);
-                
-                // البدء
-                reset();
+                window.runKMeansSimulation(); // Initial run
             }
-            
-            // --- 2. محاكاة Classification ---
+
             function initClassification() {
                 const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
                 const svg = document.getElementById('class-svg');
                 const generateBtn = document.getElementById('btn-class-generate');
-                const svgWidth = 500;
-                const svgHeight = 400;
-                const padding = 50;
-                
-                const CLASS_COLORS = {
-                    0: getComputedStyle(document.documentElement).getPropertyValue('--cluster-2'), // أحمر
-                    1: getComputedStyle(document.documentElement).getPropertyValue('--cluster-1')   // أخضر
-                };
-                
-                function generateAndDraw() {
+                const svgWidth = 500, svgHeight = 400, padding = 50;
+                const CLASS_COLORS = { 0: '#ef4444', 1: '#10b981' };
+
+                window.runClassificationSimulation = function() {
+                    if (!svg) return;
                     svg.innerHTML = '';
-                    
-                    // توليد مجموعتين من النقاط
                     const dataPoints = [];
-                    const numPointsPerClass = 30;
-                    
-                    // الفئة 0 (يسار)
-                    for (let i = 0; i < numPointsPerClass; i++) {
+                    for (let i = 0; i < 60; i++) {
+                        const classId = i < 30 ? 0 : 1;
+                        const baseX = classId === 0 ? svgWidth / 4 : (3 * svgWidth) / 4;
                         dataPoints.push({
-                            x: Math.random() * (svgWidth / 2 - 2 * padding) + padding,
-                            y: Math.random() * (svgHeight - 2 * padding) + padding,
-                            class: 0
+                            x: baseX + (Math.random() - 0.5) * (svgWidth / 3),
+                            y: svgHeight / 2 + (Math.random() - 0.5) * (svgHeight - 2 * padding),
+                            class: classId
                         });
                     }
-                    
-                    // الفئة 1 (يمين)
-                    for (let i = 0; i < numPointsPerClass; i++) {
-                        dataPoints.push({
-                            x: Math.random() * (svgWidth / 2 - 2 * padding) + svgWidth / 2 + padding,
-                            y: Math.random() * (svgHeight - 2 * padding) + padding,
-                            class: 1
-                        });
-                    }
-                    
-                    // حساب مركز كل فئة
-                    const class0Center = { x: 0, y: 0 };
-                    const class1Center = { x: 0, y: 0 };
-                    let class0Count = 0, class1Count = 0;
-                    
-                    dataPoints.forEach(p => {
-                        if (p.class === 0) {
-                            class0Center.x += p.x;
-                            class0Center.y += p.y;
-                            class0Count++;
-                        } else {
-                            class1Center.x += p.x;
-                            class1Center.y += p.y;
-                            class1Count++;
-                        }
-                    });
-                    
-                    if (class0Count > 0) {
-                        class0Center.x /= class0Count;
-                        class0Center.y /= class0Count;
-                    }
-                    
-                    if (class1Count > 0) {
-                        class1Center.x /= class1Count;
-                        class1Center.y /= class1Count;
-                    }
-                    
-                    // رسم النقاط
+
                     dataPoints.forEach(point => {
                         const circle = document.createElementNS(SVG_NAMESPACE, 'circle');
                         circle.setAttribute('cx', point.x);
@@ -981,85 +902,49 @@
                         circle.style.fill = CLASS_COLORS[point.class];
                         svg.appendChild(circle);
                     });
-                    
-                    // رسم خط فاصل (بسيط)
-                    const midX = (class0Center.x + class1Center.x) / 2;
-                    const midY = (class0Center.y + class1Center.y) / 2;
-                    let slope = -1 / ((class1Center.y - class0Center.y) / (class1Center.x - class0Center.x));
-                    
-                    const x1 = 0;
-                    const y1 = midY - slope * midX;
-                    const x2 = svgWidth;
-                    const y2 = midY + slope * (svgWidth - midX);
-                    
+
                     const line = document.createElementNS(SVG_NAMESPACE, 'line');
-                    line.setAttribute('x1', x1);
-                    line.setAttribute('y1', y1);
-                    line.setAttribute('x2', x2);
-                    line.setAttribute('y2', y2);
+                    line.setAttribute('x1', svgWidth / 2);
+                    line.setAttribute('y1', 0);
+                    line.setAttribute('x2', svgWidth / 2);
+                    line.setAttribute('y2', svgHeight);
                     line.setAttribute('class', 'class-decision-boundary');
                     svg.appendChild(line);
                 }
-                
-                generateBtn.addEventListener('click', generateAndDraw);
-                generateAndDraw(); // للرسم أول مرة
+                generateBtn.addEventListener('click', window.runClassificationSimulation);
+                window.runClassificationSimulation();
             }
-            
-            // --- 3. محاكاة Regression ---
+
             function initRegression() {
                 const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
                 const svg = document.getElementById('reg-svg');
                 const generateBtn = document.getElementById('btn-reg-generate');
-                const svgWidth = 500;
-                const svgHeight = 400;
-                const padding = 50;
-                
-                function generateAndDraw() {
+                const svgWidth = 500, svgHeight = 400, padding = 50;
+
+                window.runRegressionSimulation = function() {
+                    if (!svg) return;
                     svg.innerHTML = '';
-                    let dataPoints = [];
-                    const numPoints = 20;
-                    const noiseLevel = 80;
-                    
-                    // ميل الخط (عشوائي قليلاً)
-                    const m_true = (Math.random() - 0.5) * 0.5 + 0.5; // ميل موجب
-                    const b_true = Math.random() * (svgHeight / 4) + (svgHeight / 4);
-                    
-                    // توليد النقاط
-                    for (let i = 0; i < numPoints; i++) {
+                    const dataPoints = [];
+                    const m_true = 0.6, b_true = svgHeight * 0.3;
+                    for (let i = 0; i < 20; i++) {
                         const x = Math.random() * (svgWidth - 2 * padding) + padding;
-                        const y_true = m_true * x + b_true;
-                        const noise = (Math.random() - 0.5) * noiseLevel;
-                        dataPoints.push({ x: x, y: y_true + noise });
+                        dataPoints.push({ x: x, y: m_true * x + b_true + (Math.random() - 0.5) * 80 });
                     }
-                    
-                    // حساب خط الانحدار
+
                     let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
-                    dataPoints.forEach(p => {
-                        sumX += p.x;
-                        sumY += p.y;
-                        sumXY += p.x * p.y;
-                        sumX2 += p.x * p.x;
-                    });
-                    
+                    dataPoints.forEach(p => { sumX += p.x; sumY += p.y; sumXY += p.x * p.y; sumX2 += p.x * p.x; });
                     const n = dataPoints.length;
                     const m = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
                     const b = (sumY - m * sumX) / n;
-                    
-                    const x1 = 0;
-                    const y1 = m * x1 + b;
-                    const x2 = svgWidth;
-                    const y2 = m * x2 + b;
-                    
-                    // رسم الخط
+
                     const line = document.createElementNS(SVG_NAMESPACE, 'line');
-                    line.setAttribute('x1', x1);
-                    line.setAttribute('y1', y1);
-                    line.setAttribute('x2', x2);
-                    line.setAttribute('y2', y2);
+                    line.setAttribute('x1', 0);
+                    line.setAttribute('y1', b);
+                    line.setAttribute('x2', svgWidth);
+                    line.setAttribute('y2', m * svgWidth + b);
                     line.setAttribute('class', 'reg-line');
                     svg.appendChild(line);
 
-                    // رسم النقاط
                     dataPoints.forEach(point => {
                         const circle = document.createElementNS(SVG_NAMESPACE, 'circle');
                         circle.setAttribute('cx', point.x);
@@ -1069,834 +954,323 @@
                         svg.appendChild(circle);
                     });
                 }
-                
-                generateBtn.addEventListener('click', generateAndDraw);
-                generateAndDraw();
+                generateBtn.addEventListener('click', window.runRegressionSimulation);
+                window.runRegressionSimulation();
             }
-            
-            // --- 4. محاكاة Dimensionality Reduction ---
+
             function initDimRed() {
                 const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
-                const svgMain = document.getElementById('dimred-svg-main');
-                const svgXY = document.getElementById('dimred-svg-xy');
-                const svgYZ = document.getElementById('dimred-svg-yz');
-                
-                // Helper to draw a projection onto a 2D SVG plane
-                function drawProjection(svg, projectionName, data) {
+                const svgs = {
+                    main: document.getElementById('dimred-svg-main'),
+                    xy: document.getElementById('dimred-svg-xy'),
+                    yz: document.getElementById('dimred-svg-yz'),
+                    xz: document.getElementById('dimred-svg-xz')
+                };
+                const generateBtn = document.getElementById('btn-dimred-generate');
+                let points3D = [], angle = 0, animationFrameId = null;
+
+                function createSvgElement(tag, attrs) {
+                    const el = document.createElementNS(SVG_NAMESPACE, tag);
+                    for (let k in attrs) el.setAttribute(k, attrs[k]);
+                    return el;
+                }
+
+                function generate3DData() {
+                    // =======================================================
+                    // START: تعديل تقليل الأبعاد (الطلب الجديد)
+                    // 1. تغيير البيانات لتكون على شكل "قرص دائري" بدلاً من مكعب.
+                    //    هذا الشكل سيظهر كدائرة في إسقاط XY، وكخط في إسقاط XZ و YZ.
+                    // =======================================================
+                    points3D = [];
+                    const numPoints = 200;
+                    const radius = 1.2;
+                    for (let i = 0; i < numPoints; i++) {
+                        const angle = Math.random() * 2 * Math.PI;
+                        const r = radius * Math.sqrt(Math.random()); // توزيع النقاط بشكل متساوٍ داخل الدائرة
+                        points3D.push({
+                            x: r * Math.cos(angle),
+                            y: r * Math.sin(angle),
+                            z: (Math.random() - 0.5) * 0.1 // جعل القرص نحيفاً جداً على محور Z
+                        });
+                    }
+                    // =======================================================
+                    // END: تعديل تقليل الأبعاد
+                    // =======================================================
+                }
+
+                function drawMainView() {
+                    const svg = svgs.main;
+                    if (!svg) return;
                     svg.innerHTML = '';
-                    const width = svg.clientWidth;
-                    const height = svg.clientHeight;
-                    
-                    // Simple axis representation
-                    const lineX = document.createElementNS(SVG_NAMESPACE, 'line');
-                    lineX.setAttribute('x1', 10); lineX.setAttribute('y1', height - 10);
-                    lineX.setAttribute('x2', width - 10); lineX.setAttribute('y2', height - 10);
-                    lineX.setAttribute('stroke', 'var(--text-light)'); lineX.setAttribute('stroke-width', 1);
-                    svg.appendChild(lineX);
-                    
-                    const lineY = document.createElementNS(SVG_NAMESPACE, 'line');
-                    lineY.setAttribute('x1', 10); lineY.setAttribute('y1', 10);
-                    lineY.setAttribute('x2', 10); lineY.setAttribute('y2', height - 10);
-                    lineY.setAttribute('stroke', 'var(--text-light)'); lineY.setAttribute('stroke-width', 1);
-                    svg.appendChild(lineY);
+                    const { clientWidth: width, clientHeight: height } = svg;
+                    if (width === 0 || height === 0) return;
+                    const scale = Math.min(width, height) / 2.5, centerX = width / 2, centerY = height / 2;
 
-                    // Add dummy data points (for illustration)
-                    data.forEach(p => {
-                        const x = p[0];
-                        const y = p[1];
-                        let cx, cy;
-                        
-                        // Map coordinates based on projection (simple scaling)
-                        if (projectionName === 'X-Y') {
-                            cx = 10 + (x + 1) * (width - 20) / 2; // Map X from -1 to 1 to 10 to width-10
-                            cy = height - 10 - (y + 1) * (height - 20) / 2; // Map Y from -1 to 1 to height-10 to 10
-                        } else if (projectionName === 'Y-Z') {
-                            cx = 10 + (p[2] + 1) * (width - 20) / 2; // Z as X-axis
-                            cy = height - 10 - (y + 1) * (height - 20) / 2; // Y as Y-axis
-                        }
-                        
-                        const circle = document.createElementNS(SVG_NAMESPACE, 'circle');
-                        circle.setAttribute('cx', cx);
-                        circle.setAttribute('cy', cy);
-                        circle.setAttribute('r', 5);
-                        circle.setAttribute('fill', 'var(--data-point-color)');
-                        svg.appendChild(circle);
+                    const rotatedPoints = points3D.map(p => ({ ...p, rx: p.x * Math.cos(angle) - p.y * Math.sin(angle), ry: p.x * Math.sin(angle) + p.y * Math.cos(angle) }));
+                    rotatedPoints.sort((a, b) => a.z - b.z).forEach(p => {
+                        const projectedX = (p.rx - p.ry) * Math.cos(0.5);
+                        const projectedY = ((p.rx + p.ry) / 2) - p.z * Math.sin(0.5);
+                        const r = (p.z + 1.5) / 3 * 5 + 2;
+                        const opacity = (p.z + 1.5) / 3 * 0.7 + 0.3;
+                        svg.appendChild(createSvgElement('circle', { cx: centerX + projectedX * scale, cy: centerY - projectedY * scale, r, fill: 'var(--data-point-color)', opacity }));
                     });
                 }
-                
-                // Generate simple 3D data (a spiral or a cluster)
-                const data3D = [];
-                for (let i = 0; i < 20; i++) {
-                    const t = i / 20 * Math.PI * 4;
-                    const x = Math.sin(t) * 0.5 + Math.random() * 0.1;
-                    const y = Math.cos(t) * 0.5 + Math.random() * 0.1;
-                    const z = i / 20 * 0.8 + Math.random() * 0.1;
-                    data3D.push([x, y, z]);
-                }
 
-                // Simulate drawing 3D data (just conceptual)
-                function draw3DView(svg) {
-                    svg.innerHTML = ''; // Clear main view
-                    // Draw a conceptual box for 3D axes
-                    const box = document.createElementNS(SVG_NAMESPACE, 'rect');
-                    box.setAttribute('x', 50); box.setAttribute('y', 50);
-                    box.setAttribute('width', 200); box.setAttribute('height', 200);
-                    box.setAttribute('fill', 'none');
-                    box.setAttribute('stroke', 'var(--border-color)');
-                    box.setAttribute('stroke-width', 1);
-                    svg.appendChild(box);
-                    
-                    // Draw conceptual 3D spiral (just a line)
-                    const path = document.createElementNS(SVG_NAMESPACE, 'path');
-                    let d = `M ${150 + data3D[0][0]*50} ${150 + data3D[0][1]*50}`;
-                    data3D.forEach(p => {
-                        // Very rough projection: X+Z for x, Y-Z for y
-                         d += ` L ${150 + (p[0] + p[2])*70} ${150 + (p[1] - p[2])*70}`;
+                function draw2DProjection(svg, dim1, dim2) {
+                    if (!svg) return;
+                    svg.innerHTML = '';
+                    const { clientWidth: width, clientHeight: height } = svg;
+                    if (width === 0 || height === 0) return;
+                    const padding = 20, plotWidth = width - 2 * padding, plotHeight = height - 2 * padding;
+                    points3D.forEach(p => {
+                        const cx = padding + ((p[dim1] + 1.5) / 3) * plotWidth;
+                        const cy = height - padding - ((p[dim2] + 1.5) / 3) * plotHeight;
+                        svg.appendChild(createSvgElement('circle', { cx, cy, r: 4, fill: 'var(--data-point-color)', opacity: '0.7' }));
                     });
-                    path.setAttribute('d', d);
-                    path.setAttribute('fill', 'none');
-                    path.setAttribute('stroke', 'var(--data-point-color)');
-                    path.setAttribute('stroke-width', 2);
-                    svg.appendChild(path);
                 }
 
-                // Initial draw for all views
-                draw3DView(svgMain);
-                drawProjection(svgXY, 'X-Y', data3D);
-                drawProjection(svgYZ, 'Y-Z', data3D);
+                function animate() {
+                    angle += 0.005;
+                    drawMainView();
+                    animationFrameId = requestAnimationFrame(animate);
+                }
 
-                // Re-draw on resize might be complex for 3D, so we omit event listener.
+                window.runDimRedSimulation = function() {
+                    generate3DData();
+                    draw2DProjection(svgs.xy, 'x', 'y');
+                    draw2DProjection(svgs.yz, 'y', 'z');
+                    draw2DProjection(svgs.xz, 'x', 'z');
+                    if (animationFrameId) cancelAnimationFrame(animationFrameId);
+                    animate();
+                }
+                generateBtn.addEventListener('click', window.runDimRedSimulation);
+                window.runDimRedSimulation();
             }
 
-            // --- 5. محاكاة Association Rules ---
             function initAssocRules() {
-                const itemButtons = document.querySelectorAll('.assoc-item-btn');
                 const cartItemsContainer = document.getElementById('assoc-cart-items');
                 const suggestionBox = document.getElementById('assoc-suggestion-box');
                 const resetBtn = document.getElementById('assoc-reset-btn');
-                
+                if (!cartItemsContainer || !suggestionBox || !resetBtn) return;
+
                 let cart = new Set();
                 const rules = { 'bread': 'milk', 'chips': 'soda' };
-                const itemEmojis = {
-                    'bread': '🍞', 'milk': '🥛', 'chips': '🥨',
-                    'soda': '🥤', 'eggs': '🥚', 'apple': '🍎'
-                };
+                const itemEmojis = { 'bread': '🍞', 'milk': '🥛', 'chips': '🥨', 'soda': '🥤', 'eggs': '🥚', 'apple': '🍎' };
 
-                function updateCartView() {
-                    cartItemsContainer.innerHTML = '';
-                    if (cart.size === 0) {
-                        cartItemsContainer.innerHTML = '';
-                    } else {
-                        cart.forEach(item => {
-                            const span = document.createElement('span');
-                            span.textContent = itemEmojis[item] || item;
-                            cartItemsContainer.appendChild(span);
-                        });
-                    }
-                    checkRules();
-                }
-
-                function checkRules() {
+                function updateView() {
+                    cartItemsContainer.innerHTML = cart.size === 0 ? '' : Array.from(cart).map(item => `<span>${itemEmojis[item]}</span>`).join('');
                     let suggestionFound = false;
-                    for (const antecedent in rules) {
-                        if (cart.has(antecedent)) {
-                            const consequent = rules[antecedent];
-                            if (!cart.has(consequent)) {
-                                showSuggestion(antecedent, consequent);
-                                suggestionFound = true;
-                                break;
-                            }
+                    for (const [antecedent, consequent] of Object.entries(rules)) {
+                        if (cart.has(antecedent) && !cart.has(consequent)) {
+                            suggestionBox.classList.add('active');
+                            suggestionBox.innerHTML = `<div class="assoc-suggestion-content">لأنك اشتريت ${itemEmojis[antecedent]}...<span class="emoji">${itemEmojis[consequent]}</span>قد ترغب أيضاً في شراء ${itemEmojis[consequent]}!</div>`;
+                            suggestionFound = true;
+                            break;
                         }
                     }
-                    if (!suggestionFound) clearSuggestion();
+                    if (!suggestionFound) {
+                        suggestionBox.classList.remove('active');
+                        suggestionBox.innerHTML = '<span>أضف منتجات لرؤية الاقتراحات...</span>';
+                    }
                 }
 
-                function showSuggestion(itemA, itemB) {
-                    suggestionBox.classList.add('active');
-                    suggestionBox.innerHTML = `
-                        <div class="assoc-suggestion-content">
-                            لأنك اشتريت ${itemEmojis[itemA]}...
-                            <span class="emoji">${itemEmojis[itemB]}</span>
-                            قد ترغب أيضاً في شراء ${itemEmojis[itemB]}!
-                        </div>
-                    `;
-                }
-
-                function clearSuggestion() {
-                    suggestionBox.classList.remove('active');
-                    suggestionBox.innerHTML = '<span>أضف منتجات لرؤية الاقتراحات...</span>';
-                }
-
-                itemButtons.forEach(button => {
-                    button.addEventListener('click', () => {
-                        cart.add(button.dataset.id);
-                        updateCartView();
-                    });
-                });
-
+                document.querySelectorAll('.assoc-item-btn').forEach(button => button.addEventListener('click', () => {
+                    cart.add(button.dataset.id);
+                    updateView();
+                }));
                 resetBtn.addEventListener('click', () => {
                     cart.clear();
-                    updateCartView();
+                    updateView();
                 });
-                
-                updateCartView();
+                updateView();
             }
 
-            // --- 6. محاكاة Bias-Variance ---
             function initBiasVariance() {
                 const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
                 const svg = document.getElementById('bv-svg');
-                const btnUnderfit = document.getElementById('btn-bv-underfit');
-                const btnGoodfit = document.getElementById('btn-bv-goodfit');
-                const btnOverfit = document.getElementById('btn-bv-overfit');
+                const buttons = {
+                    underfit: document.getElementById('btn-bv-underfit'),
+                    goodfit: document.getElementById('btn-bv-goodfit'),
+                    overfit: document.getElementById('btn-bv-overfit')
+                };
                 const btnNewData = document.getElementById('btn-bv-new-data');
-                const buttons = [btnUnderfit, btnGoodfit, btnOverfit];
-                
-                const svgWidth = 500;
-                const svgHeight = 400;
-                const padding = 50;
-                const numPoints = 15;
-                
-                let dataPoints = [];
-                let currentFit = 'goodfit';
-                
-                // الدالة الحقيقية (التي لا نراها)
-                function trueFunction(x) {
-                    let normalizedX = (x - (svgWidth / 2)) / (svgWidth / 3);
-                    return (normalizedX * normalizedX) * (svgHeight / 4) + (svgHeight / 3);
-                }
-                
+                if (!svg || !btnNewData || !Object.values(buttons).every(b => b)) return;
+
+                const svgWidth = 500, svgHeight = 400, padding = 50;
+                let dataPoints = [], currentFit = 'goodfit';
+
+                const trueFunction = x => Math.pow((x - svgWidth / 2) / (svgWidth / 3), 2) * (svgHeight / 4) + (svgHeight / 3);
+
                 function generateDataPoints() {
-                    dataPoints = [];
-                    const noiseLevel = svgHeight / 6;
-                    for (let i = 0; i < numPoints; i++) {
+                    dataPoints = Array.from({ length: 15 }, () => {
                         const x = Math.random() * (svgWidth - 2 * padding) + padding;
-                        const trueY = trueFunction(x);
-                        const noise = (Math.random() - 0.5) * noiseLevel;
-                        const y = Math.max(padding, Math.min(svgHeight - padding, trueY + noise));
-                        dataPoints.push({ x: x, y: y });
-                    }
+                        const y = trueFunction(x) + (Math.random() - 0.5) * (svgHeight / 6);
+                        return { x, y: Math.max(padding, Math.min(svgHeight - padding, y)) };
+                    });
                 }
 
-                function drawDataPoints() {
-                    svg.querySelectorAll('.data-point').forEach(p => p.remove());
-                    dataPoints.forEach(point => {
+                function draw() {
+                    svg.innerHTML = '';
+                    dataPoints.forEach(p => {
                         const circle = document.createElementNS(SVG_NAMESPACE, 'circle');
-                        circle.setAttribute('cx', point.x);
-                        circle.setAttribute('cy', point.y);
+                        circle.setAttribute('cx', p.x);
+                        circle.setAttribute('cy', p.y);
                         circle.setAttribute('r', 5);
-                        circle.setAttribute('class', 'data-point');
                         circle.style.fill = 'var(--data-point-color)';
                         svg.appendChild(circle);
                     });
-                }
 
-                function createLine(d, color) {
-                    svg.querySelectorAll('.bv-model-line').forEach(l => l.remove());
                     const path = document.createElementNS(SVG_NAMESPACE, 'path');
+                    path.setAttribute('class', 'bv-model-line');
+                    let d = '', color = '';
+
+                    if (currentFit === 'underfit') {
+                        let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
+                        dataPoints.forEach(p => { sumX += p.x; sumY += p.y; sumXY += p.x * p.y; sumX2 += p.x * p.x; });
+                        const n = dataPoints.length, m = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX), b = (sumY - m * sumX) / n;
+                        d = `M 0 ${b} L ${svgWidth} ${m * svgWidth + b}`;
+                        color = 'var(--cluster-2)';
+                    } else if (currentFit === 'goodfit') {
+                        d = `M ${padding} ${trueFunction(padding)}`;
+                        for (let x = padding + 10; x <= svgWidth - padding; x += 10) d += ` L ${x} ${trueFunction(x)}`;
+                        color = 'var(--cluster-1)';
+                    } else { // overfit
+                        const sorted = [...dataPoints].sort((a, b) => a.x - b.x);
+                        d = `M${sorted[0].x},${sorted[0].y}`;
+                        for (let i = 0; i < sorted.length - 1; i++) {
+                            const p0 = sorted[i - 1] || sorted[i], p1 = sorted[i], p2 = sorted[i + 1], p3 = sorted[i + 2] || sorted[i + 1];
+                            d += `C${p1.x + (p2.x - p0.x) / 6},${p1.y + (p2.y - p0.y) / 6},${p2.x - (p3.x - p1.x) / 6},${p2.y - (p3.y - p1.y) / 6},${p2.x},${p2.y}`;
+                        }
+                        color = 'var(--cluster-3)';
+                    }
                     path.setAttribute('d', d);
                     path.setAttribute('stroke', color);
-                    path.setAttribute('class', 'bv-model-line');
                     svg.appendChild(path);
                 }
-                
-                // نموذج بسيط (High Bias)
-                function drawUnderfitLine() {
-                    let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
-                    dataPoints.forEach(p => { sumX += p.x; sumY += p.y; sumXY += p.x * p.y; sumX2 += p.x * p.x; });
-                    const n = dataPoints.length;
-                    const m = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
-                    const b = (sumY - m * sumX) / n;
-                    const d = `M 0 ${m * 0 + b} L ${svgWidth} ${m * svgWidth + b}`;
-                    createLine(d, 'var(--cluster-2)'); // أحمر
-                }
-                
-                // نموذج ملائم
-                function drawGoodFitLine() {
-                    // نرسم الدالة الحقيقية كأننا نعرفها
-                    let d = `M ${padding} ${trueFunction(padding)}`;
-                    for (let x = padding + 10; x <= svgWidth - padding; x += 10) {
-                        d += ` L ${x} ${trueFunction(x)}`;
-                    }
-                    createLine(d, 'var(--cluster-1)'); // أخضر
-                }
 
-                // نموذج معقد (High Variance)
-                function drawOverfitLine() {
-                    const sortedPoints = [...dataPoints].sort((a, b) => a.x - b.x);
-                    if (sortedPoints.length === 0) return;
-                    
-                    let d = `M ${sortedPoints[0].x} ${sortedPoints[0].y}`;
-                    let p = [];
-                    for (let point of sortedPoints) { p.push(point.x, point.y); }
-
-                    for (let i = 0; i < p.length - 2; i += 2) {
-                         let x0 = i ? p[i - 2] : p[0];
-                         let y0 = i ? p[i - 1] : p[1];
-                         let x1 = p[i];
-                         let y1 = p[i + 1];
-                         let x2 = p[i + 2];
-                         let y2 = p[i + 3];
-                         let x3 = i + 4 < p.length ? p[i + 4] : x2;
-                         let y3 = i + 5 < p.length ? p[i + 5] : y2;
-                         let cp1x = x1 + (x2 - x0) / 6;
-                         let cp1y = y1 + (y2 - y0) / 6;
-                         let cp2x = x2 - (x3 - x1) / 6;
-                         let cp2y = y2 - (y3 - y1) / 6;
-                         d += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${x2} ${y2}`;
-                    }
-                    createLine(d, 'var(--cluster-3)'); // أصفر
-                }
-
-                function updateFit() {
-                    if (currentFit === 'underfit') drawUnderfitLine();
-                    else if (currentFit === 'goodfit') drawGoodFitLine();
-                    else if (currentFit === 'overfit') drawOverfitLine();
-                }
-                
-                function setActiveButton(activeBtn) {
-                    buttons.forEach(btn => btn.classList.remove('active'));
-                    activeBtn.classList.add('active');
-                }
-
-                buttons.forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        currentFit = btn.id.split('-')[2]; // 'underfit', 'goodfit', 'overfit'
-                        setActiveButton(btn);
-                        updateFit();
-                    });
-                });
-                
-                btnNewData.addEventListener('click', () => {
+                window.runBiasVarianceSimulation = function() {
                     generateDataPoints();
-                    drawDataPoints();
-                    updateFit();
-                });
+                    draw();
+                }
 
-                // التشغيل الأولي
-                generateDataPoints();
-                drawDataPoints();
-                updateFit();
+                Object.entries(buttons).forEach(([fit, btn]) => btn.addEventListener('click', () => {
+                    currentFit = fit;
+                    Object.values(buttons).forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    draw();
+                }));
+                btnNewData.addEventListener('click', window.runBiasVarianceSimulation);
+                window.runBiasVarianceSimulation();
             }
 
-            // --- 7. محاكاة الشبكة العصبية (Neural Network) ---
-
-            // دالة توليد الأرقام العشوائية في نطاق معين
-            const random = (min, max) => Math.random() * (max - min) + min;
-
-            // دالة تفعيل Sigmoid
-            const sigmoid = (x) => 1 / (1 + Math.exp(-x));
-
-            // دالة مشتقة Sigmoid
-            const sigmoidDerivative = (y) => y * (1 - y);
-
-            // --- متغيرات الحالة العالمية ---
-            let isTraining = false;
-            let epoch = 0;
-            let network;
-            let data;
-            let canvas;
-            let ctx;
-            const CANVAS_WIDTH = 600;
-            const CANVAS_HEIGHT = 400;
-            
-            // --- الدوال المساعدة للتصور ---
-
-            // تحويل إحداثيات البيانات إلى إحداثيات Canvas
-            function scaleX(x) { return (x + 3) * (CANVAS_WIDTH / 6); }
-            function scaleY(y) { return CANVAS_HEIGHT - ((y + 2) * (CANVAS_HEIGHT / 4)); }
-            
-            // --- دالة توليد البيانات ---
-            function generateData() {
-                const dataPoints = [];
-                const numPoints = 100;
-
-                for (let i = 0; i < numPoints; i++) {
-                    let x1, x2, label;
-                    
-                    // توليد عشوائي لمثالين بسيطين (فصل خطي تقريبي)
-                    if (Math.random() > 0.5) {
-                        // الفئة 0 (أحمر) - الربع الأيمن السفلي
-                        x1 = random(0, 3);
-                        x2 = random(-2, 0);
-                        label = 0;
-                    } else {
-                        // الفئة 1 (أخضر) - الربع الأيسر العلوي
-                        x1 = random(-3, 0);
-                        x2 = random(0, 2);
-                        label = 1;
-                    }
-                    
-                    // إضافة ضوضاء بسيطة
-                    x1 += random(-0.5, 0.5);
-                    x2 += random(-0.5, 0.5);
-
-                    dataPoints.push({
-                        inputs: [x1, x2],
-                        target: label
-                    });
-                }
-                return dataPoints;
-            }
-
-            // --- بنية الشبكة العصبية (الكائن) ---
-            class NeuralNetwork {
-                constructor(inputNodes, hiddenNodes, outputNodes) {
-                    this.inputNodes = inputNodes;
-                    this.hiddenNodes = hiddenNodes;
-                    this.outputNodes = outputNodes;
-
-                    // تهيئة المصفوفات لتخزين الأوزان والانحيازات
-                    this.weights_ih = this.createMatrix(hiddenNodes, inputNodes); // أوزان الإدخال إلى المخفية
-                    this.weights_ho = this.createMatrix(outputNodes, hiddenNodes); // أوزان المخفية إلى الإخراج
-                    
-                    this.bias_h = this.createVector(hiddenNodes); // انحيازات الطبقة المخفية
-                    this.bias_o = this.createVector(outputNodes); // انحيازات طبقة الإخراج
-
-                    this.randomizeMatrices();
-                }
-                
-                // إنشاء مصفوفة (Array of Arrays)
-                createMatrix(rows, cols) {
-                    return Array(rows).fill(0).map(() => Array(cols).fill(0));
-                }
-
-                // إنشاء متجه (Array)
-                createVector(size) {
-                    return Array(size).fill(0);
-                }
-
-                // تعيين قيم عشوائية صغيرة للأوزان والانحيازات
-                randomizeMatrices() {
-                    const randomize = (matrix) => {
-                        for (let i = 0; i < matrix.length; i++) {
-                            for (let j = 0; j < matrix[i].length; j++) {
-                                matrix[i][j] = random(-1, 1);
-                            }
-                        }
-                    };
-                    randomize(this.weights_ih);
-                    randomize(this.weights_ho);
-                    
-                    // الانحيازات
-                    for (let i = 0; i < this.bias_h.length; i++) this.bias_h[i] = random(-1, 1);
-                    for (let i = 0; i < this.bias_o.length; i++) this.bias_o[i] = random(-1, 1);
-                }
-
-                // --- دالة التغذية الأمامية (Feedforward) ---
-                feedforward(inputArray) {
-                    // 1. حساب مخرجات الطبقة المخفية
-                    const inputs = inputArray;
-                    const hidden_outputs = this.createVector(this.hiddenNodes);
-
-                    for (let i = 0; i < this.hiddenNodes; i++) {
-                        let sum = 0;
-                        // ضرب المدخلات في أوزانها
-                        for (let j = 0; j < this.inputNodes; j++) {
-                            sum += inputs[j] * this.weights_ih[i][j];
-                        }
-                        // إضافة الانحياز
-                        sum += this.bias_h[i];
-                        // تطبيق دالة التفعيل
-                        hidden_outputs[i] = sigmoid(sum);
-                    }
-
-                    // 2. حساب مخرجات طبقة الإخراج
-                    const output_outputs = this.createVector(this.outputNodes);
-
-                    for (let i = 0; i < this.outputNodes; i++) {
-                        let sum = 0;
-                        // ضرب مخرجات الطبقة المخفية في أوزانها
-                        for (let j = 0; j < this.hiddenNodes; j++) {
-                            sum += hidden_outputs[j] * this.weights_ho[i][j];
-                        }
-                        // إضافة الانحياز
-                        sum += this.bias_o[i];
-                        // تطبيق دالة التفعيل
-                        output_outputs[i] = sigmoid(sum);
-                    }
-
-                    return {
-                        output: output_outputs,
-                        hidden_outputs: hidden_outputs
-                    };
-                }
-
-                // --- دالة التدريب (الانتشار الخلفي - Backpropagation) ---
-                train(inputArray, targetArray, learningRate) {
-                    // 1. التغذية الأمامية للحصول على المخرجات
-                    const { output, hidden_outputs } = this.feedforward(inputArray);
-                    const inputs = inputArray;
-                    
-                    // 2. حساب الخطأ (Error) لطبقة الإخراج (الخسارة = الهدف - الإخراج)
-                    const output_errors = this.createVector(this.outputNodes);
-                    for (let i = 0; i < this.outputNodes; i++) {
-                        output_errors[i] = targetArray[i] - output[i];
-                    }
-
-                    // 3. حساب تدرج (Gradient) الطبقة المخفية إلى الإخراج
-                    // (Error * مشتقة دالة التفعيل)
-                    const output_gradients = this.createVector(this.outputNodes);
-                    for (let i = 0; i < this.outputNodes; i++) {
-                        output_gradients[i] = output_errors[i] * sigmoidDerivative(output[i]) * learningRate;
-                    }
-
-                    // 4. تحديث أوزان وانحيازات المخفية إلى الإخراج (Weights_HO & Bias_O)
-                    for (let i = 0; i < this.outputNodes; i++) { // صفوف (الأوزان)
-                        for (let j = 0; j < this.hiddenNodes; j++) { // أعمدة (المخرجات المخفية)
-                            // تغيير الوزن = Gradient * مخرج الطبقة السابقة
-                            const delta_w = output_gradients[i] * hidden_outputs[j];
-                            this.weights_ho[i][j] += delta_w;
-                        }
-                        // تحديث الانحياز
-                        this.bias_o[i] += output_gradients[i];
-                    }
-
-                    // 5. حساب الخطأ للطبقة المخفية (Backpropagate Error)
-                    const hidden_errors = this.createVector(this.hiddenNodes);
-                    for (let i = 0; i < this.hiddenNodes; i++) {
-                        let sum = 0;
-                        // (الخطأ اللاحق * الوزن المرتبط)
-                        for (let j = 0; j < this.outputNodes; j++) {
-                            sum += output_errors[j] * this.weights_ho[j][i];
-                        }
-                        hidden_errors[i] = sum;
-                    }
-                    
-                    // 6. حساب تدرج الطبقة المخفية
-                    const hidden_gradients = this.createVector(this.hiddenNodes);
-                    for (let i = 0; i < this.hiddenNodes; i++) {
-                        hidden_gradients[i] = hidden_errors[i] * sigmoidDerivative(hidden_outputs[i]) * learningRate;
-                    }
-
-                    // 7. تحديث أوزان وانحيازات الإدخال إلى المخفية (Weights_IH & Bias_H)
-                    for (let i = 0; i < this.hiddenNodes; i++) { // صفوف (الأوزان)
-                        for (let j = 0; j < this.inputNodes; j++) { // أعمدة (المدخلات)
-                            // تغيير الوزن = Gradient * مخرج الطبقة السابقة
-                            const delta_w = hidden_gradients[i] * inputs[j];
-                            this.weights_ih[i][j] += delta_w;
-                        }
-                        // تحديث الانحياز
-                        this.bias_h[i] += hidden_gradients[i];
-                    }
-                    
-                    // إرجاع الخطأ المطلق لغرض حساب الخسارة
-                    return Math.abs(output_errors[0]);
-                }
-            }
-            
-            // --- دالة تحديث التصور (الرسم) ---
-            function drawVisualization() {
-                if (!network || !ctx || !data) return;
-
-                // مسح الـ Canvas
-                ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-
-                // 1. رسم خطوط القرار (الخلفية)
-                const resolution = 15;
-                let totalLoss = 0;
-                let lossCount = 0;
-                
-                // التأكد من أن الألوان مستخلصة قبل الاستخدام
-                const secondaryColor = window.varStyles.secondary || '#10b981'; 
-                const dangerColor = window.varStyles.danger || '#ef4444'; 
-
-                for (let i = 0; i < resolution; i++) {
-                    for (let j = 0; j < resolution; j++) {
-                        // تحويل إحداثيات الإخراج إلى إحداثيات إدخال (من -3 إلى 3 ومن -2 إلى 2)
-                        const x_norm = (i / resolution) * 6 - 3; // -3 to 3
-                        const y_norm = (j / resolution) * 4 - 2; // -2 to 2
-                        
-                        const result = network.feedforward([x_norm, y_norm]);
-                        const prediction = result.output[0];
-
-                        // تلوين مربع (الخسارة 0: أحمر، الخسارة 1: أخضر)
-                        const alpha = Math.abs(prediction - 0.5) * 2; // شدة اللون
-                        
-                        ctx.beginPath();
-                        ctx.rect(
-                            (i / resolution) * CANVAS_WIDTH,
-                            (CANVAS_HEIGHT - (j / resolution) * CANVAS_HEIGHT) - (CANVAS_HEIGHT / resolution), // مقلوب Y
-                            CANVAS_WIDTH / resolution,
-                            CANVAS_HEIGHT / resolution
-                        );
-                        
-                        // دالة مساعدة لتحويل لون CSS (مثل #rrggbb) إلى rgba
-                        function hexToRgba(hex, alpha) {
-                            const r = parseInt(hex.substring(1, 3), 16);
-                            const g = parseInt(hex.substring(3, 5), 16);
-                            const b = parseInt(hex.substring(5, 7), 16);
-                            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-                        }
-
-                        if (prediction < 0.5) {
-                            // أحمر (الفئة 0)
-                            ctx.fillStyle = hexToRgba(dangerColor, alpha * 0.4 + 0.1); 
-                        } else {
-                            // أخضر (الفئة 1)
-                            ctx.fillStyle = hexToRgba(secondaryColor, alpha * 0.4 + 0.1); 
-                        }
-                        ctx.fill();
-                    }
-                }
-                
-                // 2. رسم نقاط البيانات الأصلية
-                for (const point of data) {
-                    const px = scaleX(point.inputs[0]);
-                    const py = scaleY(point.inputs[1]);
-                    const colorClass = point.target;
-
-                    ctx.beginPath();
-                    ctx.arc(px, py, 5, 0, Math.PI * 2);
-                    ctx.fillStyle = (colorClass === 0) ? dangerColor : secondaryColor;
-                    ctx.fill();
-                    ctx.strokeStyle = 'white';
-                    ctx.lineWidth = 1.5;
-                    ctx.stroke();
-                    
-                    // حساب الخسارة الإجمالية
-                    const prediction = network.feedforward(point.inputs).output[0];
-                    totalLoss += Math.pow(point.target - prediction, 2);
-                    lossCount++;
-                }
-                
-                // 3. تحديث قيمة الخسارة
-                const mse = (totalLoss / lossCount).toFixed(4);
-                document.getElementById('lossValue').querySelector('span').textContent = mse;
-
-                // 4. تحديث تصور الشبكة
-                updateNetworkDiagram();
-            }
-            window.drawVisualization = drawVisualization; // جعلها متاحة للتنقل بين التبويبات
-
-            // --- دالة تحديث مخطط الشبكة ---
-            function updateNetworkDiagram() {
-                const svg = document.getElementById('connection-svg');
-                const networkContainer = document.getElementById('networkVizContainer');
-                
-                if (!svg || !networkContainer) return;
-
-                // يجب تحديث الرسم بعد التأكد من أن العناصر مرئية وموضوعة
-                if (networkContainer.offsetParent === null) return; 
-
-                svg.innerHTML = '';
-                
-                const inputNeurons = document.querySelectorAll('.input-neuron');
-                const hiddenNeurons = document.querySelectorAll('.hidden-neuron');
-                const outputNeurons = document.querySelectorAll('.output-neuron');
-                
-                if (inputNeurons.length === 0 || !network) return;
-
-                // تحديد موقع الأوزان (للرسم)
-                function getPosition(element) {
-                    const rect = element.getBoundingClientRect();
-                    const containerRect = networkContainer.getBoundingClientRect();
-                    return {
-                        x: rect.left + rect.width / 2 - containerRect.left,
-                        y: rect.top + rect.height / 2 - containerRect.top
-                    };
-                }
-
-                // وظيفة رسم خط (يمثل الوزن)
-                function drawConnection(sourcePos, targetPos, weight) {
-                    const line = document.createElementNS("http://www.w3.org/2000/svg", 'line');
-                    line.setAttribute('x1', sourcePos.x);
-                    line.setAttribute('y1', sourcePos.y);
-                    line.setAttribute('x2', targetPos.x);
-                    line.setAttribute('y2', targetPos.y);
-                    
-                    // اللون والسمك يعتمدان على الوزن
-                    const weightAbs = Math.abs(weight);
-                    const color = weight > 0 ? window.varStyles.secondary : window.varStyles.danger;
-                    
-                    line.setAttribute('stroke', color);
-                    line.setAttribute('stroke-width', 1 + weightAbs * 2); // زيادة سمك الخط مع زيادة قيمة الوزن
-                    line.setAttribute('opacity', 0.5 + weightAbs * 0.3);
-
-                    svg.appendChild(line);
-                }
-                
-                // تحجيم SVG
-                svg.setAttribute('width', networkContainer.clientWidth);
-                svg.setAttribute('height', networkContainer.clientHeight);
-
-
-                // 1. رسم أوزان الإدخال إلى المخفية (IH)
-                for (let i = 0; i < network.hiddenNodes; i++) {
-                    const hiddenPos = getPosition(hiddenNeurons[i]);
-                    for (let j = 0; j < network.inputNodes; j++) {
-                        const inputPos = getPosition(inputNeurons[j]);
-                        drawConnection(inputPos, hiddenPos, network.weights_ih[i][j]);
-                    }
-                    
-                    // تحديث قيمة الانحياز في العقدة المخفية
-                    const biasValue = network.bias_h[i].toFixed(2);
-                    hiddenNeurons[i].title = `انحياز: ${biasValue}`;
-                }
-
-                // 2. رسم أوزان المخفية إلى الإخراج (HO)
-                for (let i = 0; i < network.outputNodes; i++) {
-                    const outputPos = getPosition(outputNeurons[i]);
-                    for (let j = 0; j < network.hiddenNodes; j++) {
-                        const hiddenPos = getPosition(hiddenNeurons[j]);
-                        drawConnection(hiddenPos, outputPos, network.weights_ho[i][j]);
-                    }
-                    
-                    // تحديث قيمة الانحياز في عقدة الإخراج
-                    const biasValue = network.bias_o[i].toFixed(2);
-                    outputNeurons[i].title = `انحياز: ${biasValue}`;
-                }
-
-            }
-
-            // --- دالة التدريب الرئيسية (الحلقة) ---
-            function trainLoop() {
-                if (!isTraining) return;
-
-                const learningRate = parseFloat(document.getElementById('learningRate').value);
-                
-                // تدريب الشبكة على كل نقطة بيانات (Epoch)
-                for (let i = 0; i < data.length; i++) {
-                    const point = data[i];
-                    // يجب أن تكون القيمة المستهدفة مصفوفة للعقدة الوحيدة
-                    const targetArray = [point.target]; 
-                    
-                    // تحديث الأوزان والانحيازات عبر الانتشار الخلفي
-                    network.train(point.inputs, targetArray, learningRate);
-                }
-
-                epoch++;
-                document.getElementById('epochCount').textContent = epoch;
-                document.getElementById('status').textContent = 'يتدرب...';
-                
-                // تحديث الرسم بعد كل Epoch
-                drawVisualization();
-                
-                // إذا انخفض الخطأ بدرجة كافية، يمكن إيقاف التدريب
-                const currentLoss = parseFloat(document.getElementById('lossValue').querySelector('span').textContent);
-                if (currentLoss < 0.005 && epoch > 50) {
-                        isTraining = false;
-                        document.getElementById('status').textContent = 'تم الانتهاء!';
-                        document.getElementById('btnStart').textContent = 'أعد التدريب';
-                        return;
-                }
-
-                // متابعة التدريب بعد فترة زمنية قصيرة (لتوضيح الحركة)
-                setTimeout(trainLoop, 50); // 50ms فاصل زمني للتحديث
-            }
-
-            // --- دالة تهيئة الواجهة والشبكة ---
+            // =======================================================
+            // START: إصلاح الشبكة العصبية
+            // تم نقل كل الكود الخاص بالشبكة العصبية إلى داخل هذه الدالة لضمان عملها بشكل صحيح
+            // =======================================================
             function initializeNN() {
-                // الحصول على عناصر DOM
-                const btnStart = document.getElementById('btnStart');
-                const btnReset = document.getElementById('btnReset');
-                const hiddenNeuronsSelect = document.getElementById('hiddenNeurons');
-                const networkContainer = document.getElementById('networkVizContainer');
-                canvas = document.getElementById('outputCanvas');
-                if (!canvas) return; // Guard clause in case element is not found
-                ctx = canvas.getContext('2d');
-                
-                // استخراج ألوان الـ CSS للاستخدام في Canvas (مُعدل ليتناسب مع أسماء متغيرات الملف الرئيسي)
-                window.varStyles = {
-                    primary: getComputedStyle(document.documentElement).getPropertyValue('--accent-blue').trim(),
-                    secondary: getComputedStyle(document.documentElement).getPropertyValue('--cluster-1').trim(), // الأخضر
-                    danger: getComputedStyle(document.documentElement).getPropertyValue('--cluster-2').trim(),  // الأحمر
-                };
+                let isTraining = false, epoch = 0, network, data, canvas, ctx, animationFrameId;
+                const CANVAS_WIDTH = 600, CANVAS_HEIGHT = 400;
 
-                // تهيئة البيانات
-                data = generateData();
-                
-                // --- وظيفة بناء مخطط الشبكة (ديناميكيًا) ---
-                function buildNetworkDiagram(hiddenCount) {
-                    const hiddenLayerContainer = document.getElementById('hiddenLayerContainer');
-                    if (!hiddenLayerContainer) return;
-
-                    hiddenLayerContainer.innerHTML = '';
-                    
-                    // 2. الطبقة المخفية (N عقد)
-                    let hiddenHtml = `<p class="text-center font-semibold mb-2" style="font-weight: 600; font-size: 1rem; color: var(--text-light); margin-bottom: 0.5rem;">مخفية (${hiddenCount})</p>`;
-                    for(let i = 0; i < hiddenCount; i++) {
-                        hiddenHtml += `<div class="neuron hidden-neuron">H${i+1}</div>`;
-                    }
-                    hiddenLayerContainer.innerHTML = hiddenHtml;
+                class NeuralNetwork {
+                    // ... (كود الكلاس يبقى كما هو)
+                    constructor(input, hidden, output) { this.inputNodes = input; this.hiddenNodes = hidden; this.outputNodes = output; this.weights_ih = Array(hidden).fill(0).map(() => Array(input).fill(0).map(() => Math.random() * 2 - 1)); this.weights_ho = Array(output).fill(0).map(() => Array(hidden).fill(0).map(() => Math.random() * 2 - 1)); this.bias_h = Array(hidden).fill(0).map(() => Math.random() * 2 - 1); this.bias_o = Array(output).fill(0).map(() => Math.random() * 2 - 1); } sigmoid = (x) => 1 / (1 + Math.exp(-x)); sigmoidDerivative = (y) => y * (1 - y); feedforward(inputArray) { const hidden_outputs = this.weights_ih.map((weights, i) => this.sigmoid(weights.reduce((acc, w, j) => acc + w * inputArray[j], 0) + this.bias_h[i])); const final_outputs = this.weights_ho.map((weights, i) => this.sigmoid(weights.reduce((acc, w, j) => acc + w * hidden_outputs[j], 0) + this.bias_o[i])); return { output: final_outputs, hidden_outputs }; } train(inputs, targets, lr) { const { output, hidden_outputs } = this.feedforward(inputs); const output_errors = targets.map((t, i) => t - output[i]); const output_gradients = output.map((o, i) => output_errors[i] * this.sigmoidDerivative(o) * lr); const hidden_errors = this.weights_ho[0].map((_, h) => output_errors[0] * this.weights_ho[0][h]); const hidden_gradients = hidden_outputs.map((h, i) => hidden_errors[i] * this.sigmoidDerivative(h) * lr); this.weights_ho[0] = this.weights_ho[0].map((w, j) => w + output_gradients[0] * hidden_outputs[j]); this.bias_o[0] += output_gradients[0]; this.weights_ih = this.weights_ih.map((w_row, i) => w_row.map((w, j) => w + hidden_gradients[i] * inputs[j])); this.bias_h = this.bias_h.map((b, i) => b + hidden_gradients[i]); }
                 }
 
-                // --- وظيفة إعادة تعيين الشبكة ---
-                function resetNetwork() {
-                    isTraining = false;
-                    epoch = 0;
-                    
-                    const hiddenCount = parseInt(hiddenNeuronsSelect.value);
-                    buildNetworkDiagram(hiddenCount);
+                function generateSpiralData() {
+                    // ... (كود توليد البيانات يبقى كما هو)
+                    const points = [];
+                    const numPointsPerClass = 50;
+                    for (let i = 0; i < numPointsPerClass; i++) { const x = -1.5 + (Math.random() - 0.5) * 2; const y = 1 + (Math.random() - 0.5) * 2; points.push({ inputs: [x, y], target: 0 }); }
+                    for (let i = 0; i < numPointsPerClass; i++) { const x = 1.5 + (Math.random() - 0.5) * 2; const y = -1 + (Math.random() - 0.5) * 2; points.push({ inputs: [x, y], target: 1 }); }
+                    return points;
+                }
 
-                    // تهيئة الشبكة العصبية
+                window.drawVisualization = function() {
+                    // ... (كود الرسم يبقى كما هو)
+                    if (!network || !ctx || !data) return;
+                    ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                    let totalLoss = 0;
+                    const res = 20;
+                    for (let i = 0; i < res; i++) { for (let j = 0; j < res; j++) { const x = (i / res) * 6 - 3, y = (j / res) * 4 - 2; const pred = network.feedforward([x, y]).output[0]; const alpha = Math.abs(pred - 0.5) * 2; ctx.fillStyle = pred < 0.5 ? `rgba(239, 68, 68, ${alpha * 0.4 + 0.1})` : `rgba(16, 185, 129, ${alpha * 0.4 + 0.1})`; ctx.fillRect((i / res) * CANVAS_WIDTH, CANVAS_HEIGHT - (j / res) * CANVAS_HEIGHT - (CANVAS_HEIGHT / res), CANVAS_WIDTH / res, CANVAS_HEIGHT / res); } }
+                    data.forEach(p => { const px = (p.inputs[0] + 3) * (CANVAS_WIDTH / 6), py = CANVAS_HEIGHT - ((p.inputs[1] + 2) * (CANVAS_HEIGHT / 4)); ctx.beginPath(); ctx.arc(px, py, 5, 0, Math.PI * 2); ctx.fillStyle = p.target === 0 ? '#ef4444' : '#10b981'; ctx.fill(); ctx.strokeStyle = 'white'; ctx.lineWidth = 1.5; ctx.stroke(); totalLoss += Math.pow(p.target - network.feedforward(p.inputs).output[0], 2); });
+                    document.getElementById('lossValue').querySelector('span').textContent = (totalLoss / data.length).toFixed(4);
+                    updateNetworkDiagram();
+                }
+
+                function updateNetworkDiagram() {
+                    // ... (كود رسم مخطط الشبكة يبقى كما هو)
+                    const svg = document.getElementById('connection-svg');
+                    if (!svg || !network) return;
+                    svg.innerHTML = '';
+                    const containerRect = svg.parentElement.getBoundingClientRect();
+                    if (containerRect.width === 0) return;
+                    const getPos = el => { const r = el.getBoundingClientRect(); return { x: r.left + r.width / 2 - containerRect.left, y: r.top + r.height / 2 - containerRect.top }; };
+                    const inputs = Array.from(document.querySelectorAll('.input-neuron')), hiddens = Array.from(document.querySelectorAll('.hidden-neuron')), outputs = Array.from(document.querySelectorAll('.output-neuron'));
+                    const drawConn = (s, t, w) => { const line = document.createElementNS("http://www.w3.org/2000/svg", 'line'); line.setAttribute('x1', s.x); line.setAttribute('y1', s.y); line.setAttribute('x2', t.x); line.setAttribute('y2', t.y); const weightAbs = Math.abs(w); line.setAttribute('stroke', w > 0 ? '#10b981' : '#ef4444'); line.setAttribute('stroke-width', 1 + weightAbs * 2); line.setAttribute('opacity', 0.5 + weightAbs * 0.3); svg.appendChild(line); };
+                    hiddens.forEach((h, i) => { const hPos = getPos(h); inputs.forEach((inp, j) => drawConn(getPos(inp), hPos, network.weights_ih[i][j])); });
+                    outputs.forEach((o, i) => { const oPos = getPos(o); hiddens.forEach((h, j) => drawConn(getPos(h), oPos, network.weights_ho[i][j])); });
+                }
+
+                function trainLoop() {
+                    // ... (كود حلقة التدريب يبقى كما هو)
+                    if (!isTraining) return;
+                    if (epoch >= 8) { // الحد الأقصى 8 epochs
+                        isTraining = false; // أوقف التدريب
+                        document.getElementById('status').textContent = 'اكتمل التدريب'; // حدث الحالة
+                        document.getElementById('btnStart').innerHTML = 'اكتمل'; // غير نص الزر
+                        document.getElementById('btnStart').disabled = true; // عطل الزر
+                        return;
+                    }
+                    const lr = parseFloat(document.getElementById('learningRate').value);
+                    for(let i = 0; i < 100; i++) { 
+                        data.forEach(p => network.train(p.inputs, [p.target], lr));
+                    }
+                    epoch += 1; // زيادة الـ epoch بمقدار 1 في كل دورة
+                    document.getElementById('epochCount').textContent = epoch;
+                    window.drawVisualization();
+                    animationFrameId = requestAnimationFrame(trainLoop); // استمرار الحلقة
+                }
+
+                function resetNetwork() {
+                    // ... (كود إعادة التعيين يبقى كما هو)
+                    isTraining = false;
+                    if (animationFrameId) cancelAnimationFrame(animationFrameId);
+                    epoch = 0;
+                    const hiddenCount = parseInt(document.getElementById('hiddenNeurons').value);
+                    const hiddenLayerContainer = document.getElementById('hiddenLayerContainer');
+                    hiddenLayerContainer.innerHTML = `<p class="text-center font-semibold mb-2">مخفية (${hiddenCount})</p>` + Array.from({ length: hiddenCount }, (_, i) => `<div class="neuron hidden-neuron">H${i + 1}</div>`).join('');
                     network = new NeuralNetwork(2, hiddenCount, 1);
-                    
+                    data = generateSpiralData();
                     document.getElementById('epochCount').textContent = 0;
                     document.getElementById('status').textContent = 'متوقف';
-                    document.getElementById('btnStart').innerHTML = `
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor" style="width: 1.25rem; height: 1.25rem; margin-left: 0.5rem; display: inline-block;">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
-                        </svg>
-                        بدء التدريب
-                    `;
-                    
-                    // الرسم الأولي (مؤجل للتأكد من وضع العناصر)
-                    setTimeout(drawVisualization, 50);
+                    document.getElementById('btnStart').innerHTML = 'بدء التدريب';
+                    document.getElementById('btnStart').disabled = false; // إعادة تفعيل الزر
+                    setTimeout(window.drawVisualization, 50);
                 }
 
-                // --- معالجات الأحداث ---
+                const btnStart = document.getElementById('btnStart');
                 btnStart.addEventListener('click', () => {
-                    // إذا كان التدريب قد انتهى بنجاح، أعد التعيين وابدأ من جديد
-                    const lossElement = document.getElementById('lossValue').querySelector('span');
-                    const currentLoss = parseFloat(lossElement.textContent);
-                    
-                    if (currentLoss < 0.005 && epoch > 50) {
-                        resetNetwork();
-                        // بعد إعادة التعيين، سنبدأ التدريب في الخطوات التالية
-                    }
-                    
                     isTraining = !isTraining;
-                    if (isTraining) {
-                        trainLoop();
-                        document.getElementById('btnStart').innerHTML = `
-                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor" style="width: 1.25rem; height: 1.25rem; margin-left: 0.5rem; display: inline-block;">
-                                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-9-4a1 1 0 00-1 1v4a1 1 102 0V7a1 1 0 00-1-1zm3 0a1 1 0 00-1 1v4a1 1 0 102 0V7a1 1 0 00-1-1z" clip-rule="evenodd" />
-                             </svg>
-                             إيقاف مؤقت
-                        `;
-                        document.getElementById('status').textContent = 'جاري البدء...';
-                    } else {
-                        document.getElementById('btnStart').innerHTML = `
-                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor" style="width: 1.25rem; height: 1.25rem; margin-left: 0.5rem; display: inline-block;">
-                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
-                             </svg>
-                             استئناف التدريب
-                        `;
-                        document.getElementById('status').textContent = 'متوقف مؤقتًا';
-                    }
+                    btnStart.innerHTML = isTraining ? 'إيقاف مؤقت' : 'استئناف التدريب';
+                    document.getElementById('status').textContent = isTraining ? 'يتدرب...' : 'متوقف مؤقتًا';
+                    if (isTraining) trainLoop();
                 });
-
-                btnReset.addEventListener('click', resetNetwork);
+                document.getElementById('btnReset').addEventListener('click', resetNetwork);
+                document.getElementById('learningRate').addEventListener('change', resetNetwork);
+                document.getElementById('hiddenNeurons').addEventListener('change', resetNetwork);
                 
-                // تغيير عدد العقد المخفية
-                hiddenNeuronsSelect.addEventListener('change', resetNetwork);
-
-                // حدث تغيير حجم النافذة (لتصحيح خطوط SVG)
-                window.addEventListener('resize', drawVisualization); 
-                
-                // البدء بالتهيئة الكاملة
-                resetNetwork();
+                canvas = document.getElementById('outputCanvas');
+                if (canvas) {
+                    ctx = canvas.getContext('2d');
+                    resetNetwork();
+                }
             }
+            // =======================================================
+            // END: إصلاح الشبكة العصبية
+            // =======================================================
 
-            // --- تشغيل جميع دوال التهيئة ---
-            initKMeans();
-            initClassification();
-            initRegression();
-            initDimRed();
-            initAssocRules();
-            initBiasVariance();
-            initializeNN(); // تشغيل تهيئة الشبكة العصبية
+            const initialActiveTabId = document.querySelector('.tab-btn.active')?.getAttribute('data-tab') || 'tab-kmeans';
+            activateTab(initialActiveTabId);
         });
     </script>
 </body>
