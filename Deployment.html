@@ -288,8 +288,41 @@
                                 </div>
                             </div>
 
-                            <div class="illustration-box">
-                                <p class="text-2xl text-purple-400">Model (Python) ➡️ Flask API ➡️ Docker ➡️ Cloud</p>
+                            <div class="illustration-box p-4 bg-gray-900/50">
+                                <svg viewBox="0 0 400 150" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+                                    <title>مخطط عملية نشر النموذج</title>
+                                    <!-- Model -->
+                                    <g>
+                                        <rect x="10" y="50" width="70" height="50" rx="5" fill="#1f2937" stroke="#a855f7" stroke-width="1.5"/>
+                                        <text x="45" y="78" font-size="12" fill="#e5e7eb" text-anchor="middle">Model</text>
+                                    </g>
+                                    <!-- Arrow 1 -->
+                                    <path d="M 85 75 L 115 75" stroke="#4b5563" stroke-width="2" marker-end="url(#arrowhead)"/>
+                                    <!-- API -->
+                                    <g>
+                                        <circle cx="140" cy="75" r="25" fill="#1f2937" stroke="#a855f7" stroke-width="1.5"/>
+                                        <text x="140" y="78" font-size="12" fill="#e5e7eb" text-anchor="middle">API</text>
+                                    </g>
+                                    <!-- Arrow 2 -->
+                                    <path d="M 170 75 L 200 75" stroke="#4b5563" stroke-width="2" marker-end="url(#arrowhead)"/>
+                                    <!-- Docker -->
+                                    <g>
+                                        <rect x="205" y="50" width="70" height="50" rx="5" fill="#1f2937" stroke="#a855f7" stroke-width="1.5"/>
+                                        <text x="240" y="78" font-size="12" fill="#e5e7eb" text-anchor="middle">Docker</text>
+                                    </g>
+                                    <!-- Arrow 3 -->
+                                    <path d="M 280 75 L 310 75" stroke="#4b5563" stroke-width="2" marker-end="url(#arrowhead)"/>
+                                    <!-- Cloud -->
+                                    <g>
+                                        <path d="M325 75 Q320 60 340 60 Q360 60 365 75 Q380 75 380 90 Q360 105 340 95 Q320 105 315 90 Q315 75 325 75" fill="#1f2937" stroke="#a855f7" stroke-width="1.5"/>
+                                        <text x="350" y="82" font-size="12" fill="#e5e7eb" text-anchor="middle">Cloud</text>
+                                    </g>
+                                    <defs>
+                                        <marker id="arrowhead" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                            <path d="M 0 0 L 10 5 L 0 10 z" fill="#4b5563" />
+                                        </marker>
+                                    </defs>
+                                </svg>
                                                             </div>
                         </div>
                     </div>
@@ -299,15 +332,31 @@
                 <div class="slide" data-slide="2">
                     <div class="slide-content">
                         <h2 class="text-2xl font-bold text-white mb-4"><span class="text-purple-400">2.</span> ⚙️ البنية التحتية لعلم البيانات (MLOps)</h2>
-                        <h3 class="text-lg font-semibold text-white mb-2">الماهية</h3>
-                        <p class="text-gray-400 leading-relaxed">هو مجموعة الممارسات التي تهدف إلى أتمتة وإدارة ونشر نماذج تعلم الآلة في مرحلة الإنتاج بشكل موثوق وفعال.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-4">
+                                <h3 class="text-lg font-semibold text-white mb-2">الماهية</h3>
+                                <p class="text-gray-400 leading-relaxed">هو مجموعة الممارسات التي تهدف إلى أتمتة وإدارة ونشر نماذج تعلم الآلة في مرحلة الإنتاج بشكل موثوق وفعال.</p>
 
-                        <h3 class="mt-4 text-lg font-semibold text-white mb-2">المكونات الأساسية (الـ CI/CD للنماذج)</h3>
-                        <ul class="list-disc pr-4 space-y-2 text-gray-400">
-                            <li>**التدريب المستمر (CT):** إعادة تدريب النموذج تلقائيًا عند توفر بيانات جديدة.</li>
-                            <li>**التسليم المستمر (CD):** نشر النموذج المُحدث تلقائيًا في بيئة الإنتاج.</li>
-                            <li>**تتبع البيانات والإصدارات (Versioning):** إدارة إصدارات البيانات والرموز والنموذج نفسه.</li>
-                        </ul>
+                                <h3 class="mt-4 text-lg font-semibold text-white mb-2">المكونات الأساسية (الـ CI/CD للنماذج)</h3>
+                                <ul class="list-disc pr-4 space-y-2 text-gray-400">
+                                    <li>**التدريب المستمر (CT):** إعادة تدريب النموذج تلقائيًا عند توفر بيانات جديدة.</li>
+                                    <li>**التسليم المستمر (CD):** نشر النموذج المُحدث تلقائيًا في بيئة الإنتاج.</li>
+                                    <li>**تتبع البيانات والإصدارات (Versioning):** إدارة إصدارات البيانات والرموز والنموذج نفسه.</li>
+                                </ul>
+                            </div>
+                            <div class="illustration-box p-4 bg-gray-900/50">
+                                <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+                                    <title>دورة MLOps</title>
+                                    <circle cx="100" cy="75" r="50" fill="none" stroke="#4b5563" stroke-width="2" stroke-dasharray="5,5"/>
+                                    <!-- Train -->
+                                    <text x="100" y="20" fill="#c084fc" text-anchor="middle" font-size="12">Train 🚂</text>
+                                    <!-- Deploy -->
+                                    <text x="165" y="78" fill="#c084fc" text-anchor="middle" font-size="12">Deploy 🚀</text>
+                                    <!-- Monitor -->
+                                    <text x="35" y="78" fill="#c084fc" text-anchor="middle" font-size="12">Monitor 📊</text>
+                                </svg>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -325,8 +374,20 @@
                                 <h3 class="text-lg font-semibold text-white mb-2">2. انحراف المفهوم (Concept Drift)</h3>
                                 <p class="text-gray-400 text-sm">تغير في العلاقة بين الميزات والهدف (أي أن القاعدة التي تعلمها النموذج لم تعد صحيحة).</p>
                             </div>
-                            <div class="illustration-box">
-                                <p class="text-xl text-purple-300">"تتطلب البيئة الحية مراقبة مستمرة لجودة البيانات وأداء النموذج."</p>
+                            <div class="illustration-box p-4 bg-gray-900/50">
+                                <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+                                    <title>انحراف البيانات (Data Drift)</title>
+                                    <!-- Training Data Distribution -->
+                                    <path d="M 10 100 C 30 100, 30 40, 60 40 C 90 40, 90 100, 120 100" stroke="#3b82f6" stroke-width="2" fill="rgba(59, 130, 246, 0.2)"/>
+                                    <text x="65" y="120" font-size="10" fill="#3b82f6" text-anchor="middle">بيانات التدريب</text>
+                                    
+                                    <!-- Production Data Distribution (Shifted) -->
+                                    <path d="M 80 100 C 100 100, 100 60, 130 60 C 160 60, 160 100, 190 100" stroke="#f43f5e" stroke-width="2" fill="rgba(244, 63, 94, 0.2)" stroke-dasharray="4,4"/>
+                                    <text x="135" y="120" font-size="10" fill="#f43f5e" text-anchor="middle">بيانات الإنتاج (الجديدة)</text>
+
+                                    <!-- Axis -->
+                                    <line x1="5" y1="100" x2="195" y2="100" stroke="#4b5563" stroke-width="1.5"/>
+                                </svg>
                             </div>
                         </div>
                     </div>
@@ -335,21 +396,43 @@
                 <!-- Slide 4: Specialization Paths -->
                 <div class="slide" data-slide="4">
                     <div class="slide-content">
-                        <h2 class="text-2xl font-bold text-white mb-4"><span class="text-purple-400">4.</span> 💼 مسارات التخصص والتعمق</h2>
-                        <p class="mb-4 text-gray-400">بعد إتقان الأساسيات، يمكنك اختيار مسار التخصص لتعميق معرفتك.</p>
-
-                        <div class="space-y-4">
-                            <div class="bg-gray-700 p-4 rounded-lg">
-                                <h4 class="font-semibold text-white">مهندس تعلم الآلة (ML Engineer)</h4>
-                                <p class="text-sm text-gray-300">**التركيز:** النشر، MLOps، الكفاءة، تطوير البنية التحتية للنماذج. (يتطلب مهارات برمجية وهندسية عالية).</p>
+                        <h2 class="text-2xl font-bold text-white mb-4 text-center"><span class="text-purple-400">4.</span> 💼 مسارات التخصص والتعمق</h2>
+                        <p class="text-center text-gray-400 mb-8 max-w-3xl mx-auto">
+                            بعد إتقان الأساسيات، يمكنك اختيار مسار التخصص لتعميق معرفتك في المجالات التي تثير اهتمامك.
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                            <!-- Card 1: ML Engineer -->
+                            <div class="bg-gray-800/50 p-6 rounded-xl border border-gray-700 hover:border-purple-500/80 transition-all duration-300 h-full flex flex-col justify-between">
+                                <div>
+                                    <div class="flex justify-center mb-4">
+                                        <svg class="w-16 h-16 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.096 2.573-1.066z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                    </div>
+                                    <h3 class="text-xl font-semibold text-white mb-3">مهندس تعلم الآلة</h3>
+                                    <p class="text-gray-300 text-sm mb-3">التركيز على نشر النماذج، MLOps، وتطوير البنية التحتية لضمان كفاءة وموثوقية الحلول.</p>
+                                </div>
+                                <p class="text-purple-300/80 font-medium text-sm bg-gray-700/40 rounded-full py-1 px-3 mt-4">المهارات: هندسة برمجيات، Docker، Cloud</p>
                             </div>
-                            <div class="bg-gray-700 p-4 rounded-lg">
-                                <h4 class="font-semibold text-white">متخصص رؤية حاسوبية (Computer Vision)</h4>
-                                <p class="text-sm text-gray-300">**التركيز:** الصور، الفيديو، الشبكات التلافيفية (CNN)، وتطبيقات الذكاء الاصطناعي البصري.</p>
+                            <!-- Card 2: Computer Vision -->
+                            <div class="bg-gray-800/50 p-6 rounded-xl border border-gray-700 hover:border-purple-500/80 transition-all duration-300 h-full flex flex-col justify-between">
+                                <div>
+                                    <div class="flex justify-center mb-4">
+                                        <svg class="w-16 h-16 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                    </div>
+                                    <h3 class="text-xl font-semibold text-white mb-3">متخصص رؤية حاسوبية</h3>
+                                    <p class="text-gray-300 text-sm mb-3">التعامل مع الصور والفيديو، وتطبيق الشبكات التلافيفية (CNN) لحل مشاكل مثل التعرف على الأشياء والكشف عنها.</p>
+                                </div>
+                                <p class="text-purple-300/80 font-medium text-sm bg-gray-700/40 rounded-full py-1 px-3 mt-4">المهارات: PyTorch/TensorFlow, OpenCV</p>
                             </div>
-                            <div class="bg-gray-700 p-4 rounded-lg">
-                                <h4 class="font-semibold text-white">متخصص معالجة اللغات الطبيعية (NLP)</h4>
-                                <p class="text-sm text-gray-300">**التركيز:** النصوص، الصوت، نماذج المحولات (Transformers)، وتطوير نماذج اللغة الكبيرة (LLMs).</p>
+                            <!-- Card 3: NLP -->
+                            <div class="bg-gray-800/50 p-6 rounded-xl border border-gray-700 hover:border-purple-500/80 transition-all duration-300 h-full flex flex-col justify-between">
+                                <div>
+                                    <div class="flex justify-center mb-4">
+                                        <svg class="w-16 h-16 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                                    </div>
+                                    <h3 class="text-xl font-semibold text-white mb-3">متخصص معالجة اللغات</h3>
+                                    <p class="text-gray-300 text-sm mb-3">فهم وتحليل النصوص والأصوات، وبناء نماذج لغوية كبيرة (LLMs) باستخدام المحولات (Transformers).</p>
+                                </div>
+                                <p class="text-purple-300/80 font-medium text-sm bg-gray-700/40 rounded-full py-1 px-3 mt-4">المهارات: Hugging Face, NLTK, SpaCy</p>
                             </div>
                         </div>
                     </div>
@@ -398,28 +481,24 @@
             </div>
         </div>
 
-        <!-- Slide Navigation -->
+        <!-- Slide Navigation (تم إصلاحه ليتوافق مع باقي الصفحات) -->
         <div class="flex justify-between items-center mt-6">
-            <a href="data_science_roadmap.html" class="py-2 px-6 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-lg transition-colors flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
-                </svg>
-                العودة للخارطة
-            </a>
+            <button id="prev-btn"
+                class="py-2 px-6 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                السابق
+            </button>
             <div id="pagination" class="flex-grow flex justify-center items-center space-x-2 px-4">
                 <!-- Dots will be inserted by JS -->
             </div>
-            <!-- Since this is the last milestone, the "next" link goes back to the roadmap -->
-            <a href="data_science_roadmap.html" class="py-2 px-6 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg transition-colors flex items-center justify-center">
-                نهاية المسار
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-            </a>
+            <button id="next-btn"
+                class="py-2 px-6 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                التالي
+            </button>
         </div>
     </div>
 
     <script>
+        // --- تم إصلاح الكود البرمجي ليعمل بشكل صحيح ---
         let currentSlide = 0;
         let slides;
         let prevBtn;
@@ -428,66 +507,48 @@
         let totalSlides;
         let dots;
 
-        // يجب تحديث أزرار التنقل يدويًا هنا لأنها ليست أزرار HTML عادية
-        const prevStageLink = document.querySelector('a[href="machine_learning.html"]'); 
-        const roadmapReturnButton = document.querySelector('a[href="data_science_roadmap.html"]:first-child');
-        const endOfPathButton = document.querySelector('a[href="data_science_roadmap.html"]:last-child');
-
-        function updateStageNavigation(slideIndex) {
-            // إظهار زر العودة للمرحلة السابقة
-            prevStageLink.style.display = (slideIndex === 0) ? 'inline-flex' : 'none';
-            // إخفاء زر نهاية المسار أثناء التنقل الداخلي للشرائح
-            endOfPathButton.style.display = (slideIndex === totalSlides - 1) ? 'flex' : 'none';
-            // إخفاء زر العودة للخارطة الرئيسية الذي في الزاوية أثناء التنقل الداخلي للشرائح
-            roadmapReturnButton.style.display = (slideIndex === 0) ? 'inline-flex' : 'none';
-        }
-
         function showSlide(slideIndex) {
             if (!slides || !dots || slideIndex < 0 || slideIndex >= totalSlides) {
                 console.error("Slider component not ready or slide index out of bounds.");
                 return;
             }
-
+ 
+            // إخفاء جميع الشرائح
             slides.forEach(slide => {
                 slide.classList.remove('active');
             });
+            // إظهار الشريحة المحددة
             slides[slideIndex].classList.add('active');
-
+ 
+            // تحديث نقاط التنقل
             dots.forEach((dot, index) => {
                 dot.classList.toggle('active', index === slideIndex);
             });
-
-            // تحديث أزرار التالي/السابق الداخلية للشرائح
-            // إذا كنا في الشريحة الأولى، يتم تعطيل زر "السابق" وإظهار زر العودة للخارطة
-            if (slideIndex === 0) {
-                prevBtn.disabled = true;
-                roadmapReturnButton.style.visibility = 'visible';
-                prevStageLink.style.visibility = 'visible';
-            } else {
-                prevBtn.disabled = false;
-                roadmapReturnButton.style.visibility = 'hidden';
-                prevStageLink.style.visibility = 'hidden';
-            }
-            
-            // إذا كنا في آخر شريحة، نعطل زر "التالي" ونظهر زر "نهاية المسار"
+ 
+            // تحديث حالة الأزرار
+            prevBtn.disabled = slideIndex === 0;
+            nextBtn.disabled = slideIndex === totalSlides - 1;
+ 
+            // تعديل زر "التالي" في الشريحة الأخيرة
             if (slideIndex === totalSlides - 1) {
-                nextBtn.disabled = true;
-                endOfPathButton.style.visibility = 'visible';
+                nextBtn.innerHTML = 'العودة للخارطة <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" /></svg>';
+                nextBtn.onclick = () => { window.location.href = 'index.html'; };
+                nextBtn.disabled = false; // تفعيل الزر
             } else {
-                nextBtn.disabled = false;
-                endOfPathButton.style.visibility = 'hidden';
-            }
-            
+                nextBtn.innerHTML = 'التالي';
+                nextBtn.onclick = () => { if (currentSlide < totalSlides - 1) showSlide(currentSlide + 1); };
+             }
+ 
             currentSlide = slideIndex;
         }
-
+ 
         document.addEventListener('DOMContentLoaded', () => {
             slides = document.querySelectorAll('.slide');
             prevBtn = document.getElementById('prev-btn');
             nextBtn = document.getElementById('next-btn');
             pagination = document.getElementById('pagination');
             totalSlides = slides.length;
-
+ 
             if (pagination) {
                 pagination.innerHTML = ''; 
                 for (let i = 0; i < totalSlides; i++) {
@@ -499,19 +560,19 @@
                 }
                 dots = pagination.querySelectorAll('button');
             }
-
+ 
             if (prevBtn) {
                 prevBtn.addEventListener('click', () => {
                     if (currentSlide > 0) showSlide(currentSlide - 1);
                 });
             }
-
+ 
             if (nextBtn) {
                 nextBtn.addEventListener('click', () => {
                     if (currentSlide < totalSlides - 1) showSlide(currentSlide + 1);
                 });
             }
-
+ 
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'ArrowRight' && currentSlide < totalSlides - 1) {
                     showSlide(currentSlide + 1);
@@ -519,10 +580,10 @@
                     showSlide(currentSlide - 1);
                 }
             });
-
+ 
             if (totalSlides > 0) showSlide(0);
         });
-
+ 
         window.showSlide = showSlide;
     </script>
 </body>
