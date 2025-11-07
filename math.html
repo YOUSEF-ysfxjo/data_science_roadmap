@@ -115,12 +115,11 @@
         .illustration-box {
             background-color: #111827;
             border: 1px solid #374151;
-            height: 100%;
+            max-height: 240px; /* تم تقليص الارتفاع الأقصى لتحقيق توازن أفضل */
             min-height: 200px;
             border-radius: 0.75rem;
             padding: 1.25rem;
             margin-top: 1rem;
-            flex-grow: 1;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -362,49 +361,51 @@
                             <span class="slide-title-icon text-pink-400">📐</span>
                             الجبر الخطي (Linear Algebra)
                         </h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
-                            <div class="space-y-4">
+                        <div class="flex flex-col flex-1">
+                            <div class="space-y-4 mb-6">
                                 <!-- بطاقة الماهية مع إيموجي -->
-                                <div class="bg-gray-800/80 p-4 rounded-lg border border-gray-700 hover:border-pink-500 transition-colors">
+                                <div class="bg-gray-800/80 p-6 rounded-lg border border-gray-700 hover:border-pink-500 transition-colors">
                                     <h3 class="text-lg font-semibold text-white mb-2 flex items-center content-card-h3">
                                         <span class="text-xl ml-2">💡</span>
                                         الماهية
                                     </h3>
                                     <p class="text-gray-400 leading-relaxed">
-                                        دراسة <span class="highlight-term">المتجهات (Vectors)</span>، و<span class="highlight-term">المصفوفات (Matrices)</span>، و<span class="highlight-term">التحويلات الخطية</span>.
+                                        هو فرع الرياضيات الذي يتعامل مع <span class="highlight-term">المتجهات (Vectors)</span>، <span class="highlight-term">المصفوفات (Matrices)</span>، والفضاءات الخطية. إنه بمثابة "لغة" لوصف ومعالجة مجموعات البيانات الكبيرة والمنظمة.
                                     </p>
                                 </div>
                                 <!-- بطاقة الدور مع إيموجي -->
-                                <div class="bg-gray-800/80 p-4 rounded-lg border border-gray-700 hover:border-pink-500 transition-colors">
+                                <div class="bg-gray-800/80 p-6 rounded-lg border border-gray-700 hover:border-pink-500 transition-colors">
                                     <h3 class="text-lg font-semibold text-white mb-2 flex items-center content-card-h3">
                                         <span class="text-xl ml-2">⚙️</span>
-                                        الدور في علم البيانات
+                                        أمثلة تطبيقية
                                     </h3>
                                     <p class="text-gray-400 leading-relaxed">
-                                        جميع البيانات في النماذج (Datasets) تُمثَّل في شكل مصفوفات. يوفر الجبر الخطي الأدوات اللازمة لمعالجة هذه المصفوفات بكفاءة، وهو أساس خوارزميات مثل <span class="highlight-term">تحليل المكونات الرئيسية (PCA)</span> لتقليل الأبعاد، وأيضاً عمليات الضرب بين الأوزان والمدخلات في <span class="highlight-term">الشبكات العصبية</span>.
+                                        <ul>
+                                            <li><b>الصور:</b> كل صورة رقمية هي مصفوفة ثلاثية الأبعاد (عرض × ارتفاع × قنوات اللون).</li>
+                                            <li><b>النصوص:</b> يمكن تحويل الكلمات إلى متجهات رقمية (Word Embeddings) لفهم العلاقات الدلالية بينها.</li>
+                                            <li><b>النماذج:</b> خوارزميات مثل <span class="highlight-term">الانحدار الخطي</span> و<span class="highlight-term">تحليل المكونات الرئيسية (PCA)</span> تعتمد بشكل كامل على عمليات الجبر الخطي.</li>
+                                            <li><b>الشبكات العصبية:</b> عمليات الضرب بين مصفوفات المدخلات ومصفوفات الأوزان هي جوهر عمل الشبكات العصبية.</li>
+                                        </ul>
                                     </p>
                                 </div>
                             </div>
-                            <div class="illustration-box">
+                            <div class="illustration-box mt-4">
                                 <!-- SVG لمصفوفة -->
                                 <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg" class="w-full h-full text-gray-300" fill="currentColor">
-                                    <title>رسم توضيحي لمصفوفة</title>
-                                    <text x="20" y="40" font-size="20" fill="#ec4899" font-weight="bold">[</text>
-                                    <text x="170" y="120" font-size="20" fill="#ec4899" font-weight="bold">]</text>
-                                    
-                                    <text x="40" y="40" font-size="16" fill="#f472b6">X₁₁</text>
-                                    <text x="80" y="40" font-size="16">X₁₂</text>
-                                    <text x="120" y="40" font-size="16">...</text>
-                                    
-                                    <text x="40" y="80" font-size="16">X₂₁</text>
-                                    <text x="80" y="80" font-size="16" fill="#f472b6">X₂₂</text>
-                                    <text x="120" y="80" font-size="16">...</text>
-                                    
-                                    <text x="40" y="120" font-size="16">...</text>
-                                    <text x="80" y="120" font-size="16">...</text>
-                                    <text x="120" y="120" font-size="16" fill="#f472b6">Xₙₘ</text>
-                                    
-                                    <text x="90" y="15" fill="#ec4899" font-size="16" font-weight="bold" text-anchor="middle">مصفوفة البيانات</text>
+                                    <g transform="scale(0.5) translate(50, 37.5)">
+                                        <title>رسم توضيحي لمصفوفة 2x2</title>
+                                        <!-- تم تعديل حجم وموقع الأقواس -->
+                                        <text x="25" y="85" font-size="80" fill="#ec4899" font-weight="bold">]</text>
+                                        <text x="175" y="85" font-size="80" fill="#ec4899" font-weight="bold">[</text>
+                                        
+                                        <!-- عناصر مصفوفة 2x2 -->
+                                        <text x="70" y="65" font-size="18" fill="#f472b6" text-anchor="middle">X₁₁</text>
+                                        <text x="130" y="65" font-size="18" fill="#f472b6" text-anchor="middle">X₁₂</text>
+                                        <text x="70" y="105" font-size="18" fill="#f472b6" text-anchor="middle">X₂₁</text>
+                                        <text x="130" y="105" font-size="18" fill="#f472b6" text-anchor="middle">X₂₂</text>
+                                        
+                                        <text x="100" y="20" fill="#ec4899" font-size="16" font-weight="bold" text-anchor="middle">مصفوفة البيانات</text>
+                                    </g>
                                 </svg>
                             </div>
                         </div>
@@ -418,8 +419,8 @@
                             <span class="slide-title-icon text-pink-400">📈</span>
                             حساب التفاضل والتكامل (Calculus)
                         </h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
-                            <div class="space-y-4">
+                        <div class="flex flex-col flex-1">
+                            <div class="space-y-4 mb-6">
                                 <!-- بطاقة الماهية مع إيموجي -->
                                 <div class="bg-gray-800/80 p-4 rounded-lg border border-gray-700 hover:border-pink-500 transition-colors">
                                     <h3 class="text-lg font-semibold text-white mb-2 flex items-center content-card-h3">
@@ -439,18 +440,20 @@
                                     </p>
                                 </div>
                             </div>
-                            <div class="illustration-box">
+                            <div class="illustration-box mt-4">
                                 <!-- SVG لمشتقة (خط مماس) -->
                                 <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
-                                    <title>رسم توضيحي للمشتقة (Gradient)</title>
-                                    <!-- المنحنى (لون بنفسجي) -->
-                                    <path d="M 20 120 Q 50 20, 100 80 T 180 60" stroke="#a78bfa" stroke-width="3" fill="none" />
-                                    <!-- النقطة (لون وردي) -->
-                                    <circle cx="100" cy="80" r="5" fill="#ec4899" />
-                                    <!-- خط المماس (المشتقة - لون وردي) -->
-                                    <line x1="60" y1="110" x2="140" y2="50" stroke="#f472b6" stroke-width="2" stroke-dasharray="4 4" />
-                                    <text x="145" y="50" fill="#f472b6" font-size="12">المشتقة</text>
-                                    <text x="100" y="140" fill="#a78bfa" font-size="12" text-anchor="middle">دالة الخسارة</text>
+                                    <g transform="scale(0.5) translate(50, 37.5)">
+                                        <title>رسم توضيحي للمشتقة (Gradient)</title>
+                                        <!-- المنحنى (لون بنفسجي) -->
+                                        <path d="M 20 120 Q 50 20, 100 80 T 180 60" stroke="#a78bfa" stroke-width="3" fill="none" />
+                                        <!-- النقطة (لون وردي) -->
+                                        <circle cx="100" cy="80" r="5" fill="#ec4899" />
+                                        <!-- خط المماس (المشتقة - لون وردي) -->
+                                        <line x1="60" y1="110" x2="140" y2="50" stroke="#f472b6" stroke-width="2" stroke-dasharray="4 4" />
+                                        <text x="145" y="50" fill="#f472b6" font-size="12">المشتقة</text>
+                                        <text x="100" y="140" fill="#a78bfa" font-size="12" text-anchor="middle">دالة الخسارة</text>
+                                    </g>
                                 </svg>
                             </div>
                         </div>
@@ -464,8 +467,8 @@
                             <span class="slide-title-icon text-pink-400">🎲</span>
                             الإحصاء والاحتمالات (Statistics & Probability)
                         </h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
-                            <div class="space-y-4">
+                        <div class="flex flex-col flex-1">
+                            <div class="space-y-4 mb-6">
                                 <!-- بطاقة الماهية مع إيموجي -->
                                 <div class="bg-gray-800/80 p-4 rounded-lg border border-gray-700 hover:border-pink-500 transition-colors">
                                     <h3 class="text-lg font-semibold text-white mb-2 flex items-center content-card-h3">
@@ -488,17 +491,19 @@
                                     </ul>
                                 </div>
                             </div>
-                            <div class="illustration-box">
+                            <div class="illustration-box mt-4">
                                 <!-- SVG للتوزيع الطبيعي (Bell Curve) -->
                                 <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
-                                    <title>رسم توضيحي للتوزيع الطبيعي</title>
-                                    <!-- المنحنى (لون بنفسجي) -->
-                                    <path d="M 10 130 C 40 130, 40 20, 100 20 C 160 20, 160 130, 190 130" stroke="#a78bfa" stroke-width="3" fill="rgba(167, 139, 250, 0.2)" />
-                                    <!-- خط المتوسط (لون وردي) -->
-                                    <line x1="100" y1="20" x2="100" y2="130" stroke="#ec4899" stroke-width="2" stroke-dasharray="4 4" />
-                                    <text x="105" y="80" fill="#ec4899" font-size="12">المتوسط</text>
-                                    <!-- المحور السيني -->
-                                    <line x1="5" y1="130" x2="195" y2="130" stroke="#9ca3af" stroke-width="2" />
+                                    <g transform="scale(0.5) translate(50, 37.5)">
+                                        <title>رسم توضيحي للتوزيع الطبيعي</title>
+                                        <!-- المنحنى (لون بنفسجي) -->
+                                        <path d="M 10 130 C 40 130, 40 20, 100 20 C 160 20, 160 130, 190 130" stroke="#a78bfa" stroke-width="3" fill="rgba(167, 139, 250, 0.2)" />
+                                        <!-- خط المتوسط (لون وردي) -->
+                                        <line x1="100" y1="20" x2="100" y2="130" stroke="#ec4899" stroke-width="2" stroke-dasharray="4 4" />
+                                        <text x="105" y="80" fill="#ec4899" font-size="12">المتوسط</text>
+                                        <!-- المحور السيني -->
+                                        <line x1="5" y1="130" x2="195" y2="130" stroke="#9ca3af" stroke-width="2" />
+                                    </g>
                                 </svg>
                             </div>
                         </div>
@@ -512,8 +517,8 @@
                             <span class="slide-title-icon text-pink-400">🎯</span>
                             نظرية التحسين (Optimization Theory)
                         </h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
-                            <div class="space-y-4">
+                        <div class="flex flex-col flex-1">
+                            <div class="space-y-4 mb-6">
                                 <!-- بطاقة الماهية مع إيموجي -->
                                 <div class="bg-gray-800/80 p-4 rounded-lg border border-gray-700 hover:border-pink-500 transition-colors">
                                     <h3 class="text-lg font-semibold text-white mb-2 flex items-center content-card-h3">
@@ -535,20 +540,22 @@
                                     </p>
                                 </div>
                             </div>
-                            <div class="illustration-box">
+                            <div class="illustration-box mt-4">
                                 <!-- SVG لـ Gradient Descent - تم تحسين الألوان للتناسق -->
                                 <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
-                                    <title>رسم توضيحي لانحدار التدرج (Optimization)</title>
-                                    <!-- دالة الخسارة (Loss Function) - لون بنفسجي -->
-                                    <path d="M 10 120 Q 50 130, 100 40 T 190 100" stroke="#a78bfa" stroke-width="3" fill="none" />
-                                    <!-- النقطة الدنيا (Minimum) - لون أخضر (للدلالة على النجاح/الحل) -->
-                                    <circle cx="100" cy="40" r="5" fill="#10b981" />
-                                    <text x="85" y="30" fill="#10b981" font-size="12">الحل الأمثل</text>
-                                    <!-- خطوات الانحدار (لون وردي) -->
-                                    <circle cx="30" cy="110" r="5" fill="#ec4899" />
-                                    <path d="M 32 110 C 40 100, 60 70, 70 70" stroke="#ec4899" stroke-width="2" fill="none" stroke-dasharray="3 3" />
-                                    <circle cx="70" cy="70" r="4" fill="#ec4899" />
-                                    <path d="M 72 70 C 80 50, 90 45, 98 41" stroke="#ec4899" stroke-width="2" fill="none" stroke-dasharray="3 3" />
+                                    <g transform="scale(0.5) translate(50, 37.5)">
+                                        <title>رسم توضيحي لانحدار التدرج (Optimization)</title>
+                                        <!-- دالة الخسارة (Loss Function) - لون بنفسجي -->
+                                        <path d="M 10 120 Q 50 130, 100 40 T 190 100" stroke="#a78bfa" stroke-width="3" fill="none" />
+                                        <!-- النقطة الدنيا (Minimum) - لون أخضر (للدلالة على النجاح/الحل) -->
+                                        <circle cx="100" cy="40" r="5" fill="#10b981" />
+                                        <text x="85" y="30" fill="#10b981" font-size="12">الحل الأمثل</text>
+                                        <!-- خطوات الانحدار (لون وردي) -->
+                                        <circle cx="30" cy="110" r="5" fill="#ec4899" />
+                                        <path d="M 32 110 C 40 100, 60 70, 70 70" stroke="#ec4899" stroke-width="2" fill="none" stroke-dasharray="3 3" />
+                                        <circle cx="70" cy="70" r="4" fill="#ec4899" />
+                                        <path d="M 72 70 C 80 50, 90 45, 98 41" stroke="#ec4899" stroke-width="2" fill="none" stroke-dasharray="3 3" />
+                                    </g>
                                 </svg>
                             </div>
                         </div>
