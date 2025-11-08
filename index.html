@@ -65,6 +65,7 @@
             overflow: hidden;
         }
 
+        /* Custom Vertical Color Bar using the CSS Variable */
         .milestone-card::before {
             content: '';
             position: absolute;
@@ -72,8 +73,9 @@
             right: 0;
             width: 4px;
             height: 100%;
-            background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
-            transition: width 0.3s ease;
+            /* Use the custom CSS variable defined in the HTML */
+            background-color: var(--milestone-color, #3b82f6); 
+            transition: width 0.3s ease, background-color 0.3s ease;
         }
 
         .milestone-card:hover {
@@ -114,11 +116,11 @@
             <!-- Vertical timeline line -->
             <div class="absolute right-6 md:right-1/2 md:translate-x-1/2 h-full w-1 bg-gradient-to-b from-emerald-500 via-blue-500 to-purple-600 rounded-full z-0 hidden md:block"></div>
 
-            <!-- Milestone 00: Foundation -->
+            <!-- Milestone 00: Foundation (Emerald) -->
             <div class="milestone-item relative mb-12">
                 <div class="md:flex items-center md:space-x-8 rtl:space-x-reverse">
                     <div class="md:w-1/2">
-                        <a href="foundation.html" class="milestone-card hover:border-emerald-500">
+                        <a href="foundation.html" class="milestone-card hover:border-emerald-500" style="--milestone-color: #059669;">
                             <div class="flex items-center space-x-4 rtl:space-x-reverse">
                                 <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-600 text-white shadow-lg">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -141,11 +143,11 @@
                 </div>
             </div>
 
-            <!-- Milestone 01: Programming -->
+            <!-- Milestone 01: Programming (Blue) -->
             <div class="milestone-item relative mb-12">
                 <div class="md:flex md:flex-row-reverse items-center md:space-x-8 md:space-x-reverse">
                     <div class="md:w-1/2">
-                        <a href="programming.html" class="milestone-card hover:border-blue-500">
+                        <a href="programming.html" class="milestone-card hover:border-blue-500" style="--milestone-color: #2563eb;">
                             <div class="flex items-center space-x-4 rtl:space-x-reverse">
                                 <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-600 text-white shadow-lg">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -168,11 +170,11 @@
                 </div>
             </div>
 
-            <!-- Milestone 02: Maths & Statistics -->
+            <!-- Milestone 02: Maths & Statistics (Pink) -->
             <div class="milestone-item relative mb-12">
                 <div class="md:flex items-center md:space-x-8 rtl:space-x-reverse">
                     <div class="md:w-1/2">
-                        <a href="math.html" class="milestone-card hover:border-pink-500">
+                        <a href="math.html" class="milestone-card hover:border-pink-500" style="--milestone-color: #db2777;">
                             <div class="flex items-center space-x-4 rtl:space-x-reverse">
                                 <span class="flex items-center justify-center w-12 h-12 rounded-full bg-pink-600 text-white shadow-lg">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
@@ -193,11 +195,11 @@
                 </div>
             </div>
 
-            <!-- Milestone 03: Data Analysis & Visualization -->
+            <!-- Milestone 03: Data Analysis & Visualization (Orange) -->
             <div class="milestone-item relative mb-12">
                 <div class="md:flex md:flex-row-reverse items-center md:space-x-8 md:space-x-reverse">
                     <div class="md:w-1/2">
-                        <a href="data_analysis_visual.html" class="milestone-card hover:border-orange-500">
+                        <a href="data_analysis_visual.html" class="milestone-card hover:border-orange-500" style="--milestone-color: #ea580c;">
                             <div class="flex items-center space-x-4 rtl:space-x-reverse">
                                 <span class="flex items-center justify-center w-12 h-12 rounded-full bg-orange-600 text-white shadow-lg">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -221,13 +223,12 @@
                 </div>
             </div>
 
-
             
-            <!-- Milestone 04: Machine Learning & AI -->
+            <!-- Milestone 04: Machine Learning & AI (Sky) -->
             <div class="milestone-item relative mb-12">
                 <div class="md:flex items-center md:space-x-8 rtl:space-x-reverse">
                     <div class="md:w-1/2">
-                        <a href="machine_learning.html" class="milestone-card hover:border-sky-500">
+                        <a href="machine_learning.html" class="milestone-card hover:border-sky-500" style="--milestone-color: #0ea5e9;">
                             <div class="flex items-center space-x-4 rtl:space-x-reverse">
                                 <span class="flex items-center justify-center w-12 h-12 rounded-full bg-sky-500 text-white shadow-lg">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -250,11 +251,11 @@
                 </div>
             </div>
 
-            <!-- Data Science Simulations -->
+            <!-- Data Science Simulations (Indigo) -->
             <div class="milestone-item relative mb-12">
-                <div class="md:flex items-center md:space-x-8 rtl:space-x-reverse">
+                <div class="md:flex md:flex-row-reverse items-center md:space-x-8 md:space-x-reverse">
                     <div class="md:w-1/2">
-                        <a href="data_science_simulations.html" class="milestone-card hover:border-indigo-500">
+                        <a href="data_science_simulations.html" class="milestone-card hover:border-indigo-500" style="--milestone-color: #4f46e5;">
                             <div class="flex items-center space-x-4 rtl:space-x-reverse">
                                 <span class="flex items-center justify-center w-12 h-12 rounded-full bg-indigo-600 text-white shadow-lg">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -277,11 +278,11 @@
                 </div>
             </div>
 
-            <!-- Milestone 05: Deployment & Specialization -->
+            <!-- Milestone 05: Deployment & Specialization (Purple) -->
             <div class="milestone-item relative mb-12">
-                <div class="md:flex md:flex-row-reverse items-center md:space-x-8 md:space-x-reverse">
+                <div class="md:flex items-center md:space-x-8 rtl:space-x-reverse">
                     <div class="md:w-1/2">
-                        <a href="deployment.html" class="milestone-card hover:border-purple-500">
+                        <a href="deployment.html" class="milestone-card hover:border-purple-500" style="--milestone-color: #9333ea;">
                             <div class="flex items-center space-x-4 rtl:space-x-reverse">
                                 <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-600 text-white shadow-lg">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -334,7 +335,7 @@
                 observer.observe(milestone);
             });
 
-            // Add hover effect for cards
+            // Add hover effect for cards (retaining existing JS for consistency)
             const cards = document.querySelectorAll('.milestone-card');
             cards.forEach(card => {
                 card.addEventListener('mouseenter', function() {
