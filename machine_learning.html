@@ -221,6 +221,7 @@
             text-align: right;
             padding: 1.5rem;
             font-family: 'Tajawal', sans-serif;
+            transition: color 0.3s ease;
         }
 
         .slide[data-slide="0"] button:hover {
@@ -297,11 +298,13 @@
             object-fit: contain;
             display: block;
         }
-        
+
         /* تعديل خاص لـ SVG في التعلم المعزز لضمان بقاء الأسهم داخل نطاق viewBox */
         .slide[data-slide="3"] .illustration-box svg {
-            overflow: visible; /* السماح بعرض الأسهم خارج viewBox إذا لزم الأمر */
-            padding: 10px; /* لضمان وجود حيز إضافي للأسهم الخارجة من الإطار الرئيسي */
+            overflow: visible;
+            /* السماح بعرض الأسهم خارج viewBox إذا لزم الأمر */
+            padding: 10px;
+            /* لضمان وجود حيز إضافي للأسهم الخارجة من الإطار الرئيسي */
             box-sizing: border-box;
         }
 
@@ -319,16 +322,16 @@
 
 <body class="text-gray-300">
     <div class="max-w-5xl w-full flex-1 flex flex-col">
-        <!-- Back Button -->
+        <!-- Back Button: تم تعديله للإشارة إلى index.html -->
         <div class="mb-4">
-            <button onclick="showSlide(0)"
+            <a href="index.html"
                 class="inline-flex items-center text-sky-400 hover:text-sky-300 transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
-                العودة للفهرس
-            </button>
+                العودة للصفحة الرئيسية
+            </a>
         </div>
 
         <!-- Slide Container -->
@@ -496,7 +499,8 @@
                             الأنماط والهياكل المخفية في البيانات تلقائيًا.</p>
 
                         <!-- حاوية التمرير الأفقي للمحتوى الداخلي -->
-                        <div class="inner-scroll-container grid grid-cols-1 md:grid-cols-3 gap-4" style="overflow-x: unset;">
+                        <div class="inner-scroll-container grid grid-cols-1 md:grid-cols-3 gap-4"
+                            style="overflow-x: unset;">
                             <!-- Clustering -->
                             <div
                                 class="bg-gray-800 p-4 rounded-lg border border-gray-700 flex flex-col hover:border-sky-500 transition-colors">
@@ -583,7 +587,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Slide 3: التعلم الآلي المعزز -->
                 <div class="slide" data-slide="3">
                     <div class="slide-content">
@@ -668,7 +672,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Slide 4: تقييم وتحسين النماذج (OLD INDEX 3) -->
                 <div class="slide" data-slide="4">
                     <div class="slide-content">
@@ -780,7 +784,7 @@
                 <!-- Slide 5: التعلم العميق (OLD INDEX 4) -->
                 <div class="slide" data-slide="5">
                     <div class="slide-content">
-                        <h2 class="text-3xl font-bold text-white mb-6"><span class="text-sky-400 ml-2">5.</span> التعلم
+                        <h2 class="text-3xl font-bold text-white"><span class="text-sky-400 ml-2">5.</span> التعلم
                             العميق (Deep Learning)</h2>
                         <p class="mb-4 text-gray-400">مجموعة فرعية من التعلم الآلي تستخدم <strong
                                 class="text-sky-300">"شبكات عصبية اصطناعية عميقة"</strong> (طبقات متعددة) لمعالجة الأنماط
@@ -879,6 +883,13 @@
                                                 class="text-sky-400 hover:text-sky-300 font-medium block">Deep Learning
                                                 Book</a>
                                             <p class="text-sm text-gray-300 mt-1">إيان جودفيلو - مرجع أكاديمي شامل</p>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.amazon.com/Storytelling-Data-Visualization-Business-Professionals/dp/1119002257"
+                                                target="_blank"
+                                                class="text-sky-400 hover:text-sky-300 font-medium block">Storytelling
+                                                with Data</a>
+                                            <p class="text-sm text-gray-300 mt-1">فن عرض البيانات بشكل مؤثر</p>
                                         </li>
                                     </ul>
                                 </div>
