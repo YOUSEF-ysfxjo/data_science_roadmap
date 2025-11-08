@@ -1,758 +1,374 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>البرمجة في علم البيانات</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>خارطة طريق علوم البيانات التفاعلية</title>
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-
+    
     <!-- Load Tajawal Font from Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet" />
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    
     <style>
-        /*
-        ========================================
-        التعديلات الهيكلية المطبقة (لتفعيل التمرير والجمالية)
-        ========================================
-        */
+        /* Base styles */
         body {
             font-family: 'Tajawal', sans-serif;
+            scroll-behavior: smooth;
             background-color: #111827;
-            direction: rtl;
+            color: #d1d5db;
             min-height: 100vh;
-            height: auto;
-            overflow-y: auto; /* تفعيل التمرير على مستوى الصفحة */
             display: flex;
             flex-direction: column;
         }
 
-        /* Main container styles */
-        .slide-container {
-            display: flex;
+        /* Container */
+        .container {
             width: 100%;
-            max-width: 1700px;
+            max-width: 90rem;
             margin: 0 auto;
-            position: relative;
-            flex: 1;
-            overflow: visible;
             padding: 2rem 1rem;
-            min-height: 70vh;
-            height: auto; /* السماح بالتمدد مع المحتوى */
+            flex: 1;
         }
 
-        .slide {
-            width: 100%;
-            flex-shrink: 0;
-            transition: opacity 0.5s ease-in-out, visibility 0.5s;
+        /* Scroll animation */
+        .milestone-item {
             opacity: 0;
-            visibility: hidden;
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            padding: 1.5rem 0;
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
-            height: auto; /* السماح بالتمدد مع المحتوى */
-            box-sizing: border-box;
-        }
-
-        .slide.active {
-            opacity: 1;
-            visibility: visible;
-            position: relative; /* مهم جداً للسماح للشرائح بأخذ الحيز اللازم */
-            height: auto; /* السماح بالتمدد مع المحتوى */
-            padding: 1.5rem 0;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* تنسيق بطاقة المحتوى */
-        .slide-content {
-            background-color: #1f2937;
-            border-radius: 0.75rem;
-            padding: 2rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            width: 100%;
-            max-width: 2000px;
-            max-height: none; /* إزالة قيود الارتفاع للسماح بالتمرير */
-            height: auto;
-            display: flex;
-            flex-direction: column;
-            margin: 0 auto;
-            overflow-y: visible; /* الاعتماد على تمرير الـ Body */
-            box-sizing: border-box;
-            min-height: 70vh;
-        }
-
-        .slide-content ul {
-            list-style-type: disc;
-            list-style-position: outside;
-            padding-right: 1.25rem;
-            margin-left: 0;
-        }
-
-        /* لون التمييز: البرتقالي (#f97316) */
-        .pagination-dot {
-            width: 0.75rem;
-            height: 0.75rem;
-            border-radius: 9999px;
-            background-color: #4b5563;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .pagination-dot.active {
-            background-color: #f97316; /* orange-600 */
-            width: 2rem;
-        }
-
-        /* مربع الرسم التوضيحي */
-        .illustration-box {
-            background-color: #111827;
-            border: 1px solid #374151;
-            min-height: 200px;
-            max-height: 240px; /* تحديد ارتفاع أقصى لبعض الشرائح */
-            border-radius: 0.75rem;
-            padding: 1.25rem;
-            margin-top: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-            box-shadow: 0 0 10px rgba(249, 115, 22, 0.1); /* ظل برتقالي خفيف */
-            overflow: hidden;
-            flex-grow: 1;
-        }
-
-        .illustration-box:hover {
-            border-color: #f97316;
-            box-shadow: 0 0 15px rgba(249, 115, 22, 0.3), 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            will-change: opacity, transform;
+            margin-bottom: 2.5rem;
         }
         
-        /* ضمان تناسب الرسومات داخل الصندوق */
-        .illustration-box svg {
-            max-width: 100%;
-            max-height: 100%;
-            height: auto;
-            width: auto;
-            object-fit: contain;
+        .milestone-item.is-visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        /* أنماط شريحة الفهرس */
-        .slide[data-slide="0"] .slide-content {
-            height: auto;
+        /* Milestone card */
+        .milestone-card {
             display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 5rem 2rem 3rem;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            border: 1px solid #f97316;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
-        }
-
-        .slide[data-slide="0"] h2 {
-            font-size: 2.5rem;
-            margin-bottom: 2rem;
-            text-align: center;
-            color: #f97316;
-            border-bottom: 2px solid #f97316;
-            padding-bottom: 1rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-
-        .slide[data-slide="0"] h3 {
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-            text-align: center;
-            color: #e5e7eb;
-        }
-
-        .slide[data-slide="0"] ul {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
+            justify-content: space-between;
+            align-items: center;
             width: 100%;
-            margin: 0;
-            padding: 1rem;
-            list-style: none;
-        }
-
-        .slide[data-slide="0"] li {
-            background-color: rgba(30, 41, 59, 0.8);
-            border: 1px solid #374151;
+            background-color: #1f2937;
+            padding: 1.75rem 2rem;
             border-radius: 0.75rem;
-            padding: 0;
-            transition: all 0.3s ease;
-            text-align: center;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #374151;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            text-align: right;
             position: relative;
             overflow: hidden;
+            /* تعريف متغير CSS لاستخدامه في الحدود */
+            --milestone-color: #3b82f6; /* اللون الافتراضي (Blue) */
         }
 
-        .slide[data-slide="0"] li::before {
+        /*
+        * التعديل المطلوب: جعل حافة البطاقة بنفس اللون
+        * (تم حذف التدرج اللوني السابق واستبداله بمتغير)
+        */
+        .milestone-card::before {
             content: '';
             position: absolute;
             top: 0;
             right: 0;
             width: 4px;
             height: 100%;
-            background-color: #f97316;
+            background: var(--milestone-color); /* استخدام اللون المحدد */
             transition: width 0.3s ease;
         }
 
-        .slide[data-slide="0"] li:hover {
+        .milestone-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-                0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            border-color: #f97316;
-            background-color: rgba(30, 41, 59, 0.9);
+            /* استخدام لون البطاقة كحد عند التمرير */
+            border-color: var(--milestone-color); 
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
 
-        .slide[data-slide="0"] li:hover::before {
-            width: 8px;
+        .milestone-card:hover::before {
+            width: 6px;
         }
 
-        .slide[data-slide="0"] button {
-            background: none;
-            border: none;
-            color: #e5e7eb;
-            font-size: 1.1rem;
-            cursor: pointer;
-            width: 100%;
-            height: 100%;
-            text-align: right;
-            padding: 1.5rem;
-            font-family: 'Tajawal', sans-serif;
-            transition: color 0.3s ease;
+        .milestone-card h3 {
+            font-size: 1.375rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin: 0;
+            line-height: 1.4;
+            position: relative;
+            z-index: 1;
         }
 
-        .slide[data-slide="0"] button:hover {
-            color: #fb923c; /* orange-400 */
-        }
-
-        /* تنسيقات الجدول */
-        .styled-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1.5rem;
-            font-size: 0.9rem;
-            text-align: right;
-            border: 1px solid #374151;
-            border-radius: 0.5rem;
-            overflow: hidden;
-        }
-
-        .styled-table th,
-        .styled-table td {
-            padding: 1rem 0.75rem;
-            border-bottom: 1px solid #374151;
-        }
-
-        .styled-table th {
-            background-color: #374151;
-            color: #e5e7eb;
-            font-weight: 600;
-        }
-
-        .styled-table tbody tr:hover {
-            background-color: #313d4f;
-        }
-
-        .styled-table td a {
-            color: #fb923c; /* orange-400 */
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.2s ease;
-        }
-
-        .styled-table td a:hover {
-            text-decoration: underline;
-            color: #f97316; /* orange-600 */
-        }
-        
-        /* تنسيق الأيقونات في الشرائح الداخلية */
-        .slide-title-icon {
-            font-size: 1.8rem;
-            margin-left: 0.75rem;
-            display: inline-block;
-            transform: translateY(2px);
-            color: #fb923c;
-        }
-
-        /* Media Queries for Responsiveness */
-        @media (max-width: 768px) {
-            .slide[data-slide="0"] ul {
-                grid-template-columns: 1fr;
-            }
-
-            .slide-content {
-                padding: 1.5rem;
-            }
-
-            .slide[data-slide="0"] h2 {
-                font-size: 2rem;
-            }
-
-            .slide[data-slide="0"] h3 {
-                font-size: 1.25rem;
-            }
-
-            .styled-table {
-                font-size: 0.8rem;
-            }
-            .styled-table th,
-            .styled-table td {
-                padding: 0.75rem 0.5rem;
-            }
+        /* تعديل الخط العمودي ليأخذ تدرجاً موحداً وجمالياً */
+        .vertical-line {
+            background: linear-gradient(to bottom, #10b981, #2563eb, #ec4899, #f97316, #0ea5e9, #4f46e5, #9333ea);
+            /* الألوان الرئيسية للمراحل بالترتيب */
+            border-color: #4b5563; /* لون الحد */
         }
     </style>
 </head>
+<body class="bg-gray-900 text-gray-300">
+    <div class="container">
+        <!-- Main Header -->
+        <header class="text-center mb-12 md:mb-16">
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 md:mb-4">
+                🚀 خارطة طريق علوم البيانات
+            </h1>
+            <p class="text-base sm:text-lg md:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
+                رحلتك التفاعلية من الأساسيات إلى الاحتراف في عالم البيانات الواسع
+            </p>
+        </header>
 
-<body class="bg-gray-900 text-gray-300 min-h-screen flex flex-col items-center p-4 md:p-6">
-    <div class="max-w-5xl w-full flex-1 flex flex-col">
-        <!-- Back Button -->
-        <div class="mb-4">
-            <a href="index.html" class="inline-flex items-center text-orange-400 hover:text-orange-300 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                </svg>
-                العودة للصفحة الرئيسية
-            </a>
-        </div>
+        <!-- Roadmap -->
+        <div class="relative px-4 sm:px-6 lg:px-8">
+            <!-- Vertical timeline line -->
+            <div class="absolute right-6 md:right-1/2 md:translate-x-1/2 h-full w-1 vertical-line rounded-full z-0 hidden md:block"></div>
 
-        <!-- Slide Container -->
-        <div class="relative w-full">
-            <div id="slide-container" class="slide-container flex-1">
-
-                <!-- Slide 0: الفهرس (Table of Contents) -->
-                <div class="slide active" data-slide="0">
-                    <div class="slide-content">
-                        <h2 class="text-3xl font-bold mb-6 border-b border-orange-500 pb-2">
-                            <span class="text-orange-400">البرمجة في علم البيانات 💻</span>
-                        </h2>
-                        <h3 class="text-xl font-semibold text-white mb-4">الأساس والأدوات — نظرة شاملة</h3>
-                        <p class="text-center text-gray-300 mb-8 max-w-3xl mx-auto">
-                            القدرة على استخدام اللغات البرمجية مثل Python وأدواتها لترجمة المفاهيم الرياضية والإحصائية إلى عمليات حاسوبية قابلة للتنفيذ.
-                        </p>
-
-                        <h3 class="text-xl font-semibold text-white mb-6">فهرس الوحدة</h3>
-                        <ul class="space-y-3 text-gray-300 grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <li><button onclick="showSlide(1)">1. ⚙️ بيئة العمل وأساسيات بايثون</button></li>
-                            <li><button onclick="showSlide(2)">2. 🧮 مكتبات معالجة البيانات (NumPy / Pandas)</button></li>
-                            <li><button onclick="showSlide(3)">3. 🎨 التصوير والنمذجة الأولية</button></li>
-                            <li><button onclick="showSlide(4)">4. 🌐 التعامل مع البيانات ومصادرها (SQL / Git)</button></li>
-                            <li><button onclick="showSlide(5)">5. أمثلة عملية وروابط</button></li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Slide 1: Environment & Python Fundamentals -->
-                <div class="slide" data-slide="1">
-                    <div class="slide-content">
-                        <h2 class="text-3xl font-bold text-white mb-6 flex items-center">
-                             <span class="slide-title-icon">⚙️</span>
-                             بيئة العمل وأساسيات بايثون
-                        </h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
-                            <div class="space-y-6">
-                                <div class="bg-gray-800/80 p-6 rounded-lg border border-gray-700 hover:border-orange-500 transition-colors">
-                                    <h3 class="text-lg font-semibold text-white mb-2 flex items-center">
-                                         <span class="text-xl ml-2 text-orange-400">💡</span> الماهية
-                                    </h3>
-                                    <p class="text-gray-400 leading-relaxed">استخدام لغات وأدوات لكتابة الكود وتنفيذه وتتبع الإصدارات: Jupyter، Colab، VS Code، GitHub.</p>
-                                </div>
-                                <div class="bg-gray-800/80 p-6 rounded-lg border border-gray-700 hover:border-orange-500 transition-colors">
-                                    <h3 class="text-lg font-semibold text-white mb-2 flex items-center">
-                                         <span class="text-xl ml-2 text-orange-400">🎯</span> الهدف الأساسي
-                                    </h3>
-                                    <p class="text-gray-400 leading-relaxed">
-                                        إتقان بيئات العمل، فهم تراكيب البيانات الأساسية (قوائم، قواميس، tuples)، التحكم في تدفق البرنامج، وكتابة دوال والتعامل مع الأخطاء باستخدام <span class="text-orange-300 font-medium">try/except</span>.
-                                    </p>
-                                </div>
-                                <div class="bg-gray-800/80 p-6 rounded-lg border border-gray-700">
-                                     <h3 class="text-lg font-semibold text-white mb-2 flex items-center">
-                                         <span class="text-xl ml-2 text-orange-400">📝</span> نصائح سريعة
-                                    </h3>
-                                    <ul class="text-gray-400 list-disc pr-4 space-y-1">
-                                        <li>استعمل <span class="text-blue-300 font-medium">virtualenv</span> أو <span class="text-blue-300 font-medium">conda</span> لعزل البيئات.</li>
-                                        <li>ابدأ بـ Jupyter/Colab للـ EDA وانتقل إلى VS Code للمشروعات الأكبر.</li>
-                                        <li>ادمج <span class="text-green-300 font-medium">Git</span> في سير العمل منذ البداية لتتبع التغييرات والتعاون.</li>
-                                    </ul>
-                                </div>
+            <!-- Milestone 00: مدخلك لعالم البيانات (يمين) - Emerald -->
+            <div class="milestone-item relative mb-12">
+                <div class="md:flex items-center md:space-x-8 rtl:space-x-reverse">
+                    <div class="md:w-1/2">
+                        <!-- تم إضافة style مخصص لتحديد اللون -->
+                        <a href="foundation.html" class="milestone-card" style="--milestone-color: #10b981;">
+                            <div class="flex items-center space-x-4 rtl:space-x-reverse">
+                                <span class="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-600 text-white shadow-lg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                    </svg>
+                                </span>
+                                <h3>مدخلك لعالم البيانات</h3>
                             </div>
-
-                            <div class="illustration-box">
-                                <!-- SVG محسن لبيئة العمل -->
-                               <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
-                                    <title>أيقونات بيئة العمل</title>
-                                    <!-- Jupyter Icon -->
-                                    <g transform="translate(20, 40)">
-                                         <circle cx="25" cy="25" r="20" fill="#1f2937" stroke="#f97316" stroke-width="2"/>
-                                         <circle cx="25" cy="25" r="5" fill="#f97316"/>
-                                         <circle cx="43" cy="15" r="3" fill="#e5e7eb"/>
-                                         <circle cx="38" cy="40" r="3" fill="#e5e7eb"/>
-                                         <circle cx="12" cy="40" r="3" fill="#e5e7eb"/>
-                                         <text x="25" y="70" font-size="10" fill="#e5e7eb" text-anchor="middle">Jupyter</text>
-                                    </g>
-                                    <!-- VS Code Icon -->
-                                    <g transform="translate(80, 40)">
-                                         <path d="M 25 0 L 0 15 L 0 35 L 25 50 L 50 35 L 50 15 Z M 25 5 L 45 18 L 25 30 L 5 18 Z" fill="#3b82f6"/>
-                                         <text x="25" y="70" font-size="10" fill="#e5e7eb" text-anchor="middle">VS Code</text>
-                                    </g>
-                                    <!-- Git Icon -->
-                                    <g transform="translate(140, 40)">
-                                         <path d="M 48 25 A 23 23 0 1 0 25 48 L 25 2 Z M 2 25 L 48 25" fill="none" stroke="#e5e7eb" stroke-width="3"/>
-                                         <circle cx="48" cy="25" r="5" fill="#e5e7eb"/>
-                                         <circle cx="2" cy="25" r="5" fill="#e5e7eb"/>
-                                         <circle cx="25" cy="2" r="5" fill="#e5e7eb"/>
-                                         <text x="25" y="70" font-size="10" fill="#e5e7eb" text-anchor="middle">Git/GitHub</text>
-                                    </g>
-                               </svg>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Slide 2: Core Data Processing Libraries (Updated SVG) -->
-                <div class="slide" data-slide="2">
-                    <div class="slide-content">
-                        <h2 class="text-3xl font-bold text-white mb-6 flex items-center">
-                            <span class="slide-title-icon">🧮</span>
-                            مكتبات معالجة البيانات
-                        </h2>
-                        <p class="text-center text-gray-400 mb-6 max-w-3xl mx-auto">
-                            هذه المكتبات هي الأدوات الأساسية التي ستقضي معها معظم وقتك كعالم بيانات لمعالجة وتحليل البيانات.
-                        </p>
-                        <div class="illustration-box mb-8 h-64">
-                            <!-- SVG محسّن لضمان التناسب على الشاشات الصغيرة وتصحيح ترتيب الأعمدة في Pandas -->
-                            <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
-                                <title>NumPy Array vs Pandas DataFrame</title>
-                                <!-- NumPy Array -->
-                                <g transform="translate(30, 50)">
-                                    <rect x="0" y="0" width="150" height="100" rx="8" fill="#1f2937" stroke="#3b82f6" stroke-width="2"/>
-                                    <text x="75" y="-15" font-size="14" fill="#60a5fa" text-anchor="middle" font-weight="bold">NumPy Array</text>
-                                    <text x="75" y="40" font-size="16" fill="#e5e7eb" text-anchor="middle" font-family="monospace">[ [1, 2, 3],</text>
-                                    <text x="75" y="70" font-size="16" fill="#e5e7eb" text-anchor="middle" font-family="monospace">  [4, 5, 6] ]</text>
-                                </g>
-                                <!-- Pandas DataFrame (تم زيادة الإزاحة الأفقية إلى 240) -->
-                                <g transform="translate(240, 50) scale(0.9)">
-                                    <rect x="0" y="0" width="150" height="100" rx="8" fill="#1f2937" stroke="#10b981" stroke-width="2"/>
-                                    <text x="75" y="-10" font-size="13" fill="#34d399" text-anchor="middle" font-weight="bold">Pandas DataFrame</text>
-                                    
-                                    <!-- Header Row (Text Anchored to start of column for RTL look) -->
-                                    <text x="10" y="25" font-size="10" fill="#9ca3af" font-family="monospace">ID</text>
-                                    <text x="50" y="25" font-size="10" fill="#9ca3af" font-family="monospace">Name</text>
-                                    <text x="110" y="25" font-size="10" fill="#9ca3af" font-family="monospace">Age</text>
-                                    <line x1="10" y1="32" x2="140" y2="32" stroke="#4b5563" stroke-width="1"/>
-                                    
-                                    <!-- Row 0 -->
-                                    <text x="10" y="50" font-size="11" fill="#e5e7eb" font-family="monospace">0</text>
-                                    <text x="50" y="50" font-size="11" fill="#e5e7eb" font-family="monospace">Ali</text>
-                                    <text x="110" y="50" font-size="11" fill="#e5e7eb" font-family="monospace">25</text>
-                                    
-                                    <!-- Row 1 -->
-                                    <text x="10" y="70" font-size="11" fill="#e5e7eb" font-family="monospace">1</text>
-                                    <text x="50" y="70" font-size="11" fill="#e5e7eb" font-family="monospace">Sara</text>
-                                    <text x="110" y="70" font-size="11" fill="#e5e7eb" font-family="monospace">30</text>
-
-                                </g>
+                            <svg class="w-6 h-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                             </svg>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- NumPy Card -->
-                            <div class="bg-gray-800/50 p-6 rounded-xl border border-gray-700 hover:border-blue-500/80 transition-all duration-300">
-                                <h3 class="text-xl font-semibold text-blue-400 mb-3">NumPy (Numerical Python)</h3>
-                                <p class="text-gray-300 text-sm mb-3">توفر كائن "المصفوفة" (Array) الفعال، وهو أساس العمليات الرياضية السريعة على كميات كبيرة من الأرقام.</p>
-                                <ul class="text-xs text-gray-400 list-disc pr-4 space-y-1">
-                                    <li>عمليات رياضية موجهة (Vectorized).</li>
-                                    <li>توليد أرقام عشوائية.</li>
-                                    <li>أساس لمكتبات أخرى مثل Pandas.</li>
-                                </ul>
-                            </div>
-                            <!-- Pandas Card -->
-                            <div class="bg-gray-800/50 p-6 rounded-xl border border-gray-700 hover:border-green-500/80 transition-all duration-300">
-                                <h3 class="text-xl font-semibold text-green-400 mb-3">Pandas</h3>
-                                <p class="text-gray-300 text-sm mb-3">توفر كائن "DataFrame"، وهو جدول بيانات فائق القوة في بايثون، يسمح بقراءة البيانات وتنظيفها وتحليلها بسهولة.</p>
-                                <ul class="text-xs text-gray-400 list-disc pr-4 space-y-1">
-                                    <li>قراءة وكتابة ملفات (CSV, Excel, SQL).</li>
-                                    <li>تنظيف البيانات المفقودة.</li>
-                                    <li>تجميع وتلخيص البيانات (Group By).</li>
-                                </ul>
-                            </div>
-                        </div>
+                        </a>
+                    </div>
+                    <div class="hidden md:block md:w-1/2"></div>
+                </div>
+                <div class="absolute top-5 right-0 md:right-1/2 transform translate-x-1/2 -translate-y-1/2 md:translate-y-0 z-10">
+                    <div class="w-12 h-12 rounded-full bg-gray-800 border-4 border-emerald-500 flex items-center justify-center text-white font-bold shadow-lg transition-all duration-300 hover:scale-110">
+                        <span class="relative">00</span>
                     </div>
                 </div>
-
-                <!-- Slide 3: Visualization & Basic Modeling -->
-                <div class="slide" data-slide="3">
-                    <div class="slide-content">
-                        <h2 class="text-3xl font-bold text-white mb-6 flex items-center">
-                            <span class="slide-title-icon">🎨</span>
-                            التصوير والنمذجة الأولية
-                        </h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
-                            <div class="space-y-4">
-                                <div class="bg-gray-800/80 p-6 rounded-lg border border-gray-700 hover:border-orange-500 transition-colors">
-                                    <h3 class="text-lg font-semibold text-white mb-2 flex items-center">
-                                         <span class="text-xl ml-2 text-orange-400">🖼️</span> المكتبات الأساسية
-                                    </h3>
-                                    <ul class="text-gray-400 list-disc pr-4 space-y-1">
-                                        <li><span class="text-orange-300 font-medium">Matplotlib & Seaborn:</span> لإنشاء مخططات واضحة وتحليل بصري للبيانات (EDA).</li>
-                                        <li><span class="text-orange-300 font-medium">Scikit-learn:</span> أدوات للنمذجة الكلاسيكية: تقسيم البيانات، نماذج بسيطة (مثل الانحدار)، تقييم الأداء.</li>
-                                    </ul>
-                                </div>
-
-                                <div class="bg-gray-800/80 p-6 rounded-lg border border-gray-700 hover:border-orange-500 transition-colors">
-                                    <h3 class="text-lg font-semibold text-white mb-2 flex items-center">
-                                         <span class="text-xl ml-2 text-orange-400">💡</span> ملاحظات عملية
-                                    </h3>
-                                    <ul class="text-gray-400 list-disc pr-4 space-y-1">
-                                        <li>ابدأ بمخططات بسيطة (مدرجات، مبعثرة) ثم اعمق في التحليل الرسومي.</li>
-                                        <li>استخدم <span class="text-blue-300 font-medium">train_test_split</span> ومقاييس مثل RMSE و accuracy لتقييم النموذج.</li>
-                                        <li>التصوير الجيد يختصر آلاف الكلمات في فهم خصائص البيانات.</li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <div class="illustration-box">
-                                <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
-                                    <title>تصور و نموذج</title>
-                                    <!-- المنطقة الرسم البياني -->
-                                    <rect x="20" y="30" width="160" height="90" rx="6" fill="#0f172a" stroke="#374151" stroke-width="1.5"></rect>
-                                    
-                                    <!-- المحورين -->
-                                    <line x1="20" y1="120" x2="180" y2="120" stroke="#4b5563" stroke-width="1.5" />
-                                    <line x1="20" y1="120" x2="20" y2="30" stroke="#4b5563" stroke-width="1.5" />
-                                    
-                                    <!-- البيانات (نقاط مبعثرة) -->
-                                    <circle cx="30" cy="100" r="3" fill="#fb923c" />
-                                    <circle cx="60" cy="70" r="3" fill="#fb923c" />
-                                    <circle cx="90" cy="80" r="3" fill="#fb923c" />
-                                    <circle cx="120" cy="50" r="3" fill="#fb923c" />
-                                    <circle cx="150" cy="60" r="3" fill="#fb923c" />
-                                    <circle cx="170" cy="85" r="3" fill="#fb923c" />
-                                    
-                                    <!-- خط النموذج (الانحدار) -->
-                                    <line x1="30" y1="105" x2="170" y2="55" stroke="#f97316" stroke-width="2" stroke-dasharray="4 2" />
-                                    
-                                    <text x="100" y="20" font-size="12" fill="#e5e7eb" text-anchor="middle">نموذج الانحدار</text>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Slide 4: Data Sources & Version Control -->
-                <div class="slide" data-slide="4">
-                    <div class="slide-content">
-                        <h2 class="text-3xl font-bold text-white mb-6 flex items-center">
-                            <span class="slide-title-icon">🌐</span>
-                            التعامل مع البيانات ومصادرها
-                        </h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
-                            <div class="space-y-6">
-                                <div class="bg-gray-800/80 p-6 rounded-lg border border-gray-700 hover:border-orange-500 transition-colors">
-                                    <h3 class="text-lg font-semibold text-white mb-2 flex items-center">
-                                         <span class="text-xl ml-2 text-orange-400">🔗</span> جلب البيانات وإدارة الكود
-                                    </h3>
-                                    <p class="text-gray-400 leading-relaxed">
-                                        لا توجد البيانات دائماً في ملفات CSV. تعلم كيفية استخراجها من قواعد البيانات وإدارة كودك بفعالية هي مهارات لا غنى عنها.
-                                    </p>
-                                </div>
-                                <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-blue-500/80 transition-colors">
-                                    <h4 class="font-semibold text-blue-300 mb-1">SQL (Structured Query Language)</h4>
-                                    <p class="text-sm text-gray-300">لغة الاستعلام القياسية للتفاعل مع قواعد البيانات. أساسية لجلب البيانات التي تحتاجها وتصفيتها ودمجها من مصادر متعددة.</p>
-                                </div>
-                                <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-green-500/80 transition-colors">
-                                    <h4 class="font-semibold text-green-300 mb-1">Git / GitHub</h4>
-                                    <p class="text-sm text-gray-300">Git هو نظام التحكم في الإصدارات لتتبع التغييرات في الكود. GitHub هي منصة لاستضافة مستودعات Git والتعاون مع الآخرين.</p>
-                                </div>
-                            </div>
-                            <div class="illustration-box">
-                                <!-- SVG يوضح سير العمل: SQL -> Python -> Git -->
-                                <svg viewBox="0 0 400 150" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
-                                    <title>Data Workflow</title>
-                                    <defs><marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#4b5563"/></marker></defs>
-                                    
-                                    <!-- SQL Database -->
-                                    <g><rect x="30" y="50" width="60" height="50" rx="5" fill="#1f2937" stroke="#3b82f6" stroke-width="1.5"/><ellipse cx="60" cy="50" rx="30" ry="8" fill="#1f2937" stroke="#3b82f6" stroke-width="1.5"/><text x="60" y="75" font-size="12" fill="#e5e7eb" text-anchor="middle">SQL DB</text></g>
-                                    
-                                    <!-- Arrow 1: To Python -->
-                                    <path d="M 95 75 L 145 75" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow)"/>
-                                    
-                                    <!-- Pandas/Python Processing -->
-                                    <g><rect x="150" y="50" width="100" height="50" rx="5" fill="#1f2937" stroke="#facc15" stroke-width="1.5"/><text x="200" y="78" font-size="12" fill="#e5e7eb" text-anchor="middle">Pandas/Python</text></g>
-                                    
-                                    <!-- Arrow 2: To Git -->
-                                    <path d="M 255 75 L 305 75" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow)"/>
-                                    
-                                    <!-- Git/GitHub Version Control -->
-                                    <g><circle cx="340" cy="75" r="25" fill="#1f2937" stroke="#34d399" stroke-width="1.5"/><path d="M330 75h20m-10-10v20" stroke="#34d399" stroke-width="1.5"/><text x="340" y="115" font-size="12" fill="#e5e7eb" text-anchor="middle">Git/GitHub</text></g>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Slide 5: Examples & Resources -->
-                <div class="slide" data-slide="5">
-                    <div class="slide-content">
-                        <h2 class="text-3xl font-bold text-white mb-6 flex items-center">
-                            <span class="slide-title-icon">📚</span>
-                            أمثلة عملية وروابط
-                        </h2>
-                        <div class="overflow-x-auto">
-                            <table class="styled-table">
-                                <thead>
-                                    <tr>
-                                        <th>الموضوع</th>
-                                        <th>المورد</th>
-                                        <th>ملاحظة</th>
-                                        <th>رابط</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>أساسيات بايثون</td>
-                                        <td>Coursera/EdX - Python for Everybody</td>
-                                        <td>مساق ممتاز للمبتدئين في بايثون بشكل عام.</td>
-                                        <td>[ابحث عن المساق]</td>
-                                    </tr>
-                                    <tr>
-                                        <td>تنظيف البيانات</td>
-                                        <td>Documentation of Pandas</td>
-                                        <td>الوثائق الرسمية هي أفضل مصدر لتعلم أعمق وظائف التنظيف.</td>
-                                        <td><a href="https://pandas.pydata.org/docs/" target="_blank">pandas docs</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td>التصوير (Seaborn)</td>
-                                        <td>Seaborn Official Gallery</td>
-                                        <td>معرض تفاعلي لأنواع المخططات مع أكوادها الجاهزة.</td>
-                                        <td><a href="https://seaborn.pydata.org/examples/index.html" target="_blank">seaborn gallery</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td>النماذج الأولية</td>
-                                        <td>Scikit-learn User Guide</td>
-                                        <td>دليل شامل حول كيفية استخدام النماذج وتقييمها خطوة بخطوة.</td>
-                                        <td><a href="https://scikit-learn.org/stable/user_guide.html" target="_blank">scikit-learn guide</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td>قواعد البيانات (SQL)</td>
-                                        <td>W3Schools SQL Tutorial</td>
-                                        <td>مقدمة سريعة وعملية لأهم أوامر SQL.</td>
-                                        <td><a href="https://www.w3schools.com/sql/" target="_blank">W3Schools SQL</a></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
             </div>
-        </div>
 
-        <!-- Slide Navigation -->
-        <div class="flex justify-between items-center mt-6">
-            <button id="prev-btn"
-                class="py-2 px-6 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                السابق
-            </button>
-            <div id="pagination" class="flex-grow flex justify-center items-center space-x-2 px-4">
-                <!-- Dots will be inserted by JS -->
+            <!-- Milestone 01: البرمجة والأساسيات (يسار) - Blue -->
+            <div class="milestone-item relative mb-12">
+                <!-- تم إزالة md:flex-row-reverse للعودة للشكل المتناوب -->
+                <div class="md:flex md:space-x-8 rtl:space-x-reverse">
+                    <div class="hidden md:block md:w-1/2"></div>
+                    <div class="md:w-1/2">
+                         <!-- تم إضافة style مخصص لتحديد اللون -->
+                        <a href="programming.html" class="milestone-card" style="--milestone-color: #2563eb;">
+                            <div class="flex items-center space-x-4 rtl:space-x-reverse">
+                                <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-600 text-white shadow-lg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                                    </svg>
+                                </span>
+                                <h3>البرمجة والأساسيات</h3>
+                            </div>
+                            <svg class="w-6 h-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="absolute top-5 right-0 md:right-1/2 transform translate-x-1/2 -translate-y-1/2 md:translate-y-0">
+                    <div class="w-12 h-12 rounded-full bg-gray-800 border-4 border-blue-600 flex items-center justify-center text-white font-bold z-10">
+                        01
+                    </div>
+                </div>
             </div>
-            <button id="next-btn"
-                class="py-2 px-6 bg-orange-600 hover:bg-orange-500 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                التالي
-            </button>
+
+            <!-- Milestone 02: الرياضيات والإحصاء (يمين) - Pink -->
+            <div class="milestone-item relative mb-12">
+                <div class="md:flex items-center md:space-x-8 rtl:space-x-reverse">
+                    <div class="md:w-1/2">
+                         <!-- تم إضافة style مخصص لتحديد اللون -->
+                        <a href="math.html" class="milestone-card" style="--milestone-color: #ec4899;">
+                            <div class="flex items-center space-x-4 rtl:space-x-reverse">
+                                <span class="flex items-center justify-center w-12 h-12 rounded-full bg-pink-600 text-white shadow-lg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                                </span>
+                                <h3>الرياضيات والإحصاء</h3>
+                            </div>
+                            <svg class="w-6 h-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </a>
+                    </div>
+                    <div class="hidden md:block md:w-1/2"></div>
+                </div>
+                <div class="absolute top-5 right-0 md:right-1/2 transform translate-x-1/2 -translate-y-1/2 md:translate-y-0">
+                    <div class="w-12 h-12 rounded-full bg-gray-800 border-4 border-pink-600 flex items-center justify-center text-white font-bold z-10">
+                        02
+                    </div>
+                </div>
+            </div>
+
+            <!-- Milestone 03: تحليل وتصوير البيانات (يسار) - Orange -->
+            <div class="milestone-item relative mb-12">
+                <!-- تم إزالة md:flex-row-reverse للعودة للشكل المتناوب -->
+                <div class="md:flex md:space-x-8 rtl:space-x-reverse">
+                    <div class="hidden md:block md:w-1/2"></div>
+                    <div class="md:w-1/2">
+                         <!-- تم إضافة style مخصص لتحديد اللون -->
+                        <a href="data_analysis_visual.html" class="milestone-card" style="--milestone-color: #f97316;">
+                            <div class="flex items-center space-x-4 rtl:space-x-reverse">
+                                <span class="flex items-center justify-center w-12 h-12 rounded-full bg-orange-600 text-white shadow-lg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1 0 20.945 13H11V3.055z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0 1 20.488 9z" />
+                                    </svg>
+                                </span>
+                                <h3>تحليل وتصوير البيانات</h3>
+                            </div>
+                            <svg class="w-6 h-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="absolute top-5 right-0 md:right-1/2 transform translate-x-1/2 -translate-y-1/2 md:translate-y-0">
+                    <div class="w-12 h-12 rounded-full bg-gray-800 border-4 border-orange-600 flex items-center justify-center text-white font-bold z-10">
+                        03
+                    </div>
+                </div>
+            </div>
+
+
+            
+            <!-- Milestone 04: تعلم الآلة والذكاء الاصطناعي (يمين) - Sky -->
+            <div class="milestone-item relative mb-12">
+                <div class="md:flex items-center md:space-x-8 rtl:space-x-reverse">
+                    <div class="md:w-1/2">
+                         <!-- تم إضافة style مخصص لتحديد اللون -->
+                        <a href="machine_learning.html" class="milestone-card" style="--milestone-color: #0ea5e9;">
+                            <div class="flex items-center space-x-4 rtl:space-x-reverse">
+                                <span class="flex items-center justify-center w-12 h-12 rounded-full bg-sky-500 text-white shadow-lg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                    </svg>
+                                </span>
+                                <h3>تعلم الآلة والذكاء الاصطناعي</h3>
+                            </div>
+                            <svg class="w-6 h-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </a>
+                    </div>
+                    <div class="hidden md:block md:w-1/2"></div>
+                </div>
+                <div class="absolute top-5 right-0 md:right-1/2 transform translate-x-1/2 -translate-y-1/2 md:translate-y-0">
+                    <div class="w-12 h-12 rounded-full bg-gray-800 border-4 border-sky-500 flex items-center justify-center text-white font-bold z-10">
+                        04
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Science Simulations (يسار) - Indigo -->
+            <div class="milestone-item relative mb-12">
+                <!-- تم إزالة md:flex-row-reverse للعودة للشكل المتناوب -->
+                <div class="md:flex md:space-x-8 rtl:space-x-reverse">
+                    <div class="hidden md:block md:w-1/2"></div>
+                    <div class="md:w-1/2">
+                         <!-- تم إضافة style مخصص لتحديد اللون -->
+                        <a href="data_science_simulations.html" class="milestone-card" style="--milestone-color: #4f46e5;">
+                            <div class="flex items-center space-x-4 rtl:space-x-reverse">
+                                <span class="flex items-center justify-center w-12 h-12 rounded-full bg-indigo-600 text-white shadow-lg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                    </svg>
+                                </span>
+                                <h3>محاكاة تعلم الآلة</h3>
+                            </div>
+                            <svg class="w-6 h-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="absolute top-5 right-0 md:right-1/2 transform translate-x-1/2 -translate-y-1/2 md:translate-y-0">
+                    <div class="w-12 h-12 rounded-full bg-gray-800 border-4 border-indigo-500 flex items-center justify-center text-white font-bold z-10">
+                        4.5
+                    </div>
+                </div>
+            </div>
+
+            <!-- Milestone 05: النشر والتخصص (يمين) - Purple -->
+            <div class="milestone-item relative mb-12">
+                <div class="md:flex items-center md:space-x-8 rtl:space-x-reverse">
+                    <div class="md:w-1/2">
+                         <!-- تم إضافة style مخصص لتحديد اللون -->
+                        <a href="deployment.html" class="milestone-card" style="--milestone-color: #9333ea;">
+                            <div class="flex items-center space-x-4 rtl:space-x-reverse">
+                                <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-600 text-white shadow-lg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 0 0 1.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 0 0-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 0 0-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 0 0-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 0 0-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 0 0 1.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.096 2.573-1.066z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+                                    </svg>
+                                </span>
+                                <h3>النشر والتخصص</h3>
+                            </div>
+                            <svg class="w-6 h-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </a>
+                    </div>
+                    <div class="hidden md:block md:w-1/2"></div>
+                </div>
+                <div class="absolute top-5 right-0 md:right-1/2 transform translate-x-1/2 -translate-y-1/2 md:translate-y-0">
+                    <div class="w-12 h-12 rounded-full bg-gray-800 border-4 border-purple-600 flex items-center justify-center text-white font-bold z-10">
+                        05
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        let currentSlide = 0;
-        let slides;
-        let prevBtn;
-        let nextBtn;
-        let pagination;
-        let totalSlides;
-        let dots;
-
-        function showSlide(slideIndex) {
-            if (!slides || !dots || slideIndex < 0 || slideIndex >= totalSlides) {
-                console.error("Slider not ready or index out of bounds.");
-                return;
-            }
-
-            // إخفاء جميع الشرائح
-            slides.forEach(slide => slide.classList.remove('active'));
-            // إظهار الشريحة المحددة
-            slides[slideIndex].classList.add('active');
-
-            // تحديث نقاط التنقل
-            dots.forEach((dot, index) => {
-                dot.classList.toggle('active', index === slideIndex);
-            });
-
-            // تحديث حالة الأزرار
-            prevBtn.disabled = slideIndex === 0;
-            nextBtn.disabled = slideIndex === totalSlides - 1;
-
-            currentSlide = slideIndex;
-
-            // العودة إلى أعلى الصفحة عند الانتقال لشريحة جديدة
-            window.scrollTo(0, 0);
-        }
-
         document.addEventListener('DOMContentLoaded', () => {
-            slides = document.querySelectorAll('.slide');
-            prevBtn = document.getElementById('prev-btn');
-            nextBtn = document.getElementById('next-btn');
-            pagination = document.getElementById('pagination');
-            totalSlides = slides.length;
+            // --- Scroll Animation Functionality ---
+            const milestones = document.querySelectorAll('.milestone-item');
+            let delay = 0;
 
-            // build dots
-            if (pagination) {
-                pagination.innerHTML = '';
-                for (let i = 0; i < totalSlides; i++) {
-                    const dot = document.createElement('button');
-                    dot.classList.add('pagination-dot');
-                    dot.dataset.slide = i;
-                    dot.addEventListener('click', () => showSlide(i));
-                    pagination.appendChild(dot);
-                }
-                dots = pagination.querySelectorAll('button');
-            }
-
-            prevBtn.addEventListener('click', () => {
-                if (currentSlide > 0) showSlide(currentSlide - 1);
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Add staggered animation
+                        setTimeout(() => {
+                            entry.target.classList.add('is-visible');
+                        }, delay);
+                        delay += 100; // 100ms delay between each item
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
             });
 
-            nextBtn.addEventListener('click', () => {
-                if (currentSlide < totalSlides - 1) showSlide(currentSlide + 1);
+            // Observe all milestones
+            milestones.forEach(milestone => {
+                observer.observe(milestone);
             });
 
-            // التنقل باستخدام لوحة المفاتيح
-            document.addEventListener('keydown', (e) => {
-                // استخدام السهم الأيسر للتقدم والسهم الأيمن للعودة (وفقاً لاتجاه RTL)
-                if (e.key === 'ArrowLeft' && currentSlide < totalSlides - 1) { 
-                    showSlide(currentSlide + 1);
-                } else if (e.key === 'ArrowRight' && currentSlide > 0) {
-                    showSlide(currentSlide - 1);
-                }
+            // إضافة تأثير التمرير
+            const cards = document.querySelectorAll('.milestone-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    // تم تبسيط هذا لأننا نعتمد الآن على CSS :hover
+                });
+                card.addEventListener('mouseleave', function() {
+                    // تم تبسيط هذا لأننا نعتمد الآن على CSS :hover
+                });
             });
-
-            if (totalSlides > 0) showSlide(0);
         });
-
-        window.showSlide = showSlide;
     </script>
 </body>
-
 </html>
