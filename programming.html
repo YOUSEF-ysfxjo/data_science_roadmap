@@ -1,758 +1,2161 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>البرمجة في علم البيانات</title>
-    <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Load Tajawal Font from Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
 
     <style>
-        /*
+      /*
         ========================================
         التعديلات الهيكلية المطبقة (لتفعيل التمرير والجمالية)
         ========================================
         */
-        body {
-            font-family: 'Tajawal', sans-serif;
-            background-color: #111827;
-            direction: rtl;
-            min-height: 100vh;
-            height: auto;
-            overflow-y: auto; /* تفعيل التمرير على مستوى الصفحة */
-            display: flex;
-            flex-direction: column;
+      body {
+        font-family: "Tajawal", sans-serif;
+        background-color: #111827;
+        direction: rtl;
+        min-height: 100vh;
+        height: auto; /* ASR: (تعديل) السماح بتمدد الصفحة */
+        overflow-y: auto; /* ASR: (تعديل) تفعيل تمرير الصفحة بالكامل */
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Main container styles */
+      .slide-container {
+        display: flex;
+        width: 100%;
+        max-width: 1700px;
+        margin: 0 auto;
+        position: relative;
+        flex: 1;
+        overflow: visible; /* ASR: (تعديل) السماح للمحتوى بالظهور */
+        padding: 2rem 1rem; /* ASR: (تعديل) إضافة PADDING هنا */
+        height: auto; /* ASR: (تعديل) جعل الحاوية تملأ المساحة المخصصة لها */
+      }
+
+      .slide {
+        width: 100%;
+        flex-shrink: 0;
+        transition: opacity 0.5s ease-in-out, visibility 0.5s;
+        opacity: 0;
+        visibility: hidden;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        padding: 1.5rem 0; /* ASR: (تعديل) إضافة PADDING */
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        height: auto; /* ASR: (تعديل) جعل الشريحة تملأ الحاوية */
+        box-sizing: border-box;
+      }
+
+      .slide.active {
+        opacity: 1;
+        visibility: visible;
+        position: relative; /* مهم جداً للسماح للشرائح بأخذ الحيز اللازم */
+        height: auto; /* ASR: (تعديل) جعل الشريحة تملأ الحاوية */
+        padding: 1.5rem 0; /* ASR: (تعديل) إضافة PADDING */
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* تنسيق بطاقة المحتوى */
+      .slide-content {
+        background-color: #1f2937;
+        border-radius: 0.75rem;
+        padding: 2rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        width: 100%;
+        max-width: 2000px;
+        height: auto; /* ASR: (تعديل) جعل المحتوى يملأ الشريحة */
+        display: flex;
+        flex-direction: column;
+        margin: 0 auto;
+        overflow-y: visible; /* ASR: (تعديل) إلغاء التمرير داخل البطاقة */
+        box-sizing: border-box;
+        min-height: 70vh; /* ASR: (تعديل) ضمان ارتفاع أدنى للبطاقات */
+      }
+
+      .slide-content ul {
+        list-style-type: disc;
+        list-style-position: outside;
+        padding-right: 1.25rem;
+        margin-left: 0;
+      }
+      
+      /* تنسيق خاص بقائمة المصادر في الشريحة 5 */
+      .slide[data-slide="5"] .slide-content ul {
+        list-style-type: none;
+        padding-right: 0;
+        margin-left: 0;
+      }
+
+
+      /* لون التمييز: الأزرق (#3b82f6) */
+      .pagination-dot {
+        width: 0.75rem;
+        height: 0.75rem;
+        border-radius: 9999px;
+        background-color: #4b5563;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .pagination-dot.active {
+        background-color: #3b82f6; /* blue-500 */
+        width: 2rem;
+      }
+
+      /* مربع الرسم التوضيحي */
+      .illustration-box {
+        background-color: #111827;
+        border: 1px solid #374151;
+        min-height: 200px;
+        /* max-height: 240px; تحديد ارتفاع أقصى لبعض الشرائح */
+        border-radius: 0.75rem;
+        padding: 1.25rem;
+        margin-top: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        box-shadow: 0 0 10px rgba(59, 130, 246, 0.1); /* ظل أزرق خفيف */
+        overflow: hidden;
+        flex-grow: 1;
+        height: 100%; /* تعديل لضمان شغل الحيز */
+      }
+
+      .illustration-box:hover {
+        border-color: #3b82f6;
+        box-shadow: 0 0 15px rgba(59, 130, 246, 0.3),
+          0 4px 6px -1px rgba(0, 0, 0, 0.2);
+      }
+
+      /* ضمان تناسب الرسومات داخل الصندوق */
+      .illustration-box svg {
+        max-width: 100%;
+        max-height: 100%;
+        height: auto;
+        width: auto;
+        object-fit: contain;
+      }
+
+      /* أنماط شريحة الفهرس */
+      .slide[data-slide="0"] .slide-content {
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 5rem 2rem 3rem;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        border: 1px solid #3b82f6;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+      }
+
+      .slide[data-slide="0"] h2 {
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+        text-align: center;
+        color: #3b82f6;
+        border-bottom: 2px solid #3b82f6;
+        padding-bottom: 1rem;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+      }
+
+      .slide[data-slide="0"] h3 {
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+        text-align: center;
+        color: #e5e7eb;
+      }
+
+      .slide[data-slide="0"] ul {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        width: 100%;
+        margin: 0;
+        padding: 1rem;
+        list-style: none;
+        align-items: stretch;
+      }
+
+      .slide[data-slide="0"] li {
+        background-color: rgba(30, 41, 59, 0.8);
+        border: 1px solid #374151;
+        border-radius: 0.75rem;
+        padding: 0;
+        transition: all 0.3s ease;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: stretch;
+        height: 100%;
+        align-self: stretch;
+      }
+
+      .slide[data-slide="0"] li::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 4px;
+        height: 100%;
+        background-color: #3b82f6;
+        transition: width 0.3s ease;
+      }
+
+      .slide[data-slide="0"] li:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        border-color: #3b82f6;
+        background-color: rgba(30, 41, 59, 0.9);
+      }
+
+      .slide[data-slide="0"] li:hover::before {
+        width: 8px;
+      }
+
+      .slide[data-slide="0"] button {
+        background: none;
+        border: none;
+        color: #e5e7eb;
+        font-size: 1.1rem;
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+        min-height: 100%;
+        text-align: center;
+        padding: 1.5rem;
+        font-family: "Tajawal", sans-serif;
+        transition: color 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+        box-sizing: border-box;
+      }
+
+      .slide[data-slide="0"] button:hover {
+        color: #60a5fa; /* blue-400 */
+      }
+
+      /* تنسيقات الجدول */
+      .styled-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1.5rem;
+        font-size: 0.9rem;
+        text-align: right;
+        border: 1px solid #374151;
+        border-radius: 0.5rem;
+        overflow: hidden;
+      }
+
+      .styled-table th,
+      .styled-table td {
+        padding: 1rem 0.75rem;
+        border-bottom: 1px solid #374151;
+      }
+
+      .styled-table th {
+        background-color: #374151;
+        color: #e5e7eb;
+        font-weight: 600;
+      }
+
+      .styled-table tbody tr:hover {
+        background-color: #313d4f;
+      }
+
+      .styled-table td a {
+        color: #60a5fa; /* blue-400 */
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s ease;
+      }
+
+      .styled-table td a:hover {
+        text-decoration: underline;
+        color: #3b82f6; /* blue-500 */
+      }
+
+      /* تنسيق الأيقونات في الشرائح الداخلية */
+      .slide-title-icon {
+        font-size: 1.8rem;
+        margin-left: 0.75rem;
+        display: inline-block;
+        transform: translateY(2px);
+        color: #60a5fa;
+      }
+
+      /* Media Queries for Responsiveness */
+      @media (max-width: 768px) {
+        .slide[data-slide="0"] ul {
+          grid-template-columns: 1fr;
         }
 
-        /* Main container styles */
-        .slide-container {
-            display: flex;
-            width: 100%;
-            max-width: 1700px;
-            margin: 0 auto;
-            position: relative;
-            flex: 1;
-            overflow: visible;
-            padding: 2rem 1rem;
-            min-height: 70vh;
-            height: auto; /* السماح بالتمدد مع المحتوى */
-        }
-
-        .slide {
-            width: 100%;
-            flex-shrink: 0;
-            transition: opacity 0.5s ease-in-out, visibility 0.5s;
-            opacity: 0;
-            visibility: hidden;
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            padding: 1.5rem 0;
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
-            height: auto; /* السماح بالتمدد مع المحتوى */
-            box-sizing: border-box;
-        }
-
-        .slide.active {
-            opacity: 1;
-            visibility: visible;
-            position: relative; /* مهم جداً للسماح للشرائح بأخذ الحيز اللازم */
-            height: auto; /* السماح بالتمدد مع المحتوى */
-            padding: 1.5rem 0;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* تنسيق بطاقة المحتوى */
         .slide-content {
-            background-color: #1f2937;
-            border-radius: 0.75rem;
-            padding: 2rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            width: 100%;
-            max-width: 2000px;
-            max-height: none; /* إزالة قيود الارتفاع للسماح بالتمرير */
-            height: auto;
-            display: flex;
-            flex-direction: column;
-            margin: 0 auto;
-            overflow-y: visible; /* الاعتماد على تمرير الـ Body */
-            box-sizing: border-box;
-            min-height: 70vh;
-        }
-
-        .slide-content ul {
-            list-style-type: disc;
-            list-style-position: outside;
-            padding-right: 1.25rem;
-            margin-left: 0;
-        }
-
-        /* لون التمييز: الأزرق (#3b82f6) */
-        .pagination-dot {
-            width: 0.75rem;
-            height: 0.75rem;
-            border-radius: 9999px;
-            background-color: #4b5563;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .pagination-dot.active {
-            background-color: #3b82f6; /* blue-500 */
-            width: 2rem;
-        }
-
-        /* مربع الرسم التوضيحي */
-        .illustration-box {
-            background-color: #111827;
-            border: 1px solid #374151;
-            min-height: 200px;
-            max-height: 240px; /* تحديد ارتفاع أقصى لبعض الشرائح */
-            border-radius: 0.75rem;
-            padding: 1.25rem;
-            margin-top: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-            box-shadow: 0 0 10px rgba(59, 130, 246, 0.1); /* ظل أزرق خفيف */
-            overflow: hidden;
-            flex-grow: 1;
-        }
-
-        .illustration-box:hover {
-            border-color: #3b82f6;
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.3), 0 4px 6px -1px rgba(0, 0, 0, 0.2);
-        }
-        
-        /* ضمان تناسب الرسومات داخل الصندوق */
-        .illustration-box svg {
-            max-width: 100%;
-            max-height: 100%;
-            height: auto;
-            width: auto;
-            object-fit: contain;
-        }
-
-        /* أنماط شريحة الفهرس */
-        .slide[data-slide="0"] .slide-content {
-            height: auto;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 5rem 2rem 3rem;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            border: 1px solid #3b82f6;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+          padding: 1.5rem;
         }
 
         .slide[data-slide="0"] h2 {
-            font-size: 2.5rem;
-            margin-bottom: 2rem;
-            text-align: center;
-            color: #3b82f6;
-            border-bottom: 2px solid #3b82f6;
-            padding-bottom: 1rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
+          font-size: 2rem;
         }
 
         .slide[data-slide="0"] h3 {
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-            text-align: center;
-            color: #e5e7eb;
+          font-size: 1.25rem;
         }
 
-        .slide[data-slide="0"] ul {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            width: 100%;
-            margin: 0;
-            padding: 1rem;
-            list-style: none;
-        }
-
-        .slide[data-slide="0"] li {
-            background-color: rgba(30, 41, 59, 0.8);
-            border: 1px solid #374151;
-            border-radius: 0.75rem;
-            padding: 0;
-            transition: all 0.3s ease;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .slide[data-slide="0"] li::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 4px;
-            height: 100%;
-            background-color: #3b82f6;
-            transition: width 0.3s ease;
-        }
-
-        .slide[data-slide="0"] li:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-                0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            border-color: #3b82f6;
-            background-color: rgba(30, 41, 59, 0.9);
-        }
-
-        .slide[data-slide="0"] li:hover::before {
-            width: 8px;
-        }
-
-        .slide[data-slide="0"] button {
-            background: none;
-            border: none;
-            color: #e5e7eb;
-            font-size: 1.1rem;
-            cursor: pointer;
-            width: 100%;
-            height: 100%;
-            text-align: right;
-            padding: 1.5rem;
-            font-family: 'Tajawal', sans-serif;
-            transition: color 0.3s ease;
-        }
-
-        .slide[data-slide="0"] button:hover {
-            color: #60a5fa; /* blue-400 */
-        }
-
-        /* تنسيقات الجدول */
         .styled-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1.5rem;
-            font-size: 0.9rem;
-            text-align: right;
-            border: 1px solid #374151;
-            border-radius: 0.5rem;
-            overflow: hidden;
+          font-size: 0.8rem;
         }
-
         .styled-table th,
         .styled-table td {
-            padding: 1rem 0.75rem;
-            border-bottom: 1px solid #374151;
+          padding: 0.75rem 0.5rem;
         }
 
-        .styled-table th {
-            background-color: #374151;
-            color: #e5e7eb;
-            font-weight: 600;
+        /* تعديل شريحة 4 للعمود الواحد */
+        .slide[data-slide="4"] .grid {
+          grid-template-columns: 1fr;
         }
-
-        .styled-table tbody tr:hover {
-            background-color: #313d4f;
+        .slide[data-slide="4"] .illustration-box {
+          max-height: 250px; /* تحديد ارتفاع للرسمة في الموبايل */
         }
-
-        .styled-table td a {
-            color: #60a5fa; /* blue-400 */
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.2s ease;
-        }
-
-        .styled-table td a:hover {
-            text-decoration: underline;
-            color: #3b82f6; /* blue-500 */
-        }
-        
-        /* تنسيق الأيقونات في الشرائح الداخلية */
-        .slide-title-icon {
-            font-size: 1.8rem;
-            margin-left: 0.75rem;
-            display: inline-block;
-            transform: translateY(2px);
-            color: #60a5fa;
-        }
-
-        /* Media Queries for Responsiveness */
-        @media (max-width: 768px) {
-            .slide[data-slide="0"] ul {
-                grid-template-columns: 1fr;
-            }
-
-            .slide-content {
-                padding: 1.5rem;
-            }
-
-            .slide[data-slide="0"] h2 {
-                font-size: 2rem;
-            }
-
-            .slide[data-slide="0"] h3 {
-                font-size: 1.25rem;
-            }
-
-            .styled-table {
-                font-size: 0.8rem;
-            }
-            .styled-table th,
-            .styled-table td {
-                padding: 0.75rem 0.5rem;
-            }
-        }
+      }
     </style>
-</head>
+  </head>
 
-<body class="bg-gray-900 text-gray-300 min-h-screen flex flex-col items-center p-4 md:p-6">
+  <body class="bg-gray-900 text-gray-300 min-h-screen flex flex-col items-center">
+    <!-- ASR: (تعديل) إزالة PADDING من BODY -->
     <div class="max-w-5xl w-full flex-1 flex flex-col">
-        <!-- Back Button -->
-        <div class="mb-4">
-            <a href="index.html" class="inline-flex items-center text-blue-400 hover:text-blue-300 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                </svg>
-                العودة للصفحة الرئيسية
-            </a>
-        </div>
+      <!-- ASR: (تعديل) إزالة H-FULL MIN-H-0 -->
+      <!-- Back Button -->
+      <div class="mb-4 pt-4 px-4 md:px-6">
+        <!-- ASR: (تعديل) إضافة PADDING هنا لزر العودة -->
+        <a
+          href="index.html"
+          class="inline-flex items-center text-blue-400 hover:text-blue-300 transition-colors"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-5 h-5 ml-2"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+          العودة للصفحة الرئيسية
+        </a>
+      </div>
 
-        <!-- Slide Container -->
-        <div class="relative w-full">
-            <div id="slide-container" class="slide-container flex-1">
+      <!-- Slide Container -->
+      <div class="relative w-full flex-1">
+        <!-- ASR: (تعديل) إزالة MIN-H-0 -->
+        <div id="slide-container" class="slide-container flex-1">
+          <!-- Slide 0: الفهرس (Table of Contents) -->
+          <div class="slide active" data-slide="0">
+            <div class="slide-content">
+              <h2
+                class="text-3xl font-bold mb-6 border-b border-blue-500 pb-2"
+              >
+                <span class="text-blue-400">البرمجة في علم البيانات 💻</span>
+              </h2>
+              <h3 class="text-xl font-semibold text-white mb-4">
+                الأساس والأدوات — نظرة شاملة
+              </h3>
+              <p class="text-center text-gray-300 mb-8 max-w-3xl mx-auto">
+                القدرة على استخدام اللغات البرمجية مثل Python وأدواتها لترجمة
+                المفاهيم الرياضية والإحصائية إلى عمليات حاسوبية قابلة للتنفيذ.
+              </p>
 
-                <!-- Slide 0: الفهرس (Table of Contents) -->
-                <div class="slide active" data-slide="0">
-                    <div class="slide-content">
-                        <h2 class="text-3xl font-bold mb-6 border-b border-blue-500 pb-2">
-                            <span class="text-blue-400">البرمجة في علم البيانات 💻</span>
-                        </h2>
-                        <h3 class="text-xl font-semibold text-white mb-4">الأساس والأدوات — نظرة شاملة</h3>
-                        <p class="text-center text-gray-300 mb-8 max-w-3xl mx-auto">
-                            القدرة على استخدام اللغات البرمجية مثل Python وأدواتها لترجمة المفاهيم الرياضية والإحصائية إلى عمليات حاسوبية قابلة للتنفيذ.
-                        </p>
-
-                        <h3 class="text-xl font-semibold text-white mb-6">فهرس الوحدة</h3>
-                        <ul class="space-y-3 text-gray-300 grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <li><button onclick="showSlide(1)">1. ⚙️ بيئة العمل وأساسيات بايثون</button></li>
-                            <li><button onclick="showSlide(2)">2. 🧮 مكتبات معالجة البيانات (NumPy / Pandas)</button></li>
-                            <li><button onclick="showSlide(3)">3. 🎨 التصوير والنمذجة الأولية</button></li>
-                            <li><button onclick="showSlide(4)">4. 🌐 التعامل مع البيانات ومصادرها (SQL / Git)</button></li>
-                            <li><button onclick="showSlide(5)">5. أمثلة عملية وروابط</button></li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Slide 1: Environment & Python Fundamentals -->
-                <div class="slide" data-slide="1">
-                    <div class="slide-content">
-                        <h2 class="text-3xl font-bold text-white mb-6 flex items-center">
-                             <span class="slide-title-icon">⚙️</span>
-                             بيئة العمل وأساسيات بايثون
-                        </h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
-                            <div class="space-y-6">
-                                <div class="bg-gray-800/80 p-6 rounded-lg border border-gray-700 hover:border-blue-500 transition-colors">
-                                    <h3 class="text-lg font-semibold text-white mb-2 flex items-center">
-                                         <span class="text-xl ml-2 text-blue-400">💡</span> الماهية
-                                    </h3>
-                                    <p class="text-gray-400 leading-relaxed">استخدام لغات وأدوات لكتابة الكود وتنفيذه وتتبع الإصدارات: Jupyter، Colab، VS Code، GitHub.</p>
-                                </div>
-                                <div class="bg-gray-800/80 p-6 rounded-lg border border-gray-700 hover:border-blue-500 transition-colors">
-                                    <h3 class="text-lg font-semibold text-white mb-2 flex items-center">
-                                         <span class="text-xl ml-2 text-blue-400">🎯</span> الهدف الأساسي
-                                    </h3>
-                                    <p class="text-gray-400 leading-relaxed">
-                                        إتقان بيئات العمل، فهم تراكيب البيانات الأساسية (قوائم، قواميس، tuples)، التحكم في تدفق البرنامج، وكتابة دوال والتعامل مع الأخطاء باستخدام <span class="text-blue-300 font-medium">try/except</span>.
-                                    </p>
-                                </div>
-                                <div class="bg-gray-800/80 p-6 rounded-lg border border-gray-700">
-                                     <h3 class="text-lg font-semibold text-white mb-2 flex items-center">
-                                         <span class="text-xl ml-2 text-blue-400">📝</span> نصائح سريعة
-                                    </h3>
-                                    <ul class="text-gray-400 list-disc pr-4 space-y-1">
-                                        <li>استعمل <span class="text-green-300 font-medium">virtualenv</span> أو <span class="text-green-300 font-medium">conda</span> لعزل البيئات.</li>
-                                        <li>ابدأ بـ Jupyter/Colab للـ EDA وانتقل إلى VS Code للمشروعات الأكبر.</li>
-                                        <li>ادمج <span class="text-green-300 font-medium">Git</span> في سير العمل منذ البداية لتتبع التغييرات والتعاون.</li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <div class="illustration-box">
-                                <!-- SVG محسن لبيئة العمل -->
-                               <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
-                                    <title>أيقونات بيئة العمل</title>
-                                    <!-- Jupyter Icon (اللون البرتقالي يُستبدل بالأزرق) -->
-                                    <g transform="translate(20, 40)">
-                                         <circle cx="25" cy="25" r="20" fill="#1f2937" stroke="#3b82f6" stroke-width="2"/>
-                                         <circle cx="25" cy="25" r="5" fill="#3b82f6"/>
-                                         <circle cx="43" cy="15" r="3" fill="#e5e7eb"/>
-                                         <circle cx="38" cy="40" r="3" fill="#e5e7eb"/>
-                                         <circle cx="12" cy="40" r="3" fill="#e5e7eb"/>
-                                         <text x="25" y="70" font-size="10" fill="#e5e7eb" text-anchor="middle">Jupyter</text>
-                                    </g>
-                                    <!-- VS Code Icon (لون أزرق أساسي) -->
-                                    <g transform="translate(80, 40)">
-                                         <path d="M 25 0 L 0 15 L 0 35 L 25 50 L 50 35 L 50 15 Z M 25 5 L 45 18 L 25 30 L 5 18 Z" fill="#60a5fa"/>
-                                         <text x="25" y="70" font-size="10" fill="#e5e7eb" text-anchor="middle">VS Code</text>
-                                    </g>
-                                    <!-- Git Icon -->
-                                    <g transform="translate(140, 40)">
-                                         <path d="M 48 25 A 23 23 0 1 0 25 48 L 25 2 Z M 2 25 L 48 25" fill="none" stroke="#e5e7eb" stroke-width="3"/>
-                                         <circle cx="48" cy="25" r="5" fill="#e5e7eb"/>
-                                         <circle cx="2" cy="25" r="5" fill="#e5e7eb"/>
-                                         <circle cx="25" cy="2" r="5" fill="#e5e7eb"/>
-                                         <text x="25" y="70" font-size="10" fill="#e5e7eb" text-anchor="middle">Git/GitHub</text>
-                                    </g>
-                               </svg>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Slide 2: Core Data Processing Libraries (Updated SVG) -->
-                <div class="slide" data-slide="2">
-                    <div class="slide-content">
-                        <h2 class="text-3xl font-bold text-white mb-6 flex items-center">
-                            <span class="slide-title-icon">🧮</span>
-                            مكتبات معالجة البيانات
-                        </h2>
-                        <p class="text-center text-gray-400 mb-6 max-w-3xl mx-auto">
-                            هذه المكتبات هي الأدوات الأساسية التي ستقضي معها معظم وقتك كعالم بيانات لمعالجة وتحليل البيانات.
-                        </p>
-                        <div class="illustration-box mb-8 h-64">
-                            <!-- SVG محسّن لضمان التناسب على الشاشات الصغيرة وتصحيح ترتيب الأعمدة في Pandas -->
-                            <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
-                                <title>NumPy Array vs Pandas DataFrame</title>
-                                <!-- NumPy Array -->
-                                <g transform="translate(30, 50)">
-                                    <rect x="0" y="0" width="150" height="100" rx="8" fill="#1f2937" stroke="#3b82f6" stroke-width="2"/>
-                                    <text x="75" y="-15" font-size="14" fill="#60a5fa" text-anchor="middle" font-weight="bold">NumPy Array</text>
-                                    <text x="75" y="40" font-size="16" fill="#e5e7eb" text-anchor="middle" font-family="monospace">[ [1, 2, 3],</text>
-                                    <text x="75" y="70" font-size="16" fill="#e5e7eb" text-anchor="middle" font-family="monospace">  [4, 5, 6] ]</text>
-                                </g>
-                                <!-- Pandas DataFrame (تم زيادة الإزاحة الأفقية إلى 240) -->
-                                <g transform="translate(240, 50) scale(0.9)">
-                                    <rect x="0" y="0" width="150" height="100" rx="8" fill="#1f2937" stroke="#10b981" stroke-width="2"/>
-                                    <text x="75" y="-10" font-size="13" fill="#34d399" text-anchor="middle" font-weight="bold">Pandas DataFrame</text>
-                                    
-                                    <!-- Header Row (Text Anchored to start of column for RTL look) -->
-                                    <text x="10" y="25" font-size="10" fill="#9ca3af" font-family="monospace">ID</text>
-                                    <text x="50" y="25" font-size="10" fill="#9ca3af" font-family="monospace">Name</text>
-                                    <text x="110" y="25" font-size="10" fill="#9ca3af" font-family="monospace">Age</text>
-                                    <line x1="10" y1="32" x2="140" y2="32" stroke="#4b5563" stroke-width="1"/>
-                                    
-                                    <!-- Row 0 -->
-                                    <text x="10" y="50" font-size="11" fill="#e5e7eb" font-family="monospace">0</text>
-                                    <text x="50" y="50" font-size="11" fill="#e5e7eb" font-family="monospace">Ali</text>
-                                    <text x="110" y="50" font-size="11" fill="#e5e7eb" font-family="monospace">25</text>
-                                    
-                                    <!-- Row 1 -->
-                                    <text x="10" y="70" font-size="11" fill="#e5e7eb" font-family="monospace">1</text>
-                                    <text x="50" y="70" font-size="11" fill="#e5e7eb" font-family="monospace">Sara</text>
-                                    <text x="110" y="70" font-size="11" fill="#e5e7eb" font-family="monospace">30</text>
-
-                                </g>
-                            </svg>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- NumPy Card -->
-                            <div class="bg-gray-800/50 p-6 rounded-xl border border-gray-700 hover:border-blue-500/80 transition-all duration-300">
-                                <h3 class="text-xl font-semibold text-blue-400 mb-3">NumPy (Numerical Python)</h3>
-                                <p class="text-gray-300 text-sm mb-3">توفر كائن "المصفوفة" (Array) الفعال، وهو أساس العمليات الرياضية السريعة على كميات كبيرة من الأرقام.</p>
-                                <ul class="text-xs text-gray-400 list-disc pr-4 space-y-1">
-                                    <li>عمليات رياضية موجهة (Vectorized).</li>
-                                    <li>توليد أرقام عشوائية.</li>
-                                    <li>أساس لمكتبات أخرى مثل Pandas.</li>
-                                </ul>
-                            </div>
-                            <!-- Pandas Card -->
-                            <div class="bg-gray-800/50 p-6 rounded-xl border border-gray-700 hover:border-green-500/80 transition-all duration-300">
-                                <h3 class="text-xl font-semibold text-green-400 mb-3">Pandas</h3>
-                                <p class="text-gray-300 text-sm mb-3">توفر كائن "DataFrame"، وهو جدول بيانات فائق القوة في بايثون، يسمح بقراءة البيانات وتنظيفها وتحليلها بسهولة.</p>
-                                <ul class="text-xs text-gray-400 list-disc pr-4 space-y-1">
-                                    <li>قراءة وكتابة ملفات (CSV, Excel, SQL).</li>
-                                    <li>تنظيف البيانات المفقودة.</li>
-                                    <li>تجميع وتلخيص البيانات (Group By).</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Slide 3: Visualization & Basic Modeling -->
-                <div class="slide" data-slide="3">
-                    <div class="slide-content">
-                        <h2 class="text-3xl font-bold text-white mb-6 flex items-center">
-                            <span class="slide-title-icon">🎨</span>
-                            التصوير والنمذجة الأولية
-                        </h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
-                            <div class="space-y-4">
-                                <div class="bg-gray-800/80 p-6 rounded-lg border border-gray-700 hover:border-blue-500 transition-colors">
-                                    <h3 class="text-lg font-semibold text-white mb-2 flex items-center">
-                                         <span class="text-xl ml-2 text-blue-400">🖼️</span> المكتبات الأساسية
-                                    </h3>
-                                    <ul class="text-gray-400 list-disc pr-4 space-y-1">
-                                        <li><span class="text-blue-300 font-medium">Matplotlib & Seaborn:</span> لإنشاء مخططات واضحة وتحليل بصري للبيانات (EDA).</li>
-                                        <li><span class="text-blue-300 font-medium">Scikit-learn:</span> أدوات للنمذجة الكلاسيكية: تقسيم البيانات، نماذج بسيطة (مثل الانحدار)، تقييم الأداء.</li>
-                                    </ul>
-                                </div>
-
-                                <div class="bg-gray-800/80 p-6 rounded-lg border border-gray-700 hover:border-blue-500 transition-colors">
-                                    <h3 class="text-lg font-semibold text-white mb-2 flex items-center">
-                                         <span class="text-xl ml-2 text-blue-400">💡</span> ملاحظات عملية
-                                    </h3>
-                                    <ul class="text-gray-400 list-disc pr-4 space-y-1">
-                                        <li>ابدأ بمخططات بسيطة (مدرجات، مبعثرة) ثم اعمق في التحليل الرسومي.</li>
-                                        <li>استخدم <span class="text-green-300 font-medium">train_test_split</span> ومقاييس مثل RMSE و accuracy لتقييم النموذج.</li>
-                                        <li>التصوير الجيد يختصر آلاف الكلمات في فهم خصائص البيانات.</li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <div class="illustration-box">
-                                <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
-                                    <title>تصور و نموذج</title>
-                                    <!-- المنطقة الرسم البياني -->
-                                    <rect x="20" y="30" width="160" height="90" rx="6" fill="#0f172a" stroke="#374151" stroke-width="1.5"></rect>
-                                    
-                                    <!-- المحورين -->
-                                    <line x1="20" y1="120" x2="180" y2="120" stroke="#4b5563" stroke-width="1.5" />
-                                    <line x1="20" y1="120" x2="20" y2="30" stroke="#4b5563" stroke-width="1.5" />
-                                    
-                                    <!-- البيانات (نقاط مبعثرة) -->
-                                    <circle cx="30" cy="100" r="3" fill="#60a5fa" />
-                                    <circle cx="60" cy="70" r="3" fill="#60a5fa" />
-                                    <circle cx="90" cy="80" r="3" fill="#60a5fa" />
-                                    <circle cx="120" cy="50" r="3" fill="#60a5fa" />
-                                    <circle cx="150" cy="60" r="3" fill="#60a5fa" />
-                                    <circle cx="170" cy="85" r="3" fill="#60a5fa" />
-                                    
-                                    <!-- خط النموذج (الانحدار) -->
-                                    <line x1="30" y1="105" x2="170" y2="55" stroke="#3b82f6" stroke-width="2" stroke-dasharray="4 2" />
-                                    
-                                    <text x="100" y="20" font-size="12" fill="#e5e7eb" text-anchor="middle">نموذج الانحدار</text>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Slide 4: Data Sources & Version Control -->
-                <div class="slide" data-slide="4">
-                    <div class="slide-content">
-                        <h2 class="text-3xl font-bold text-white mb-6 flex items-center">
-                            <span class="slide-title-icon">🌐</span>
-                            التعامل مع البيانات ومصادرها
-                        </h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
-                            <div class="space-y-6">
-                                <div class="bg-gray-800/80 p-6 rounded-lg border border-gray-700 hover:border-blue-500 transition-colors">
-                                    <h3 class="text-lg font-semibold text-white mb-2 flex items-center">
-                                         <span class="text-xl ml-2 text-blue-400">🔗</span> جلب البيانات وإدارة الكود
-                                    </h3>
-                                    <p class="text-gray-400 leading-relaxed">
-                                        لا توجد البيانات دائماً في ملفات CSV. تعلم كيفية استخراجها من قواعد البيانات وإدارة كودك بفعالية هي مهارات لا غنى عنها.
-                                    </p>
-                                </div>
-                                <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-blue-500/80 transition-colors">
-                                    <h4 class="font-semibold text-blue-300 mb-1">SQL (Structured Query Language)</h4>
-                                    <p class="text-sm text-gray-300">لغة الاستعلام القياسية للتفاعل مع قواعد البيانات. أساسية لجلب البيانات التي تحتاجها وتصفيتها ودمجها من مصادر متعددة.</p>
-                                </div>
-                                <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-green-500/80 transition-colors">
-                                    <h4 class="font-semibold text-green-300 mb-1">Git / GitHub</h4>
-                                    <p class="text-sm text-gray-300">Git هو نظام التحكم في الإصدارات لتتبع التغييرات في الكود. GitHub هي منصة لاستضافة مستودعات Git والتعاون مع الآخرين.</p>
-                                </div>
-                            </div>
-                            <div class="illustration-box">
-                                <!-- SVG يوضح سير العمل: SQL -> Python -> Git -->
-                                <svg viewBox="0 0 400 150" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
-                                    <title>Data Workflow</title>
-                                    <defs><marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#4b5563"/></marker></defs>
-                                    
-                                    <!-- SQL Database -->
-                                    <g><rect x="30" y="50" width="60" height="50" rx="5" fill="#1f2937" stroke="#60a5fa" stroke-width="1.5"/><ellipse cx="60" cy="50" rx="30" ry="8" fill="#1f2937" stroke="#60a5fa" stroke-width="1.5"/><text x="60" y="75" font-size="12" fill="#e5e7eb" text-anchor="middle">SQL DB</text></g>
-                                    
-                                    <!-- Arrow 1: To Python -->
-                                    <path d="M 95 75 L 145 75" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow)"/>
-                                    
-                                    <!-- Pandas/Python Processing -->
-                                    <g><rect x="150" y="50" width="100" height="50" rx="5" fill="#1f2937" stroke="#3b82f6" stroke-width="1.5"/><text x="200" y="78" font-size="12" fill="#e5e7eb" text-anchor="middle">Pandas/Python</text></g>
-                                    
-                                    <!-- Arrow 2: To Git -->
-                                    <path d="M 255 75 L 305 75" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow)"/>
-                                    
-                                    <!-- Git/GitHub Version Control -->
-                                    <g><circle cx="340" cy="75" r="25" fill="#1f2937" stroke="#34d399" stroke-width="1.5"/><path d="M330 75h20m-10-10v20" stroke="#34d399" stroke-width="1.5"/><text x="340" y="115" font-size="12" fill="#e5e7eb" text-anchor="middle">Git/GitHub</text></g>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Slide 5: Examples & Resources -->
-                <div class="slide" data-slide="5">
-                    <div class="slide-content">
-                        <h2 class="text-3xl font-bold text-white mb-6 flex items-center">
-                            <span class="slide-title-icon">📚</span>
-                            أمثلة عملية وروابط
-                        </h2>
-                        <div class="overflow-x-auto">
-                            <table class="styled-table">
-                                <thead>
-                                    <tr>
-                                        <th>الموضوع</th>
-                                        <th>المورد</th>
-                                        <th>ملاحظة</th>
-                                        <th>رابط</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>أساسيات بايثون</td>
-                                        <td>Coursera/EdX - Python for Everybody</td>
-                                        <td>مساق ممتاز للمبتدئين في بايثون بشكل عام.</td>
-                                        <td>[ابحث عن المساق]</td>
-                                    </tr>
-                                    <tr>
-                                        <td>تنظيف البيانات</td>
-                                        <td>Documentation of Pandas</td>
-                                        <td>الوثائق الرسمية هي أفضل مصدر لتعلم أعمق وظائف التنظيف.</td>
-                                        <td><a href="https://pandas.pydata.org/docs/" target="_blank">pandas docs</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td>التصوير (Seaborn)</td>
-                                        <td>Seaborn Official Gallery</td>
-                                        <td>معرض تفاعلي لأنواع المخططات مع أكوادها الجاهزة.</td>
-                                        <td><a href="https://seaborn.pydata.org/examples/index.html" target="_blank">seaborn gallery</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td>النماذج الأولية</td>
-                                        <td>Scikit-learn User Guide</td>
-                                        <td>دليل شامل حول كيفية استخدام النماذج وتقييمها خطوة بخطوة.</td>
-                                        <td><a href="https://scikit-learn.org/stable/user_guide.html" target="_blank">scikit-learn guide</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td>قواعد البيانات (SQL)</td>
-                                        <td>W3Schools SQL Tutorial</td>
-                                        <td>مقدمة سريعة وعملية لأهم أوامر SQL.</td>
-                                        <td><a href="https://www.w3schools.com/sql/" target="_blank">W3Schools SQL</a></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
+              <h3 class="text-xl font-semibold text-white mb-6">فهرس الوحدة</h3>
+              <ul class="text-gray-300">
+                <li>
+                  <button onclick="showSlide(1)">
+                    1. بيئة العمل وأساسيات بايثون
+                  </button>
+                </li>
+                <li>
+                  <button onclick="showSlide(2)">
+                    2. مكتبات معالجة البيانات
+                  </button>
+                </li>
+                <li>
+                  <button onclick="showSlide(3)">
+                    3. التصوير والنمذجة الأولية
+                  </button>
+                </li>
+                <li>
+                  <button onclick="showSlide(4)">
+                    4. التعامل مع البيانات ومصادرها
+                  </button>
+                </li>
+                <li>
+                  <button onclick="showSlide(5)">5. أمثلة عملية وروابط</button>
+                </li>
+              </ul>
             </div>
+          </div>
+
+          <!-- Slide 1: Environment & Python Fundamentals -->
+          <div class="slide" data-slide="1">
+            <div class="slide-content">
+              <h2 class="text-3xl font-bold text-white mb-6 flex items-center">
+                <span class="slide-title-icon">⚙️</span>
+                بيئة العمل وأساسيات بايثون
+              </h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
+                <div class="space-y-6">
+                  <!-- Card 1: Workspace -->
+                  <div
+                    class="bg-gray-800/80 p-6 rounded-lg border border-gray-700 hover:border-blue-500 transition-colors h-full flex flex-col"
+                  >
+                    <h3
+                      class="text-lg font-semibold text-white mb-2 flex items-center"
+                    >
+                      <span class="text-xl ml-2 text-blue-400">🛠️</span> بيئة
+                      العمل المتكاملة
+                    </h3>
+                    <p class="text-gray-400 leading-relaxed mb-4">
+                      تجهيز الأدوات المناسبة هو الخطوة الأولى لرحلة ناجحة.
+                    </p>
+                    <ul
+                      class="text-gray-300 list-disc pr-4 space-y-2 text-sm flex-grow"
+                    >
+                      <li>
+                        <strong class="text-blue-300">Jupyter/Colab:</strong>
+                        للاستكشاف السريع وتجربة الأفكار.
+                      </li>
+                      <li>
+                        <strong class="text-blue-300">VS Code/PyCharm:</strong>
+                        لبناء المشاريع الكبيرة والاسكربتات المنظمة.
+                      </li>
+                      <li>
+                        <strong class="text-blue-300">Git/GitHub:</strong>
+                        لإدارة إصدارات الكود والتعاون مع الفريق.
+                      </li>
+                      <li>
+                        <strong class="text-blue-300">Conda/venv:</strong> لعزل
+                        بيئات العمل ومنع تضارب المكتبات.
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="space-y-6">
+                  <!-- Card 2: Python Fundamentals -->
+                  <div
+                    class="bg-gray-800/80 p-6 rounded-lg border border-gray-700 hover:border-blue-500 transition-colors h-full flex flex-col"
+                  >
+                    <h3
+                      class="text-lg font-semibold text-white mb-2 flex items-center"
+                    >
+                      <span class="text-xl ml-2 text-blue-400">🐍</span> أساسيات
+                      بايثون
+                    </h3>
+                    <p class="text-gray-400 leading-relaxed mb-4">
+                      إتقان أساسيات اللغة التي ستستخدمها في معظم مهامك.
+                    </p>
+                    <ul
+                      class="text-gray-300 list-disc pr-4 space-y-2 text-sm flex-grow"
+                    >
+                      <li>
+                        <strong class="text-blue-300">تراكيب البيانات:</strong>
+                        القوائم (Lists)، القواميس (Dictionaries)، المجموعات
+                        (Sets)، Tuples.
+                      </li>
+                      <li>
+                        <strong class="text-blue-300">التحكم في التدفق:</strong>
+                        الحلقات (For/While) والجمل الشرطية (If/Else).
+                      </li>
+                      <li>
+                        <strong class="text-blue-300">الدوال:</strong> كتابة
+                        دوال قابلة لإعادة الاستخدام.
+                      </li>
+                      <li>
+                        <strong class="text-blue-300">معالجة الأخطاء:</strong>
+                        استخدام `try-except` للتعامل مع الأخطاء المتوقعة.
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SVG محسن لسير العمل (تم التعديل) -->
+              <div class="illustration-box mt-8 h-64">
+                <svg
+                  viewBox="0 0 400 150"
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-full h-full"
+                >
+                  <title>أدوات بيئة العمل الأساسية</title>
+                  <defs>
+                    <marker
+                      id="arrowhead-tools"
+                      viewBox="0 0 10 10"
+                      refX="8"
+                      refY="5"
+                      markerWidth="6"
+                      markerHeight="6"
+                      orient="auto-start-reverse"
+                    >
+                      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4b5563" />
+                    </marker>
+                    <!-- Defs for Jupyter -->
+                    <filter
+                      id="jupyterGlow"
+                      x="-50%"
+                      y="-50%"
+                      width="200%"
+                      height="200%"
+                    >
+                      <feGaussianBlur
+                        in="SourceGraphic"
+                        stdDeviation="0.5"
+                        result="blur"
+                      />
+                      <feColorMatrix
+                        in="blur"
+                        type="matrix"
+                        values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7"
+                        result="glow"
+                      />
+                      <feBlend in="SourceGraphic" in2="glow" />
+                    </filter>
+                    <radialGradient
+                      id="jupyterOrangeGrad"
+                      cx="50%"
+                      cy="50%"
+                      r="50%"
+                    >
+                      <stop
+                        offset="0%"
+                        style="stop-color: #ff8c42; stop-opacity: 1"
+                      />
+                      <stop
+                        offset="100%"
+                        style="stop-color: #f37726; stop-opacity: 1"
+                      />
+                    </radialGradient>
+                    <linearGradient
+                      id="jupyterTopDot"
+                      x1="0%"
+                      y1="0%"
+                      x2="100%"
+                      y2="100%"
+                    >
+                      <stop
+                        offset="0%"
+                        style="stop-color: #8e8e8e; stop-opacity: 1"
+                      />
+                      <stop
+                        offset="100%"
+                        style="stop-color: #767677; stop-opacity: 1"
+                      />
+                    </linearGradient>
+                    <linearGradient
+                      id="jupyterBottomDot"
+                      x1="0%"
+                      y1="0%"
+                      x2="100%"
+                      y2="100%"
+                    >
+                      <stop
+                        offset="0%"
+                        style="stop-color: #b5b5b5; stop-opacity: 1"
+                      />
+                      <stop
+                        offset="100%"
+                        style="stop-color: #9e9e9e; stop-opacity: 1"
+                      />
+                    </linearGradient>
+                    <linearGradient
+                      id="jupyterLeftDot"
+                      x1="0%"
+                      y1="0%"
+                      x2="100%"
+                      y2="100%"
+                    >
+                      <stop
+                        offset="0%"
+                        style="stop-color: #757575; stop-opacity: 1"
+                      />
+                      <stop
+                        offset="100%"
+                        style="stop-color: #616262; stop-opacity: 1"
+                      />
+                    </linearGradient>
+                    <!-- Defs for VSCode -->
+                    <filter
+                      id="vscodeFilter0_d"
+                      x="-8.39411"
+                      y="15.8291"
+                      width="116.727"
+                      height="92.2456"
+                      filterUnits="userSpaceOnUse"
+                      color-interpolation-filters="sRGB"
+                    >
+                      <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                      <feColorMatrix
+                        in="SourceAlpha"
+                        type="matrix"
+                        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                      />
+                      <feOffset />
+                      <feGaussianBlur stdDeviation="4.16667" />
+                      <feColorMatrix
+                        type="matrix"
+                        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
+                      />
+                      <feBlend
+                        mode="overlay"
+                        in2="BackgroundImageFix"
+                        result="effect1_dropShadow"
+                      />
+                      <feBlend
+                        mode="normal"
+                        in="SourceGraphic"
+                        in2="effect1_dropShadow"
+                        result="shape"
+                      />
+                    </filter>
+                    <filter
+                      id="vscodeFilter1_d"
+                      x="60.4167"
+                      y="-8.07558"
+                      width="47.9167"
+                      height="116.151"
+                      filterUnits="userSpaceOnUse"
+                      color-interpolation-filters="sRGB"
+                    >
+                      <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                      <feColorMatrix
+                        in="SourceAlpha"
+                        type="matrix"
+                        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                      />
+                      <feOffset />
+                      <feGaussianBlur stdDeviation="4.16667" />
+                      <feColorMatrix
+                        type="matrix"
+                        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
+                      />
+                      <feBlend
+                        mode="overlay"
+                        in2="BackgroundImageFix"
+                        result="effect1_dropShadow"
+                      />
+                      <feBlend
+                        mode="normal"
+                        in="SourceGraphic"
+                        in2="effect1_dropShadow"
+                        result="shape"
+                      />
+                    </filter>
+                    <linearGradient
+                      id="vscodeGradient"
+                      x1="49.9392"
+                      y1="0.257812"
+                      x2="49.9392"
+                      y2="99.7423"
+                      gradientUnits="userSpaceOnUse"
+                    >
+                      <stop stop-color="white" />
+                      <stop offset="1" stop-color="white" stop-opacity="0" />
+                    </linearGradient>
+                    <mask
+                      id="vscodeMask"
+                      mask-type="alpha"
+                      maskUnits="userSpaceOnUse"
+                      x="0"
+                      y="0"
+                      width="100"
+                      height="100"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M70.9119 99.3171C72.4869 99.9307 74.2828 99.8914 75.8725 99.1264L96.4608 89.2197C98.6242 88.1787 100 85.9892 100 83.5872V16.4133C100 14.0113 98.6243 11.8218 96.4609 10.7808L75.8725 0.873756C73.7862 -0.130129 71.3446 0.11576 69.5135 1.44695C69.252 1.63711 69.0028 1.84943 68.769 2.08341L29.3551 38.0415L12.1872 25.0096C10.589 23.7965 8.35363 23.8959 6.86933 25.2461L1.36303 30.2549C-0.452552 31.9064 -0.454633 34.7627 1.35853 36.417L16.2471 50.0001L1.35853 63.5832C-0.454633 65.2374 -0.452552 68.0938 1.36303 69.7453L6.86933 74.7541C8.35363 76.1043 10.589 76.2037 12.1872 74.9905L29.3551 61.9587L68.769 97.9167C69.3925 98.5406 70.1246 99.0104 70.9119 99.3171ZM75.0152 27.2989L45.1091 50.0001L75.0152 72.7012V27.2989Z"
+                        fill="white"
+                      />
+                    </mask>
+                  </defs>
+
+                  <g id="tools-container" transform="translate(50, 15)">
+                    <g transform="translate(0, 20) scale(0.65)">
+                      <circle
+                        cx="45"
+                        cy="12"
+                        r="4"
+                        fill="url(#jupyterTopDot)"
+                        filter="url(#jupyterGlow)"
+                      >
+                        <animate
+                          attributeName="cy"
+                          values="12;10.5;12"
+                          dur="3s"
+                          repeatCount="indefinite"
+                        />
+                      </circle>
+                      <path
+                        d="M26.6,77.2c-14.6,0-27.4-5.2-34-13a36.3,36.3,0,0,0,68,0C54,72,41.2,77.2,26.6,77.2Z"
+                        fill="url(#jupyterOrangeGrad)"
+                        opacity="0.95"
+                      >
+                        <animate
+                          attributeName="opacity"
+                          values="0.95;1;0.95"
+                          dur="2s"
+                          repeatCount="indefinite"
+                        />
+                      </path>
+                      <path
+                        d="M26.6,24.9c14.6,0,27.4,5.2,34,13a36.3,36.3,0,0,0-68,0C-.8,30.1,12,24.9,26.6,24.9Z"
+                        fill="url(#jupyterOrangeGrad)"
+                        opacity="0.95"
+                      >
+                        <animate
+                          attributeName="opacity"
+                          values="0.95;1;0.95"
+                          dur="2s"
+                          repeatCount="indefinite"
+                          begin="1s"
+                        />
+                      </path>
+                      <circle
+                        cx="8"
+                        cy="95"
+                        r="4"
+                        fill="url(#jupyterBottomDot)"
+                        filter="url(#jupyterGlow)"
+                      >
+                        <animate
+                          attributeName="cy"
+                          values="95;96.5;95"
+                          dur="3s"
+                          repeatCount="indefinite"
+                          begin="0.5s"
+                        />
+                      </circle>
+                      <circle
+                        cx="8"
+                        cy="15"
+                        r="3"
+                        fill="url(#jupyterLeftDot)"
+                        filter="url(#jupyterGlow)"
+                      >
+                        <animate
+                          attributeName="cx"
+                          values="8;7;8"
+                          dur="3s"
+                          repeatCount="indefinite"
+                          begin="1.5s"
+                        />
+                      </circle>
+                      <text
+                        x="26.6"
+                        y="115"
+                        font-size="16"
+                        fill="#e5e7eb"
+                        text-anchor="middle"
+                        font-weight="bold"
+                        style="
+                          text-shadow: 0 2px 10px rgba(243, 119, 38, 0.5);
+                        "
+                      >
+                        Jupyter
+                      </text>
+                    </g>
+
+                    <!-- Plus Sign -->
+                    <g transform="translate(90, 75)">
+                      <line
+                        x1="0"
+                        y1="0"
+                        x2="20"
+                        y2="0"
+                        stroke="#4b5563"
+                        stroke-width="2"
+                      />
+                      <line
+                        x1="10"
+                        y1="-10"
+                        x2="10"
+                        y2="10"
+                        stroke="#4b5563"
+                        stroke-width="2"
+                      />
+                    </g>
+
+                    <!-- VS Code Icon with Effects -->
+                    <g transform="translate(120, 20) scale(0.6)">
+                      <g mask="url(#vscodeMask)">
+                        <path
+                          d="M96.4614 10.7962L75.8569 0.875542C73.4719 -0.272773 70.6217 0.211611 68.75 2.08333L1.29858 63.5832C-0.515693 65.2373 -0.513607 68.0937 1.30308 69.7452L6.81272 74.754C8.29793 76.1042 10.5347 76.2036 12.1338 74.9905L93.3609 13.3699C96.086 11.3026 100 13.2462 100 16.6667V16.4275C100 14.0265 98.6246 11.8378 96.4614 10.7962Z"
+                          fill="#0065A9"
+                        />
+                        <g filter="url(#vscodeFilter0_d)">
+                          <path
+                            d="M96.4614 89.2038L75.8569 99.1245C73.4719 100.273 70.6217 99.7884 68.75 97.9167L1.29858 36.4169C-0.515693 34.7627 -0.513607 31.9063 1.30308 30.2548L6.81272 25.246C8.29793 23.8958 10.5347 23.7964 12.1338 25.0095L93.3609 86.6301C96.086 88.6974 100 86.7538 100 83.3334V83.5726C100 85.9735 98.6246 88.1622 96.4614 89.2038Z"
+                            fill="#007ACC"
+                          />
+                        </g>
+                        <g filter="url(#vscodeFilter1_d)">
+                          <path
+                            d="M75.8578 99.1263C73.4721 100.274 70.6219 99.7885 68.75 97.9166C71.0564 100.223 75 98.5895 75 95.3278V4.67213C75 1.41039 71.0564 -0.223106 68.75 2.08329C70.6219 0.211402 73.4721 -0.273666 75.8578 0.873633L96.4587 10.7807C98.6234 11.8217 100 14.0112 100 16.4132V83.5871C100 85.9891 98.6234 88.1786 96.4586 89.2196L75.8578 99.1263Z"
+                            fill="#1F9CF0"
+                          />
+                        </g>
+                        <g style="mix-blend-mode: overlay" opacity="0.25">
+                          <path
+                            fill-rule="evenodd"
+                            clip-rule="evenodd"
+                            d="M70.8511 99.3171C72.4261 99.9306 74.2221 99.8913 75.8117 99.1264L96.4 89.2197C98.5634 88.1787 99.9392 85.9892 99.9392 83.5871V16.4133C99.9392 14.0112 98.5635 11.8217 96.4001 10.7807L75.8117 0.873695C73.7255 -0.13019 71.2838 0.115699 69.4527 1.44688C69.1912 1.63705 68.942 1.84937 68.7082 2.08335L29.2943 38.0414L12.1264 25.0096C10.5283 23.7964 8.29285 23.8959 6.80855 25.246L1.30225 30.2548C-0.513334 31.9064 -0.515415 34.7627 1.29775 36.4169L16.1863 50L1.29775 63.5832C-0.515415 65.2374 -0.513334 68.0937 1.30225 69.7452L6.80855 74.754C8.29285 76.1042 10.5283 76.2036 12.1264 74.9905L29.2943 61.9586L68.7082 97.9167C69.3317 98.5405 70.0638 99.0104 70.8511 99.3171ZM74.9544 27.2989L45.0483 50L74.9544 72.7012V27.2989Z"
+                            fill="url(#vscodeGradient)"
+                          />
+                        </g>
+                      </g>
+                      <text
+                        x="50"
+                        y="125"
+                        font-size="16"
+                        fill="#e5e7eb"
+                        text-anchor="middle"
+                        font-weight="bold"
+                      >
+                        VS Code
+                      </text>
+                    </g>
+
+                    <!-- Plus Sign -->
+                    <g transform="translate(210, 75)">
+                      <line
+                        x1="0"
+                        y1="0"
+                        x2="20"
+                        y2="0"
+                        stroke="#4b5563"
+                        stroke-width="2"
+                      />
+                      <line
+                        x1="10"
+                        y1="-10"
+                        x2="10"
+                        y2="10"
+                        stroke="#4b5563"
+                        stroke-width="2"
+                      />
+                    </g>
+
+                    <g transform="translate(240, 20) scale(0.7)">
+                      <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M32 0C14.3 0 0 14.3 0 32c0 14.1 9.2 26.2 21.9 30.4.8.1 1.1-.3 1.1-.7v-2.8c-4.5 1-5.4-2.2-5.4-2.2-.7-1.9-1.8-2.4-1.8-2.4-1.5-1 .1-1 .1-1 1.6.1 2.5 1.6 2.5 1.6 1.4 2.4 3.7 1.7 4.6.1.1-.8.6-1.7 1-2.1-3.5-.4-7.2-1.8-7.2-7.9 0-1.7.6-3.2 1.6-4.3-.2-.4-.7-2 .2-4.2 0 0 1.3-.4 4.3 1.6 1.3-.4 2.6-.5 4-.5s2.7.2 4 .5c3-2 4.3-1.6 4.3-1.6.9 2.2.3 3.8.2 4.2 1 1.1 1.6 2.5 1.6 4.3 0 6.1-3.7 7.5-7.2 7.9.6.5 1.1 1.5 1.1 3V63c0 .4.3.8 1.1.7C54.8 58.2 64 46.1 64 32 64 14.3 49.7 0 32 0z"
+                        transform="translate(0, 5)"
+                        fill="#e5e7eb"
+                      />
+                      <text
+                        x="32"
+                        y="100"
+                        font-size="16"
+                        fill="#e5e7eb"
+                        text-anchor="middle"
+                        font-weight="bold"
+                      >
+                        GitHub
+                      </text>
+                    </g>
+                  </g>
+                  <!-- نهاية الحاوية -->
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 2: Core Data Processing Libraries (Updated SVG) -->
+          <div class="slide" data-slide="2">
+            <div class="slide-content">
+              <h2 class="text-3xl font-bold text-white mb-6 flex items-center">
+                <span class="slide-title-icon">🧮</span>
+                مكتبات معالجة البيانات
+              </h2>
+              <p class="text-center text-gray-400 mb-6 max-w-3xl mx-auto">
+                هذه المكتبات هي الأدوات الأساسية التي ستقضي معها معظم وقتك كعالم
+                بيانات لمعالجة وتحليل البيانات.
+              </p>
+              <div class="illustration-box mb-8 h-64">
+                <!-- SVG محسّن لضمان التناسب على الشاشات الصغيرة وتصحيح ترتيب الأعمدة في Pandas -->
+                <svg
+                  viewBox="0 0 400 200"
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-full h-full"
+                >
+                  <title>NumPy Array vs Pandas DataFrame</title>
+                  <!-- NumPy Array -->
+                  <g transform="translate(40, 50)">
+                    <rect
+                      x="0"
+                      y="0"
+                      width="150"
+                      height="100"
+                      rx="8"
+                      fill="#1f2937"
+                      stroke="#3b82f6"
+                      stroke-width="1.5"
+                    />
+                    <text
+                      x="75"
+                      y="-15"
+                      font-size="14"
+                      fill="#60a5fa"
+                      text-anchor="middle"
+                      font-weight="bold"
+                    >
+                      NumPy Array
+                    </text>
+                    <text
+                      x="75"
+                      y="40"
+                      font-size="16"
+                      fill="#e5e7eb"
+                      text-anchor="middle"
+                      font-family="monospace"
+                    >
+                      [ [3, 2, 1],
+                    </text>
+                    <text
+                      x="75"
+                      y="70"
+                      font-size="16"
+                      fill="#e5e7eb"
+                      text-anchor="middle"
+                      font-family="monospace"
+                    >
+                      [6, 5, 4] ]
+                    </text>
+                  </g>
+                  <!-- Pandas DataFrame -->
+                  <g transform="translate(220, 50) scale(0.9)">
+                    <rect
+                      x="0"
+                      y="0"
+                      width="150"
+                      height="100"
+                      rx="8"
+                      fill="#1f2937"
+                      stroke="#10b981"
+                      stroke-width="2"
+                    />
+                    <text
+                      x="75"
+                      y="-15"
+                      font-size="14"
+                      fill="#34d399"
+                      text-anchor="middle"
+                      font-weight="bold"
+                    >
+                      Pandas DataFrame
+                    </text>
+
+                    <!-- Header Row (Text Anchored to start of column for RTL look) -->
+                    <text
+                      x="120"
+                      y="25"
+                      font-size="10"
+                      fill="#9ca3af"
+                      font-family="monospace"
+                      text-anchor="middle"
+                    >
+                      العمر
+                    </text>
+                    <text
+                      x="75"
+                      y="25"
+                      font-size="10"
+                      fill="#9ca3af"
+                      font-family="monospace"
+                      text-anchor="middle"
+                    >
+                      الاسم
+                    </text>
+                    <text
+                      x="30"
+                      y="25"
+                      font-size="10"
+                      fill="#9ca3af"
+                      font-family="monospace"
+                      text-anchor="middle"
+                    >
+                      المعرف
+                    </text>
+                    <line
+                      x1="10"
+                      y1="32"
+                      x2="140"
+                      y2="32"
+                      stroke="#4b5563"
+                      stroke-width="1"
+                    />
+                    <!-- Line below headers -->
+
+                    <!-- Row 0 -->
+                    <text
+                      x="120"
+                      y="50"
+                      font-size="11"
+                      fill="#e5e7eb"
+                      text-anchor="middle"
+                      font-family="monospace"
+                    >
+                      25
+                    </text>
+                    <text
+                      x="75"
+                      y="50"
+                      font-size="11"
+                      fill="#e5e7eb"
+                      text-anchor="middle"
+                      font-family="monospace"
+                    >
+                      علي
+                    </text>
+                    <text
+                      x="30"
+                      y="50"
+                      font-size="11"
+                      fill="#e5e7eb"
+                      text-anchor="middle"
+                      font-family="monospace"
+                    >
+                      0
+                    </text>
+
+                    <!-- Row 1 -->
+                    <text
+                      x="120"
+                      y="70"
+                      font-size="11"
+                      fill="#e5e7eb"
+                      text-anchor="middle"
+                      font-family="monospace"
+                    >
+                      30
+                    </text>
+                    <text
+                      x="75"
+                      y="70"
+                      font-size="11"
+                      fill="#e5e7eb"
+                      text-anchor="middle"
+                      font-family="monospace"
+                    >
+                      سارة
+                    </text>
+                    <text
+                      x="30"
+                      y="70"
+                      font-size="11"
+                      fill="#e5e7eb"
+                      text-anchor="middle"
+                      font-family="monospace"
+                    >
+                      1
+                    </text>
+                  </g>
+                </svg>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- NumPy Card -->
+                <div
+                  class="bg-gray-800/50 p-6 rounded-xl border border-gray-700 hover:border-blue-500/80 transition-all duration-300"
+                >
+                  <h3 class="text-xl font-semibold text-blue-400 mb-3">
+                    NumPy (Numerical Python)
+                  </h3>
+                  <p class="text-gray-300 text-sm mb-3">
+                    توفر كائن "المصفوفة" (Array) الفعال، وهو أساس العمليات
+                    الرياضية السريعة على كميات كبيرة من الأرقام.
+                  </p>
+                  <ul class="text-xs text-gray-400 list-disc pr-4 space-y-1">
+                    <li>عمليات رياضية موجهة (Vectorized).</li>
+                    <li>توليد أرقام عشوائية.</li>
+                    <li>أساس لمكتبات أخرى مثل Pandas.</li>
+                  </ul>
+                </div>
+                <!-- Pandas Card -->
+                <div
+                  class="bg-gray-800/50 p-6 rounded-xl border border-gray-700 hover:border-green-500/80 transition-all duration-300"
+                >
+                  <h3 class="text-xl font-semibold text-green-400 mb-3">
+                    Pandas
+                  </h3>
+                  <p class="text-gray-300 text-sm mb-3">
+                    توفر كائن "DataFrame"، وهو جدول بيانات فائق القوة في بايثون،
+                    يسمح بقراءة البيانات وتنظيفها وتحليلها بسهولة.
+                  </p>
+                  <ul class="text-xs text-gray-400 list-disc pr-4 space-y-1">
+                    <li>قراءة وكتابة ملفات (CSV, Excel, SQL).</li>
+                    <li>تنظيف البيانات المفقودة.</li>
+                    <li>تجميع وتلخيص البيانات (Group By).</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 3: Visualization & Basic Modeling -->
+          <div class="slide" data-slide="3">
+            <div class="slide-content">
+              <h2 class="text-3xl font-bold text-white mb-6 flex items-center">
+                <span class="slide-title-icon">🎨</span>
+                التصوير والنمذجة الأولية
+              </h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
+                <!-- Column 1 (Right in RTL): Text -->
+                <div class="space-y-6 flex flex-col">
+                  <div
+                    class="bg-gray-800/80 p-6 rounded-lg border border-gray-700 hover:border-blue-500 transition-colors h-full"
+                  >
+                    <h3
+                      class="text-lg font-semibold text-white mb-2 flex items-center"
+                    >
+                      <span class="text-xl ml-2 text-blue-400">🖼️</span>
+                      المكتبات الأساسية
+                    </h3>
+                    <ul class="text-gray-400 list-disc pr-4 space-y-1">
+                      <li>
+                        <span class="text-blue-300 font-medium"
+                          >Matplotlib & Seaborn:</span
+                        >
+                        لإنشاء مخططات واضحة وتحليل بصري للبيانات (EDA).
+                      </li>
+                      <li>
+                        <span class="text-blue-300 font-medium"
+                          >Scikit-learn:</span
+                        >
+                        أدوات للنمذجة الكلاسيكية: تقسيم البيانات، نماذج بسيطة
+                        (مثل الانحدار)، تقييم الأداء.
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div
+                    class="bg-gray-800/80 p-6 rounded-lg border border-gray-700 hover:border-blue-500 transition-colors h-full"
+                  >
+                    <h3
+                      class="text-lg font-semibold text-white mb-2 flex items-center"
+                    >
+                      <span class="text-xl ml-2 text-blue-400">💡</span> ملاحظات
+                      عملية
+                    </h3>
+                    <ul class="text-gray-400 list-disc pr-4 space-y-1">
+                      <li>
+                        ابدأ بمخططات بسيطة (مدرجات، مبعثرة) ثم اعمق في التحليل
+                        الرسومي.
+                      </li>
+                      <li>
+                        استخدم
+                        <span class="text-green-300 font-medium"
+                          >train_test_split</span
+                        >
+                        ومقاييس مثل RMSE و accuracy لتقييم النموذج.
+                      </li>
+                      <li>
+                        التصوير الجيد يختصر آلاف الكلمات في فهم خصائص البيانات.
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- Column 2 (Left in RTL): Illustrations -->
+                <div class="space-y-6 flex flex-col">
+                  <!-- NEW Illustration Box 1 (Visualization/EDA) -->
+                  <div class="illustration-box !mt-0 !max-h-none !h-full">
+                    <svg
+                      viewBox="0 0 200 150"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <title>رسم بياني (EDA)</title>
+                      <!-- Bars (Fixed y and height attributes) -->
+                      <rect
+                        x="20"
+                        y="90"
+                        width="25"
+                        height="30"
+                        fill="#60a5fa"
+                        opacity="0.8"
+                      />
+                      <rect
+                        x="50"
+                        y="50"
+                        width="25"
+                        height="70"
+                        fill="#60a5fa"
+                        opacity="0.8"
+                      />
+                      <rect
+                        x="80"
+                        y="70"
+                        width="25"
+                        height="50"
+                        fill="#60a5fa"
+                        opacity="0.8"
+                      />
+                      <rect
+                        x="110"
+                        y="40"
+                        width="25"
+                        height="80"
+                        fill="#60a5fa"
+                        opacity="0.8"
+                      />
+                      <rect
+                        x="140"
+                        y="80"
+                        width="25"
+                        height="40"
+                        fill="#60a5fa"
+                        opacity="0.8"
+                      />
+                      <!-- Axes -->
+                      <line
+                        x1="15"
+                        y1="120"
+                        x2="170"
+                        y2="120"
+                        stroke="#4b5563"
+                        stroke-width="1.5"
+                      />
+                      <line
+                        x1="15"
+                        y1="120"
+                        x2="15"
+                        y2="30"
+                        stroke="#4b5563"
+                        stroke-width="1.5"
+                      />
+                      <text
+                        x="100"
+                        y="20"
+                        font-size="12"
+                        fill="#e5e7eb"
+                        text-anchor="middle"
+                      >
+                        تحليل البيانات البصري (EDA)
+                      </text>
+                    </svg>
+                  </div>
+
+                  <!-- Illustration Box 2 (Modeling) -->
+                  <div class="illustration-box !mt-0 !max-h-none !h-full">
+                    <svg
+                      viewBox="0 0 200 150"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <title>تصور و نموذج</title>
+                      <!-- المنطقة الرسم البياني -->
+                      <rect
+                        x="20"
+                        y="30"
+                        width="160"
+                        height="90"
+                        rx="6"
+                        fill="#0f172a"
+                        stroke="#374151"
+                        stroke-width="1.5"
+                      ></rect>
+
+                      <!-- المحورين -->
+                      <line
+                        x1="20"
+                        y1="120"
+                        x2="180"
+                        y2="120"
+                        stroke="#4b5563"
+                        stroke-width="1.5"
+                      />
+                      <line
+                        x1="20"
+                        y1="120"
+                        x2="20"
+                        y2="30"
+                        stroke="#4b5563"
+                        stroke-width="1.5"
+                      />
+
+                      <!-- البيانات (نقاط مبعثرة) -->
+                      <circle cx="30" cy="100" r="3" fill="#60a5fa" />
+                      <circle cx="60" cy="70" r="3" fill="#60a5fa" />
+                      <circle cx="90" cy="80" r="3" fill="#60a5fa" />
+                      <circle cx="120" cy="50" r="3" fill="#60a5fa" />
+                      <circle cx="150" cy="60" r="3" fill="#60a5fa" />
+                      <circle cx="170" cy="85" r="3" fill="#60a5fa" />
+
+                      <!-- خط النموذج (الانحدار) -->
+                      <line
+                        x1="30"
+                        y1="105"
+                        x2="170"
+                        y2="55"
+                        stroke="#3b82f6"
+                        stroke-width="2"
+                        stroke-dasharray="4 2"
+                      />
+
+                      <text
+                        x="100"
+                        y="20"
+                        font-size="12"
+                        fill="#e5e7eb"
+                        text-anchor="middle"
+                      >
+                        نموذج الانحدار
+                      </text>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 4: Data Sources & Version Control (*** تعديل ***) -->
+          <div class="slide" data-slide="4">
+            <div class="slide-content">
+              <h2 class="text-3xl font-bold text-white mb-6 flex items-center">
+                <span class="slide-title-icon">🌐</span>
+                التعامل مع البيانات ومصادرها
+              </h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
+                <!-- العمود الأيمن (في RTL): بطاقات المحتوى -->
+                <div class="space-y-6 flex flex-col">
+                  <!-- Card 1: SQL -->
+                  <div
+                    class="bg-gray-800/80 p-6 rounded-lg border border-gray-700 hover:border-blue-500 transition-colors h-full flex flex-col"
+                  >
+                    <h3
+                      class="text-lg font-semibold text-white mb-2 flex items-center"
+                    >
+                      <span class="text-xl ml-2 text-blue-400">🗃️</span> SQL
+                      وقواعد البيانات
+                    </h3>
+                    <p class="text-gray-400 leading-relaxed mb-4">
+                      لغة الاستعلام القياسية للتفاعل مع قواعد البيانات. أساسية
+                      لجلب البيانات التي تحتاجها وتصفيتها ودمجها من مصادر
+                      متعددة.
+                    </p>
+                    <ul
+                      class="text-gray-300 list-disc pr-4 space-y-2 text-sm flex-grow"
+                    >
+                      <li>
+                        <strong class="text-blue-300">SELECT:</strong> لاختيار
+                        الأعمدة.
+                      </li>
+                      <li>
+                        <strong class="text-blue-300">JOIN:</strong> لدمج
+                        الجداول بناءً على علاقة مشتركة.
+                      </li>
+                      <li>
+                        <strong class="text-blue-300">GROUP BY:</strong> لتجميع
+                        البيانات وإجراء عمليات (مثل المتوسط).
+                      </li>
+                      <li>
+                        <strong class="text-blue-300">Pandas.read_sql:</strong>
+                        لسحب نتائج الاستعلام مباشرة إلى DataFrame.
+                      </li>
+                    </ul>
+                  </div>
+
+                  <!-- Card 2: Git/GitHub -->
+                  <div
+                    class="bg-gray-800/80 p-6 rounded-lg border border-gray-700 hover:border-green-500 transition-colors h-full flex flex-col"
+                  >
+                    <h3
+                      class="text-lg font-semibold text-white mb-2 flex items-center"
+                    >
+                      <span class="text-xl ml-2 text-green-400">📦</span> Git
+                      وإدارة الإصدارات
+                    </h3>
+                    <p class="text-gray-400 leading-relaxed mb-4">
+                      Git هو نظام التحكم في الإصدارات لتتبع التغييرات في الكود.
+                      GitHub هي منصة لاستضافة المشاريع والتعاون.
+                    </p>
+                    <ul
+                      class="text-gray-300 list-disc pr-4 space-y-2 text-sm flex-grow"
+                    >
+                      <li>
+                        <strong class="text-green-300">Version Control:</strong>
+                        تتبع التغييرات في الكود ودفاتر Jupyter.
+                      </li>
+                      <li>
+                        <strong class="text-green-300">Collaboration:</strong>
+                        العمل مع فريق على نفس المشروع.
+                      </li>
+                      <li>
+                        <strong class="text-green-300">Reproducibility:</strong>
+                        ضمان إمكانية إعادة تشغيل تحليلك لاحقاً.
+                      </li>
+                      <li>
+                        <strong class="text-green-300"
+                          >Branching (الفروع):</strong
+                        >
+                        لتجربة أفكار جديدة دون التأثير على الكود الرئيسي.
+                      </li>
+                    </ul>
+                  </div>
+
+                  <!-- Card 3: APIs & Scraping (New) -->
+                  <div
+                    class="bg-gray-800/80 p-6 rounded-lg border border-gray-700 hover:border-yellow-500 transition-colors h-full flex flex-col"
+                  >
+                    <h3
+                      class="text-lg font-semibold text-white mb-2 flex items-center"
+                    >
+                      <span class="text-xl ml-2 text-yellow-400">🔗</span>
+                      واجهات APIs وجلب البيانات
+                    </h3>
+                    <p class="text-gray-400 leading-relaxed mb-4">
+                      طرق أخرى شائعة لجلب البيانات عندما لا تكون متوفرة في
+                      ملفات أو قواعد بيانات.
+                    </p>
+                    <ul
+                      class="text-gray-300 list-disc pr-4 space-y-2 text-sm flex-grow"
+                    >
+                      <li>
+                        <strong class="text-yellow-300"
+                          >APIs (Rest APIs):</strong
+                        >
+                        التفاعل مع خدمات الويب (مثل تويتر، جوجل) للحصول على
+                        بيانات منظمة (JSON).
+                      </li>
+                      <li>
+                        <strong class="text-yellow-300"
+                          >Web Scraping (كشط الويب):</strong
+                        >
+                        استخلاص البيانات مباشرة من صفحات HTML (باستخدام
+                        BeautifulSoup أو Scrapy).
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- العمود الأيسر (في RTL): الرسوم التوضيحية -->
+                <div class="space-y-6 flex flex-col">
+                  <!-- الرسم التوضيحي 1: SQL وقواعد البيانات -->
+                  <div class="illustration-box !mt-0 !max-h-none !h-full">
+                    <svg
+                      viewBox="0 0 300 140"
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="w-full h-full"
+                      preserveAspectRatio="xMidYMid meet"
+                    >
+                      <title>مصدر البيانات: SQL</title>
+                      <defs>
+                        <marker
+                          id="arrow-sql"
+                          viewBox="0 0 10 10"
+                          refX="8"
+                          refY="5"
+                          markerWidth="6"
+                          markerHeight="6"
+                          orient="auto-start-reverse"
+                        >
+                          <path d="M 0 0 L 10 5 L 0 10 z" fill="#60a5fa" />
+                        </marker>
+                      </defs>
+                      
+                      <!-- Title -->
+                      <text
+                        x="150"
+                        y="25"
+                        font-size="14"
+                        fill="#60a5fa"
+                        text-anchor="middle"
+                        font-weight="bold"
+                      >
+                        قواعد البيانات (SQL)
+                      </text>
+                      
+                      <!-- SQL Database Icon -->
+                      <g transform="translate(40, 50)">
+                        <!-- Database cylinder -->
+                        <ellipse
+                          cx="40"
+                          cy="10"
+                          rx="35"
+                          ry="10"
+                          fill="#1e3a8a"
+                          stroke="#60a5fa"
+                          stroke-width="2"
+                        />
+                        <rect
+                          x="5"
+                          y="10"
+                          width="70"
+                          height="50"
+                          fill="#1e3a8a"
+                        />
+                        <line
+                          x1="5"
+                          y1="10"
+                          x2="5"
+                          y2="60"
+                          stroke="#60a5fa"
+                          stroke-width="2"
+                        />
+                        <line
+                          x1="75"
+                          y1="10"
+                          x2="75"
+                          y2="60"
+                          stroke="#60a5fa"
+                          stroke-width="2"
+                        />
+                        <ellipse
+                          cx="40"
+                          cy="60"
+                          rx="35"
+                          ry="10"
+                          fill="#1e3a8a"
+                          stroke="#60a5fa"
+                          stroke-width="2"
+                        />
+                        <text
+                          x="40"
+                          y="40"
+                          font-size="14"
+                          fill="#e5e7eb"
+                          text-anchor="middle"
+                          font-weight="bold"
+                        >
+                          SQL
+                        </text>
+                        <text
+                          x="40"
+                          y="85"
+                          font-size="11"
+                          fill="#9ca3af"
+                          text-anchor="middle"
+                        >
+                          قاعدة البيانات
+                        </text>
+                      </g>
+                      
+                      <!-- Arrow -->
+                      <path
+                        d="M 130 85 L 200 85"
+                        stroke="#60a5fa"
+                        stroke-width="2.5"
+                        marker-end="url(#arrow-sql)"
+                      />
+                      <text
+                        x="165"
+                        y="75"
+                        font-size="10"
+                        fill="#9ca3af"
+                        text-anchor="middle"
+                      >
+                        استعلام
+                      </text>
+                      
+                      <!-- Python/Pandas Icon -->
+                      <g transform="translate(210, 55)">
+                        <rect
+                          x="0"
+                          y="0"
+                          width="60"
+                          height="60"
+                          rx="8"
+                          fill="#1f2937"
+                          stroke="#FFD43B"
+                          stroke-width="2"
+                        />
+                        <text
+                          x="30"
+                          y="30"
+                          font-size="20"
+                          fill="#FFD43B"
+                          text-anchor="middle"
+                          font-family="monospace"
+                          font-weight="bold"
+                        >
+                          Py
+                        </text>
+                        <text
+                          x="30"
+                          y="48"
+                          font-size="9"
+                          fill="#9ca3af"
+                          text-anchor="middle"
+                        >
+                          Pandas
+                        </text>
+                      </g>
+                    </svg>
+                  </div>
+
+                  <!-- الرسم التوضيحي 2: APIs و Web Scraping -->
+                  <div class="illustration-box !mt-0 !max-h-none !h-full">
+                    <svg
+                      viewBox="0 0 300 180"
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="w-full h-full"
+                      preserveAspectRatio="xMidYMid meet"
+                    >
+                      <title>مصادر البيانات: APIs و Web</title>
+                      <defs>
+                        <marker
+                          id="arrow-api"
+                          viewBox="0 0 10 10"
+                          refX="8"
+                          refY="5"
+                          markerWidth="6"
+                          markerHeight="6"
+                          orient="auto-start-reverse"
+                        >
+                          <path d="M 0 0 L 10 5 L 0 10 z" fill="#f59e0b" />
+                        </marker>
+                        <marker
+                          id="arrow-web"
+                          viewBox="0 0 10 10"
+                          refX="8"
+                          refY="5"
+                          markerWidth="6"
+                          markerHeight="6"
+                          orient="auto-start-reverse"
+                        >
+                          <path d="M 0 0 L 10 5 L 0 10 z" fill="#f472b6" />
+                        </marker>
+                      </defs>
+                      
+                      <!-- Title -->
+                      <text
+                        x="150"
+                        y="25"
+                        font-size="14"
+                        fill="#e5e7eb"
+                        text-anchor="middle"
+                        font-weight="bold"
+                      >
+                        APIs و Web Scraping
+                      </text>
+                      
+                      <!-- API Section (Top) -->
+                      <g transform="translate(0, 40)">
+                        <!-- Cloud Icon for API -->
+                        <g transform="translate(30, 0)">
+                          <ellipse
+                            cx="25"
+                            cy="20"
+                            rx="15"
+                            ry="12"
+                            fill="#1f2937"
+                            stroke="#f59e0b"
+                            stroke-width="2"
+                          />
+                          <ellipse
+                            cx="45"
+                            cy="18"
+                            rx="18"
+                            ry="14"
+                            fill="#1f2937"
+                            stroke="#f59e0b"
+                            stroke-width="2"
+                          />
+                          <ellipse
+                            cx="65"
+                            cy="20"
+                            rx="15"
+                            ry="12"
+                            fill="#1f2937"
+                            stroke="#f59e0b"
+                            stroke-width="2"
+                          />
+                          <rect
+                            x="25"
+                            y="20"
+                            width="40"
+                            height="15"
+                            fill="#1f2937"
+                          />
+                          <path
+                            d="M 25 35 Q 25 38 28 38 L 62 38 Q 65 38 65 35"
+                            fill="#1f2937"
+                            stroke="#f59e0b"
+                            stroke-width="2"
+                          />
+                          <text
+                            x="45"
+                            y="30"
+                            font-size="11"
+                            fill="#f59e0b"
+                            text-anchor="middle"
+                            font-weight="bold"
+                          >
+                            API
+                          </text>
+                        </g>
+                        
+                        <text
+                          x="75"
+                          y="55"
+                          font-size="10"
+                          fill="#9ca3af"
+                          text-anchor="middle"
+                        >
+                          خدمة ويب
+                        </text>
+                        
+                        <!-- Arrow -->
+                        <path
+                          d="M 120 30 L 200 30"
+                          stroke="#f59e0b"
+                          stroke-width="2.5"
+                          marker-end="url(#arrow-api)"
+                        />
+                        <text
+                          x="160"
+                          y="22"
+                          font-size="9"
+                          fill="#9ca3af"
+                          text-anchor="middle"
+                        >
+                          JSON
+                        </text>
+                        
+                        <!-- Python Icon -->
+                        <g transform="translate(210, 5)">
+                          <rect
+                            x="0"
+                            y="0"
+                            width="50"
+                            height="50"
+                            rx="6"
+                            fill="#1f2937"
+                            stroke="#f59e0b"
+                            stroke-width="2"
+                          />
+                          <text
+                            x="25"
+                            y="32"
+                            font-size="18"
+                            fill="#FFD43B"
+                            text-anchor="middle"
+                            font-family="monospace"
+                            font-weight="bold"
+                          >
+                            Py
+                          </text>
+                        </g>
+                      </g>
+                      
+                      <!-- Web Scraping Section (Bottom) -->
+                      <g transform="translate(0, 110)">
+                        <!-- HTML Page Icon -->
+                        <g transform="translate(30, 0)">
+                          <rect
+                            x="10"
+                            y="5"
+                            width="70"
+                            height="50"
+                            rx="4"
+                            fill="#1f2937"
+                            stroke="#f472b6"
+                            stroke-width="2"
+                          />
+                          <line
+                            x1="20"
+                            y1="15"
+                            x2="70"
+                            y2="15"
+                            stroke="#f472b6"
+                            stroke-width="1.5"
+                          />
+                          <line
+                            x1="20"
+                            y1="25"
+                            x2="60"
+                            y2="25"
+                            stroke="#9ca3af"
+                            stroke-width="1"
+                          />
+                          <line
+                            x1="20"
+                            y1="32"
+                            x2="65"
+                            y2="32"
+                            stroke="#9ca3af"
+                            stroke-width="1"
+                          />
+                          <line
+                            x1="20"
+                            y1="39"
+                            x2="55"
+                            y2="39"
+                            stroke="#9ca3af"
+                            stroke-width="1"
+                          />
+                          <text
+                            x="45"
+                            y="50"
+                            font-size="12"
+                            fill="#f472b6"
+                            text-anchor="middle"
+                            font-weight="bold"
+                          >
+                            &lt;/&gt;
+                          </text>
+                        </g>
+                        
+                        <text
+                          x="75"
+                          y="70"
+                          font-size="10"
+                          fill="#9ca3af"
+                          text-anchor="middle"
+                        >
+                          صفحة HTML
+                        </text>
+                        
+                        <!-- Arrow -->
+                        <path
+                          d="M 120 30 L 200 30"
+                          stroke="#f472b6"
+                          stroke-width="2.5"
+                          marker-end="url(#arrow-web)"
+                        />
+                        <text
+                          x="160"
+                          y="22"
+                          font-size="9"
+                          fill="#9ca3af"
+                          text-anchor="middle"
+                        >
+                          استخلاص
+                        </text>
+                        
+                        <!-- Python Icon -->
+                        <g transform="translate(210, 5)">
+                          <rect
+                            x="0"
+                            y="0"
+                            width="50"
+                            height="50"
+                            rx="6"
+                            fill="#1f2937"
+                            stroke="#f472b6"
+                            stroke-width="2"
+                          />
+                          <text
+                            x="25"
+                            y="32"
+                            font-size="18"
+                            fill="#FFD43B"
+                            text-anchor="middle"
+                            font-family="monospace"
+                            font-weight="bold"
+                          >
+                            Py
+                          </text>
+                        </g>
+                      </g>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 5: مصادر تعليمية -->
+          <div class="slide" data-slide="5">
+            <div class="slide-content">
+              <h2 class="text-2xl font-bold text-white mb-4">
+                <span class="text-sky-400">5.</span> 📚 مصادر تعليمية شاملة
+              </h2>
+              <p class="mb-6 text-gray-400">
+                مجموعة مختارة من أفضل المصادر لبناء مسارك في برمجة علم البيانات
+              </p>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Column 1: Python & Visualization -->
+                <div class="space-y-6">
+                  <!-- Python Basics -->
+                  <div class="bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700 hover:border-sky-500 transition-all duration-300">
+                    <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                      <span class="text-sky-400 mr-2">🐍</span> أساسيات بايثون
+                    </h3>
+                    <ul class="space-y-4">
+                      <li>
+                        <a href="https://www.w3schools.com/python/" target="_blank" class="text-sky-400 hover:text-sky-300 font-medium block">W3Schools Python Tutorial</a>
+                        <p class="text-sm text-gray-300 mt-1">مرجع تفاعلي سريع ومجاني لأساسيات اللغة</p>
+                      </li>
+                      <li>
+                        <a href="#" onclick="alert('يرجى البحث عن Python for Everybody في Coursera أو EdX'); return false;" class="text-sky-400 hover:text-sky-300 font-medium block">[Coursera] Python for Everybody</a>
+                        <p class="text-sm text-gray-300 mt-1">مساق ممتاز للمبتدئين من جامعة ميشيغان (مجاني للمراجعة)</p>
+                      </li>
+                      <li>
+                        <a href="https://www.youtube.com/watch?v=rfscVS0vtbw" target="_blank" class="text-sky-400 hover:text-sky-300 font-medium block">[YouTube] freeCodeCamp</a>
+                        <p class="text-sm text-gray-300 mt-1">دورة Python for Data Science (فيديو شامل ومجاني)</p>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <!-- Data Visualization -->
+                  <div class="bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700 hover:border-pink-500 transition-all duration-300">
+                    <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                      <span class="text-pink-400 mr-2">📊</span> تصور البيانات
+                    </h3>
+                    <ul class="space-y-4">
+                      <li>
+                        <a href="https://seaborn.pydata.org/examples/index.html" target="_blank" class="text-pink-400 hover:text-pink-300 font-medium block">Seaborn Gallery</a>
+                        <p class="text-sm text-gray-300 mt-1">معرض تفاعلي لأنواع المخططات مع أكوادها الجاهزة</p>
+                      </li>
+                      <li>
+                        <a href="https://matplotlib.org/stable/tutorials/index.html" target="_blank" class="text-pink-400 hover:text-pink-300 font-medium block">Matplotlib Tutorials</a>
+                        <p class="text-sm text-gray-300 mt-1">تعلم أساسيات التصوير البياني في بايثون</p>
+                      </li>
+                      <li>
+                        <a href="https://www.kaggle.com/learn/data-visualization" target="_blank" class="text-pink-400 hover:text-pink-300 font-medium block">[Kaggle] Data Visualization</a>
+                        <p class="text-sm text-gray-300 mt-1">دورة تفاعلية صغيرة ومجانية تركز على التطبيق العملي</p>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- Column 2: Data Processing & ML -->
+                <div class="space-y-6">
+                  <!-- Data Processing -->
+                  <div class="bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700 hover:border-emerald-500 transition-all duration-300">
+                    <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                      <span class="text-emerald-400 mr-2">🔍</span> معالجة البيانات
+                    </h3>
+                    <ul class="space-y-4">
+                      <li>
+                        <a href="https://pandas.pydata.org/docs/" target="_blank" class="text-emerald-400 hover:text-emerald-300 font-medium block">Pandas Documentation</a>
+                        <p class="text-sm text-gray-300 mt-1">المرجع الشامل لمكتبة Pandas لمعالجة البيانات</p>
+                      </li>
+                      <li>
+                        <a href="https://www.kaggle.com/learn/pandas" target="_blank" class="text-emerald-400 hover:text-emerald-300 font-medium block">[Kaggle] Pandas Course</a>
+                        <p class="text-sm text-gray-300 mt-1">دورة تفاعلية لتعلم Pandas خطوة بخطوة</p>
+                      </li>
+                      <li>
+                        <a href="https://www.youtube.com/user/dataschool" target="_blank" class="text-emerald-400 hover:text-emerald-300 font-medium block">[YouTube] Data School</a>
+                        <p class="text-sm text-gray-300 mt-1">شروحات فيديو مبسطة لمكتبة Pandas</p>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <!-- Machine Learning -->
+                  <div class="bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700 hover:border-amber-500 transition-all duration-300">
+                    <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                      <span class="text-amber-400 mr-2">🤖</span> تعلم الآلة
+                    </h3>
+                    <ul class="space-y-4">
+                      <li>
+                        <a href="https://scikit-learn.org/stable/user_guide.html" target="_blank" class="text-amber-400 hover:text-amber-300 font-medium block">Scikit-learn Guide</a>
+                        <p class="text-sm text-gray-300 mt-1">الدليل الرسمي لمكتبة Scikit-learn</p>
+                      </li>
+                      <li>
+                        <a href="https://www.kaggle.com/learn/intro-to-machine-learning" target="_blank" class="text-amber-400 hover:text-amber-300 font-medium block">[Kaggle] Intro to ML</a>
+                        <p class="text-sm text-gray-300 mt-1">مقدمة عملية لتعلم الآلة مع تطبيقات عملية</p>
+                      </li>
+                      <li>
+                        <a href="https://www.youtube.com/watch?v=0B5eIE_1vpU" target="_blank" class="text-amber-400 hover:text-amber-300 font-medium block">[YouTube] freeCodeCamp</a>
+                        <p class="text-sm text-gray-300 mt-1">دورة Scikit-Learn (فيديو شامل)</p>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Additional Resources Row -->
+              <div class="mt-6">
+                <div class="bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700 hover:border-purple-500 transition-all duration-300">
+                  <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                    <span class="text-purple-400 mr-2">🌐</span> موارد إضافية
+                  </h3>
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-gray-700/50 p-4 rounded-lg">
+                      <h4 class="text-sky-400 font-medium">SQL</h4>
+                      <p class="text-xs text-gray-300 mt-1">
+                        <a href="https://www.w3schools.com/sql/" target="_blank" class="hover:underline">W3Schools SQL</a> - 
+                        <a href="https://sqlzoo.net/" target="_blank" class="hover:underline">SQLZoo</a> - 
+                        <a href="https://www.kaggle.com/learn/intro-to-sql" target="_blank" class="hover:underline">[Kaggle] SQL</a>
+                      </p>
+                    </div>
+                    <div class="bg-gray-700/50 p-4 rounded-lg">
+                      <h4 class="text-emerald-400 font-medium">منصات تعليمية</h4>
+                      <p class="text-xs text-gray-300 mt-1">
+                        <a href="https://www.kaggle.com/" target="_blank" class="hover:underline">Kaggle</a> - 
+                        <a href="https://github.com/" target="_blank" class="hover:underline">GitHub</a> - 
+                        <a href="https://stackoverflow.com/" target="_blank" class="hover:underline">Stack Overflow</a>
+                      </p>
+                    </div>
+                    <div class="bg-gray-700/50 p-4 rounded-lg">
+                      <h4 class="text-amber-400 font-medium">مصادر إضافية</h4>
+                      <p class="text-xs text-gray-300 mt-1">
+                        <a href="https://www.datacamp.com/" target="_blank" class="hover:underline">DataCamp</a> - 
+                        <a href="https://www.coursera.org/" target="_blank" class="hover:underline">Coursera</a> - 
+                        <a href="https://www.udemy.com/" target="_blank" class="hover:underline">Udemy</a>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Slide Navigation -->
-        <div class="flex justify-between items-center mt-6">
-            <button id="prev-btn"
-                class="py-2 px-6 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                السابق
-            </button>
-            <div id="pagination" class="flex-grow flex justify-center items-center space-x-2 px-4">
-                <!-- Dots will be inserted by JS -->
-            </div>
-            <button id="next-btn"
-                class="py-2 px-6 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                التالي
-            </button>
+        <div class="flex justify-between items-center mt-6 px-4 md:px-8">
+          <button id="prev-btn"
+              class="py-2 px-6 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+              السابق
+          </button>
+          <div id="pagination" class="flex-grow flex justify-center items-center space-x-2 px-4">
+              <!-- Dots will be inserted by JS -->
+          </div>
+          <button id="next-btn"
+              class="py-2 px-6 bg-sky-600 hover:bg-sky-500 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+              التالي
+          </button>
         </div>
-    </div>
 
     <script>
-        let currentSlide = 0;
-        let slides;
-        let prevBtn;
-        let nextBtn;
-        let pagination;
-        let totalSlides;
-        let dots;
+      let currentSlide = 0;
+      let slides;
+      let prevBtn;
+      let nextBtn;
+      let pagination;
+      let totalSlides;
+      let dots;
 
-        function showSlide(slideIndex) {
-            if (!slides || !dots || slideIndex < 0 || slideIndex >= totalSlides) {
-                console.error("Slider not ready or index out of bounds.");
-                return;
-            }
-
-            // إخفاء جميع الشرائح
-            slides.forEach(slide => slide.classList.remove('active'));
-            // إظهار الشريحة المحددة
-            slides[slideIndex].classList.add('active');
-
-            // تحديث نقاط التنقل
-            dots.forEach((dot, index) => {
-                dot.classList.toggle('active', index === slideIndex);
-            });
-
-            // تحديث حالة الأزرار
-            prevBtn.disabled = slideIndex === 0;
-            nextBtn.disabled = slideIndex === totalSlides - 1;
-
-            currentSlide = slideIndex;
-
-            // العودة إلى أعلى الصفحة عند الانتقال لشريحة جديدة
-            window.scrollTo(0, 0);
+      function showSlide(slideIndex) {
+        if (!slides || !dots || slideIndex < 0 || slideIndex >= totalSlides) {
+          // Silently handle error - slider not ready
+          return;
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            slides = document.querySelectorAll('.slide');
-            prevBtn = document.getElementById('prev-btn');
-            nextBtn = document.getElementById('next-btn');
-            pagination = document.getElementById('pagination');
-            totalSlides = slides.length;
+        // إخفاء جميع الشرائح
+        slides.forEach((slide) => slide.classList.remove("active"));
+        // إظهار الشريحة المحددة
+        slides[slideIndex].classList.add("active");
 
-            // build dots
-            if (pagination) {
-                pagination.innerHTML = '';
-                for (let i = 0; i < totalSlides; i++) {
-                    const dot = document.createElement('button');
-                    dot.classList.add('pagination-dot');
-                    dot.dataset.slide = i;
-                    dot.addEventListener('click', () => showSlide(i));
-                    pagination.appendChild(dot);
-                }
-                dots = pagination.querySelectorAll('button');
-            }
-
-            prevBtn.addEventListener('click', () => {
-                if (currentSlide > 0) showSlide(currentSlide - 1);
-            });
-
-            nextBtn.addEventListener('click', () => {
-                if (currentSlide < totalSlides - 1) showSlide(currentSlide + 1);
-            });
-
-            // التنقل باستخدام لوحة المفاتيح
-            document.addEventListener('keydown', (e) => {
-                // استخدام السهم الأيسر للتقدم والسهم الأيمن للعودة (وفقاً لاتجاه RTL)
-                if (e.key === 'ArrowLeft' && currentSlide < totalSlides - 1) { 
-                    showSlide(currentSlide + 1);
-                } else if (e.key === 'ArrowRight' && currentSlide > 0) {
-                    showSlide(currentSlide - 1);
-                }
-            });
-
-            if (totalSlides > 0) showSlide(0);
+        // تحديث نقاط التنقل
+        dots.forEach((dot, index) => {
+          dot.classList.toggle("active", index === slideIndex);
         });
 
-        window.showSlide = showSlide;
-    </script>
-</body>
+        // تحديث حالة الأزرار
+        prevBtn.disabled = slideIndex === 0;
+        nextBtn.disabled = slideIndex === totalSlides - 1;
 
+        currentSlide = slideIndex;
+
+        // تحديث الـ URL Hash
+        updateURL(slideIndex);
+      }
+
+      function updateURL(slideIndex) {
+        const slide = document.querySelector(`[data-slide="${slideIndex}"]`);
+        // التأكد من أن الشريحة لديها معرّف قبل التحديث
+        if (slide && !slide.id) {
+          slide.id = `slide-${slideIndex}`;
+        }
+        if (slide && slide.id) {
+          window.location.hash = `#${slide.id}`;
+        } else {
+          window.location.hash = "";
+        }
+        window.scrollTo(0, 0);
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        slides = document.querySelectorAll(".slide");
+        prevBtn = document.getElementById("prev-btn");
+        nextBtn = document.getElementById("next-btn");
+        pagination = document.getElementById("pagination");
+        totalSlides = slides.length;
+
+        // build dots
+        if (pagination) {
+          pagination.innerHTML = "";
+          for (let i = 0; i < totalSlides; i++) {
+            const dot = document.createElement("button");
+            dot.classList.add("pagination-dot");
+            dot.dataset.slide = i;
+            dot.addEventListener("click", () => showSlide(i));
+            pagination.appendChild(dot);
+          }
+          dots = pagination.querySelectorAll("button");
+        }
+
+        prevBtn.addEventListener("click", () => {
+          if (currentSlide > 0) showSlide(currentSlide - 1);
+        });
+
+        nextBtn.addEventListener("click", () => {
+          if (currentSlide < totalSlides - 1) showSlide(currentSlide + 1);
+        });
+
+        // التنقل باستخدام لوحة المفاتيح (معكوسة لتناسب RTL)
+        document.addEventListener("keydown", (e) => {
+          // ArrowLeft (السهم الأيسر) يتقدم
+          if (e.key === "ArrowLeft" && currentSlide < totalSlides - 1) {
+            showSlide(currentSlide + 1);
+            e.preventDefault();
+          }
+          // ArrowRight (السهم الأيمن) يتراجع
+          else if (e.key === "ArrowRight" && currentSlide > 0) {
+            showSlide(currentSlide - 1);
+            e.preventDefault();
+          }
+        });
+
+        // Show initial slide based on hash or default to 0
+        if (totalSlides > 0) {
+          const hash = window.location.hash.replace("#", "");
+          let initialIndex = 0;
+          if (hash) {
+            const targetSlide = document.getElementById(hash);
+            if (targetSlide) {
+              const dataIndex = parseInt(
+                targetSlide.getAttribute("data-slide")
+              );
+              if (!isNaN(dataIndex)) {
+                initialIndex = dataIndex;
+              }
+            }
+          }
+          showSlide(initialIndex);
+        }
+      });
+
+      window.showSlide = showSlide;
+    </script>
+  </body>
 </html>

@@ -159,6 +159,7 @@
             margin: 0;
             padding: 1rem;
             list-style: none;
+            align-items: stretch;
         }
 
         .slide[data-slide="0"] li {
@@ -170,6 +171,10 @@
             text-align: center;
             position: relative;
             overflow: hidden;
+            display: flex;
+            align-items: stretch;
+            height: 100%;
+            align-self: stretch;
         }
 
         .slide[data-slide="0"] li:hover {
@@ -188,9 +193,15 @@
             cursor: pointer;
             width: 100%;
             height: 100%;
-            text-align: right; /* تم التعديل ليتوافق مع RTL */
+            min-height: 100%;
+            text-align: center;
             padding: 1.5rem;
             font-family: 'Tajawal', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            box-sizing: border-box;
         }
         
         .slide[data-slide="0"] li::before {
@@ -324,12 +335,12 @@
                             رحلة متكاملة لفهم البيانات من مرحلة التنظيف والتحضير، مروراً بالتحليل الإحصائي، وصولاً إلى فن تحويل الأرقام إلى قصص مرئية مؤثرة.
                         </p>
                         <h3 class="text-xl font-semibold text-white mb-6">فهرس الوحدة</h3>
-                        <ul class="space-y-3">
-                            <li><button onclick="showSlide(1)">1. 🛠 مراحل معالجة البيانات</button></li>
-                            <li><button onclick="showSlide(2)">2. 📊 أنواع التحليل الإحصائي</button></li>
-                            <li><button onclick="showSlide(3)">3. 🎨 تصوير البيانات (Data Visualization)</button></li>
-                            <li><button onclick="showSlide(4)">4. 💻 الأدوات والمكتبات الأساسية</button></li>
-                            <li><button onclick="showSlide(5)">5. 🎮 محاكاة تنظيف البيانات (تفاعلي)</button></li>
+                        <ul>
+                            <li><button onclick="showSlide(1)">1. مراحل معالجة البيانات</button></li>
+                            <li><button onclick="showSlide(2)">2. أنواع التحليل الإحصائي</button></li>
+                            <li><button onclick="showSlide(3)">3. تصوير البيانات</button></li>
+                            <li><button onclick="showSlide(4)">4. الأدوات والمكتبات الأساسية</button></li>
+                            <li><button onclick="showSlide(5)">5. محاكاة تنظيف البيانات</button></li>
                         </ul>
                     </div>
                 </div>
@@ -490,9 +501,9 @@
                                 <path d="M 300 50 L 350 50" stroke="#4b5563" stroke-width="2" marker-end="url(#arrowhead)"/>
                                 <!-- Prescriptive -->
                                 <g transform="translate(0, 0)">
-                                    <circle cx="380" cy="50" r="25" fill="#1f2937" stroke="#fb923c" stroke-width="2"/>
-                                    <text x="380" y="50" font-size="10" fill="#fb923c" text-anchor="middle" dominant-baseline="middle">توجيهي</text>
-                                    <text x="380" y="85" font-size="10" fill="#e5e7eb" text-anchor="middle">ماذا نفعل؟</text>
+                                    <circle cx="370" cy="50" r="25" fill="#1f2937" stroke="#fb923c" stroke-width="2"/>
+                                    <text x="370" y="50" font-size="10" fill="#fb923c" text-anchor="middle" dominant-baseline="middle">توجيهي</text>
+                                    <text x="370" y="85" font-size="10" fill="#e5e7eb" text-anchor="middle">ماذا نفعل؟</text>
                                 </g>
                                 <defs>
                                     <marker id="arrowhead" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -584,39 +595,100 @@
                             </div>
 
                         </div>
-                        <div class="mt-8 p-4 bg-gray-800/30 rounded-lg border border-gray-700 flex justify-center">
-                            <!-- تم إزالة H4 من هنا لضمان تمركز الرسم فقط -->
-                            <svg viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg" class="w-full max-w-lg">
+                        <div class="mt-8 p-6 bg-gray-800/30 rounded-lg border border-gray-700 flex flex-col items-center">
+                            <h4 class="text-lg font-semibold text-white mb-6 text-center">من بيانات إلى رؤى</h4>
+                            <svg viewBox="0 0 500 160" xmlns="http://www.w3.org/2000/svg" class="w-full max-w-3xl" preserveAspectRatio="xMidYMid meet">
                                 <title>من بيانات إلى رؤى</title>
-                                <!-- Data Table -->
-                                <g>
-                                    <rect x="10" y="30" width="80" height="60" fill="#1f2937" stroke="#4b5563" rx="3"/>
-                                    <path d="M10 45h80 M10 60h80 M10 75h80 M35 30v60 M60 30v60" stroke="#374151" stroke-width="1"/>
-                                    <text x="50" y="105" font-size="10" fill="#e5e7eb" text-anchor="middle">بيانات خام</text>
-                                </g>
-                                <!-- Arrow 1 -->
-                                <path d="M 100 60 L 130 60" stroke="#4b5563" stroke-width="2" marker-end="url(#arrowhead)"/>
-                                <!-- Chart Selection -->
-                                <g>
-                                    <rect x="140" y="40" width="20" height="40" fill="#fb923c"/>
-                                    <path d="M170 80 A 20 20 0 0 1 170 40" fill="#3b82f6" />
-                                    <path d="M190 80 L 200 60 L 210 70" stroke="#10b981" stroke-width="2" fill="none"/>
-                                    <text x="175" y="105" font-size="10" fill="#e5e7eb" text-anchor="middle">اختيار المخطط</text>
-                                </g>
-                                <!-- Arrow 2 -->
-                                <path d="M 220 60 L 250 60" stroke="#4b5563" stroke-width="2" marker-end="url(#arrowhead)"/>
-                                <!-- Insight -->
-                                <g>
-                                    <rect x="260" y="20" width="130" height="80" rx="5" fill="#111827" stroke="#f97316" stroke-width="1.5"/>
-                                    <path d="M270 70 L 300 40 L 330 60 L 360 30" stroke="#fb923c" stroke-width="3" fill="none"/>
-                                    <circle cx="375" cy="75" r="10" fill="#3b82f6" opacity="0.5"/>
-                                    <text x="325" y="105" font-size="10" fill="#e5e7eb" text-anchor="middle">لوحة معلومات (رؤى)</text>
-                                </g>
                                 <defs>
-                                    <marker id="arrowhead" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#4b5563" />
+                                    <marker id="arrowhead-viz" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#f97316" />
                                     </marker>
                                 </defs>
+                                
+                                <!-- Step 1: Raw Data Table -->
+                                <g transform="translate(20, 30)">
+                                    <rect x="0" y="0" width="100" height="80" fill="#1f2937" stroke="#4b5563" stroke-width="2" rx="5"/>
+                                    <!-- Table grid -->
+                                    <line x1="0" y1="20" x2="100" y2="20" stroke="#374151" stroke-width="1.5"/>
+                                    <line x1="0" y1="40" x2="100" y2="40" stroke="#374151" stroke-width="1"/>
+                                    <line x1="0" y1="60" x2="100" y2="60" stroke="#374151" stroke-width="1"/>
+                                    <line x1="33" y1="0" x2="33" y2="80" stroke="#374151" stroke-width="1"/>
+                                    <line x1="66" y1="0" x2="66" y2="80" stroke="#374151" stroke-width="1"/>
+                                    <!-- Data cells -->
+                                    <circle cx="16" cy="30" r="2" fill="#60a5fa"/>
+                                    <circle cx="50" cy="30" r="2" fill="#60a5fa"/>
+                                    <circle cx="83" cy="30" r="2" fill="#60a5fa"/>
+                                    <circle cx="16" cy="50" r="2" fill="#60a5fa"/>
+                                    <circle cx="50" cy="50" r="2" fill="#60a5fa"/>
+                                    <circle cx="83" cy="50" r="2" fill="#60a5fa"/>
+                                    <circle cx="16" cy="70" r="2" fill="#60a5fa"/>
+                                    <circle cx="50" cy="70" r="2" fill="#60a5fa"/>
+                                    <circle cx="83" cy="70" r="2" fill="#60a5fa"/>
+                                    
+                                    <text x="50" y="105" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">بيانات خام</text>
+                                    <text x="50" y="120" font-size="9" fill="#9ca3af" text-anchor="middle">Raw Data</text>
+                                </g>
+                                
+                                <!-- Arrow 1 -->
+                                <path d="M 130 70 L 170 70" stroke="#f97316" stroke-width="2.5" marker-end="url(#arrowhead-viz)"/>
+                                <text x="150" y="60" font-size="9" fill="#9ca3af" text-anchor="middle">تحليل</text>
+                                
+                                <!-- Step 2: Chart Types Selection -->
+                                <g transform="translate(180, 30)">
+                                    <rect x="0" y="0" width="100" height="80" fill="#1f2937" stroke="#fb923c" stroke-width="2" rx="5"/>
+                                    
+                                    <!-- Bar Chart Icon -->
+                                    <g transform="translate(10, 20)">
+                                        <rect x="0" y="30" width="8" height="20" fill="#fb923c" rx="1"/>
+                                        <rect x="10" y="20" width="8" height="30" fill="#fb923c" rx="1"/>
+                                        <rect x="20" y="10" width="8" height="40" fill="#fb923c" rx="1"/>
+                                    </g>
+                                    
+                                    <!-- Pie Chart Icon -->
+                                    <g transform="translate(55, 30)">
+                                        <circle cx="15" cy="20" r="15" fill="none" stroke="#3b82f6" stroke-width="2"/>
+                                        <path d="M 15 5 L 15 20 L 28 12 Z" fill="#3b82f6" opacity="0.7"/>
+                                    </g>
+                                    
+                                    <!-- Line Chart Icon -->
+                                    <g transform="translate(10, 15)">
+                                        <path d="M 65 45 L 72 35 L 79 40 L 86 25" stroke="#10b981" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                                    </g>
+                                    
+                                    <text x="50" y="105" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">اختيار المخطط</text>
+                                    <text x="50" y="120" font-size="9" fill="#9ca3af" text-anchor="middle">Chart Selection</text>
+                                </g>
+                                
+                                <!-- Arrow 2 -->
+                                <path d="M 290 70 L 330 70" stroke="#f97316" stroke-width="2.5" marker-end="url(#arrowhead-viz)"/>
+                                <text x="310" y="60" font-size="9" fill="#9ca3af" text-anchor="middle">تصور</text>
+                                
+                                <!-- Step 3: Dashboard/Insights -->
+                                <g transform="translate(340, 20)">
+                                    <rect x="0" y="0" width="140" height="100" rx="8" fill="#111827" stroke="#f97316" stroke-width="2.5"/>
+                                    
+                                    <!-- Dashboard title bar -->
+                                    <rect x="0" y="0" width="140" height="20" rx="8" fill="#f97316" opacity="0.2"/>
+                                    <circle cx="10" cy="10" r="3" fill="#ef4444"/>
+                                    <circle cx="20" cy="10" r="3" fill="#fbbf24"/>
+                                    <circle cx="30" cy="10" r="3" fill="#10b981"/>
+                                    
+                                    <!-- Main chart in dashboard -->
+                                    <path d="M 20 80 L 40 50 L 60 65 L 80 40 L 100 55 L 120 35" stroke="#fb923c" stroke-width="3" fill="none" stroke-linecap="round"/>
+                                    
+                                    <!-- Data points -->
+                                    <circle cx="40" cy="50" r="3" fill="#3b82f6"/>
+                                    <circle cx="60" cy="65" r="3" fill="#3b82f6"/>
+                                    <circle cx="80" cy="40" r="3" fill="#3b82f6"/>
+                                    <circle cx="100" cy="55" r="3" fill="#3b82f6"/>
+                                    
+                                    <!-- Insight indicator -->
+                                    <circle cx="120" cy="35" r="8" fill="#10b981" opacity="0.3"/>
+                                    <circle cx="120" cy="35" r="4" fill="#10b981"/>
+                                    
+                                    <text x="70" y="120" font-size="12" fill="#e5e7eb" text-anchor="middle" font-weight="bold">لوحة معلومات</text>
+                                    <text x="70" y="135" font-size="9" fill="#9ca3af" text-anchor="middle">Dashboard & Insights</text>
+                                </g>
                             </svg>
                         </div>
 
@@ -797,6 +869,130 @@
                     </div>
                 </div>
 
+                <!-- Slide 6: مصادر تعليمية -->
+                <div class="slide" data-slide="6">
+                    <div class="slide-content">
+                        <h2 class="text-2xl font-bold text-white mb-4">
+                            <span class="text-orange-400">6.</span> 📚 مصادر تعليمية شاملة
+                        </h2>
+                        <p class="mb-6 text-gray-400">
+                            مجموعة مختارة من أفضل المصادر لتعلم تحليل وتصوير البيانات
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Column 1: Python & Libraries -->
+                            <div class="space-y-6">
+                                <!-- Python for Data Analysis -->
+                                <div class="bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700 hover:border-sky-500 transition-all duration-300">
+                                    <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                                        <span class="text-sky-400 mr-2">🐍</span> تحليل البيانات باستخدام بايثون
+                                    </h3>
+                                    <ul class="space-y-4">
+                                        <li>
+                                            <a href="https://pandas.pydata.org/" target="_blank" class="text-sky-400 hover:text-sky-300 font-medium block">
+                                                وثائق Pandas الرسمية
+                                            </a>
+                                            <p class="text-sm text-gray-300 mt-1">
+                                                الدليل الشامل لمكتبة Pandas مع أمثلة تفاعلية
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <a href="https://seaborn.pydata.org/" target="_blank" class="text-sky-400 hover:text-sky-300 font-medium block">
+                                                وثائق Seaborn
+                                            </a>
+                                            <p class="text-sm text-gray-300 mt-1">
+                                                إنشاء رسوم بيانية إحصائية متقدمة
+                                            </p>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- Data Visualization -->
+                                <div class="bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700 hover:border-purple-500 transition-all duration-300">
+                                    <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                                        <span class="text-purple-400 mr-2">📊</span> تصور البيانات
+                                    </h3>
+                                    <ul class="space-y-4">
+                                        <li>
+                                            <a href="https://matplotlib.org/stable/contents.html" target="_blank" class="text-purple-400 hover:text-purple-300 font-medium block">
+                                                وثائق Matplotlib
+                                            </a>
+                                            <p class="text-sm text-gray-300 mt-1">
+                                                المكتبة الأساسية للرسوم البيانية في بايثون
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <a href="https://plotly.com/python/" target="_blank" class="text-purple-400 hover:text-purple-300 font-medium block">
+                                                Plotly Python
+                                            </a>
+                                            <p class="text-sm text-gray-300 mt-1">
+                                                مكتبة لإنشاء رسوم بيانية تفاعلية
+                                            </p>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Column 2: Courses & Practice -->
+                            <div class="space-y-6">
+                                <!-- Online Courses -->
+                                <div class="bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700 hover:border-amber-500 transition-all duration-300">
+                                    <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                                        <span class="text-amber-400 mr-2">🎓</span> دورات تعليمية
+                                    </h3>
+                                    <ul class="space-y-4">
+                                        <li>
+                                            <a href="https://www.coursera.org/learn/python-data-analysis" target="_blank" class="text-amber-400 hover:text-amber-300 font-medium block">
+                                                تحليل البيانات باستخدام بايثون
+                                            </a>
+                                            <p class="text-sm text-gray-300 mt-1">
+                                                من منصة كورسيرا - جامعة ميشيغان
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.datacamp.com/tracks/data-visualization-with-python" target="_blank" class="text-amber-400 hover:text-amber-300 font-medium block">
+                                                Data Visualization with Python
+                                            </a>
+                                            <p class="text-sm text-gray-300 mt-1">
+                                                مسار متكامل لتعلم تصور البيانات
+                                            </p>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- Practice Platforms -->
+                                <div class="bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700 hover:border-emerald-500 transition-all duration-300">
+                                    <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                                        <span class="text-emerald-400 mr-2">💻</span> منصات التمرين
+                                    </h3>
+                                    <ul class="space-y-2 text-gray-300 text-sm">
+                                        <li class="flex items-start">
+                                            <span class="text-emerald-400 mr-2">•</span>
+                                            <div>
+                                                <a href="https://www.kaggle.com/learn/data-visualization" target="_blank" class="text-emerald-400 hover:underline font-medium">Kaggle Learn</a>
+                                                <p class="text-gray-400">دروس تفاعلية في تصور البيانات</p>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <span class="text-emerald-400 mr-2">•</span>
+                                            <div>
+                                                <a href="https://public.tableau.com/learn" target="_blank" class="text-emerald-400 hover:underline font-medium">Tableau Public</a>
+                                                <p class="text-gray-400">تعلم Tableau مع أمثلة حية</p>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <span class="text-emerald-400 mr-2">•</span>
+                                            <div>
+                                                <a href="https://www.data-to-viz.com/" target="_blank" class="text-emerald-400 hover:underline font-medium">From Data to Viz</a>
+                                                <p class="text-gray-400">دليل لاختيار نوع التمثيل المرئي المناسب</p>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -827,7 +1023,7 @@
 
         function showSlide(slideIndex) {
             if (!slides || !dots || slideIndex < 0 || slideIndex >= totalSlides) {
-                console.error("Slider component not ready or slide index out of bounds.");
+                // Silently handle error - slider not ready
                 return;
             }
 
@@ -853,8 +1049,22 @@
             nextBtn.disabled = slideIndex === totalSlides - 1;
 
             currentSlide = slideIndex;
-            
-            // العودة إلى أعلى الصفحة عند الانتقال لشريحة جديدة
+
+            // تحديث الـ URL Hash
+            updateURL(slideIndex);
+        }
+
+        function updateURL(slideIndex) {
+            const slide = document.querySelector(`[data-slide="${slideIndex}"]`);
+            // التأكد من أن الشريحة لديها معرّف قبل التحديث
+            if (slide && !slide.id) {
+                slide.id = `slide-${slideIndex}`;
+            }
+            if (slide && slide.id) {
+                window.location.hash = `#${slide.id}`;
+            } else {
+                window.location.hash = "";
+            }
             window.scrollTo(0, 0);
         }
 
@@ -895,18 +1105,34 @@
                 });
             }
 
-            // التنقل باستخدام لوحة المفاتيح
+            // التنقل باستخدام لوحة المفاتيح (معكوسة لتناسب RTL)
             document.addEventListener('keydown', (e) => {
-                if (e.key === 'ArrowRight' && currentSlide < totalSlides - 1) {
+                // ArrowLeft (السهم الأيسر) يتقدم
+                if (e.key === 'ArrowLeft' && currentSlide < totalSlides - 1) {
                     showSlide(currentSlide + 1);
-                } else if (e.key === 'ArrowLeft' && currentSlide > 0) {
+                    e.preventDefault();
+                }
+                // ArrowRight (السهم الأيمن) يتراجع
+                else if (e.key === 'ArrowRight' && currentSlide > 0) {
                     showSlide(currentSlide - 1);
+                    e.preventDefault();
                 }
             });
 
-            // إظهار الشريحة الأولى
+            // Show initial slide based on hash or default to 0
             if (totalSlides > 0) {
-                showSlide(0);
+                const hash = window.location.hash.replace("#", "");
+                let initialIndex = 0;
+                if (hash) {
+                    const targetSlide = document.getElementById(hash);
+                    if (targetSlide) {
+                        const dataIndex = parseInt(targetSlide.getAttribute("data-slide"));
+                        if (!isNaN(dataIndex)) {
+                            initialIndex = dataIndex;
+                        }
+                    }
+                }
+                showSlide(initialIndex);
             }
             
             // ==========================================

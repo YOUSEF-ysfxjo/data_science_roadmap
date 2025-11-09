@@ -172,18 +172,23 @@
             width: 100%;
             margin: 0;
             padding: 1rem;
-            list-style: none; 
+            list-style: none;
+            align-items: stretch;
         }
 
         .slide[data-slide="0"] li {
             background-color: rgba(30, 41, 59, 0.8);
             border: 1px solid #374151;
             border-radius: 0.75rem;
-            padding: 0; 
+            padding: 0;
             transition: all 0.3s ease;
             text-align: center;
             position: relative;
             overflow: hidden;
+            display: flex;
+            align-items: stretch;
+            height: 100%;
+            align-self: stretch;
         }
         
         .slide[data-slide="0"] li::before {
@@ -217,10 +222,16 @@
             cursor: pointer;
             width: 100%;
             height: 100%;
-            text-align: right; 
-            padding: 1.5rem; 
+            min-height: 100%;
+            text-align: center;
+            padding: 1.5rem;
             font-family: 'Tajawal', sans-serif;
             transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            box-sizing: border-box;
         }
 
         .slide[data-slide="0"] button:hover {
@@ -353,12 +364,12 @@
                             تُعد الرياضيات اللغة الأساسية والعمود الفقري النظري الذي يُبنى عليه التعلم الآلي والتحليل الإحصائي. فهم هذه الفروع يمكّن من تفسير آليات عمل الخوارزميات وتصميم حلول أكثر كفاءة.
                         </p>
                         <h3 class="text-xl font-semibold text-white mb-6">فهرس الوحدة</h3>
-                        <ul class="space-y-3 text-gray-300 grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <li><button onclick="showSlide(1)">1. الجبر الخطي (Linear Algebra) 📐</button></li>
-                            <li><button onclick="showSlide(2)">2. حساب التفاضل والتكامل (Calculus) 📈</button></li>
-                            <li><button onclick="showSlide(3)">3. الإحصاء والاحتمالات (Statistics) 🎲</button></li>
-                            <li><button onclick="showSlide(4)">4. نظرية التحسين (Optimization) 🎯</button></li>
-                            <li><button onclick="showSlide(5)">5. مصادر ومراجع 📚</button></li>
+                        <ul class="text-gray-300">
+                            <li><button onclick="showSlide(1)">1. الجبر الخطي</button></li>
+                            <li><button onclick="showSlide(2)">2. حساب التفاضل والتكامل</button></li>
+                            <li><button onclick="showSlide(3)">3. الإحصاء والاحتمالات</button></li>
+                            <li><button onclick="showSlide(4)">4. نظرية التحسين</button></li>
+                            <li><button onclick="showSlide(5)">5. مصادر ومراجع</button></li>
                         </ul>
                     </div>
                 </div>
@@ -572,56 +583,128 @@
                     </div>
                 </div>
 
-                <!-- Slide 5: مصادر ومراجع -->
+                              <!-- Slide 5: مصادر تعليمية -->
                 <div class="slide" data-slide="5">
                     <div class="slide-content">
-                        <h2 class="text-3xl font-bold text-white mb-6 flex items-center">
-                            <span class="slide-title-icon text-pink-400">📚</span>
-                            مصادر ومراجع مقترحة
+                        <h2 class="text-2xl font-bold text-white mb-4">
+                            <span class="text-pink-400">5.</span> 📚 مصادر تعليمية شاملة
                         </h2>
-                        <div class="overflow-x-auto">
-                            <table class="styled-table">
-                                <thead>
-                                    <tr>
-                                        <th>الفرع الرياضي</th>
-                                        <th>المصدر المقترح (النوع)</th>
-                                        <th>التركيز والقيمة المضافة</th>
-                                        <th>الرابط</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>الجبر الخطي</td>
-                                        <td>كتاب "Introduction to Linear Algebra" (Gilbert Strang)</td>
-                                        <td>يُعد المرجع الأساسي لفهم المتجهات والمصفوفات وتطبيقاتها.</td>
-                                        <td><a href="https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/" target="_blank">رابط محاضرات MIT</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td>حساب التفاضل</td>
-                                        <td>مساق "Calculus" (Khan Academy)</td>
-                                        <td>ممتاز لبناء أساس قوي في المشتقات وقاعدة السلسلة (Chain Rule).</td>
-                                        <td><a href="https://www.khanacademy.org/math/calculus-1" target="_blank">رابط قسم التفاضل</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td>الإحصاء والاحتمالات</td>
-                                        <td>كتاب "Practical Statistics for Data Scientists" (Bruce & Bruce)</td>
-                                        <td>يركز على الإحصاء التطبيقي الذي يستخدمه علماء البيانات يومياً.</td>
-                                        <td>[ابحث عنه في مكتبتك]</td>
-                                    </tr>
-                                    <tr>
-                                        <td>التحسين (Optimization)</td>
-                                        <td>فصول من كتاب "Deep Learning" (Goodfellow et al.)</td>
-                                        <td>شرح متعمق لانحدار التدرج ومحسّناتها (Optimizers).</td>
-                                        <td><a href="https://www.deeplearningbook.org/" target="_blank">رابط نسخة الكتاب</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td>الأساس الرياضي العام</td>
-                                        <td>مساق "Mathematics for Machine Learning" (Imperial College London)</td>
-                                        <td>يجمع بين الجبر الخطي، والتفاضل، والإحصاء خصيصاً لـ ML.</td>
-                                        <td><a href="https://www.coursera.org/specializations/mathematics-machine-learning" target="_blank">رابط Coursera</a></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <p class="mb-6 text-gray-400">
+                            مجموعة مختارة من أفضل المصادر لتعزيز فهمك للرياضيات في علم البيانات
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Column 1: Books -->
+                            <div class="space-y-6">
+                                <!-- الجبر الخطي -->
+                                <div class="bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700 hover:border-sky-500 transition-all duration-300">
+                                    <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                                        <span class="text-sky-400 mr-2">📐</span> الجبر الخطي
+                                    </h3>
+                                    <ul class="space-y-4">
+                                        <li>
+                                            <a href="https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/" target="_blank" class="text-sky-400 hover:text-sky-300 font-medium block">
+                                                Introduction to Linear Algebra (Gilbert Strang)
+                                            </a>
+                                            <p class="text-sm text-gray-300 mt-1">
+                                                المرجع الأساسي لفهم المتجهات والمصفوفات وتطبيقاتها في التعلم الآلي
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.youtube.com/playlist?list=PL49CF3715CB9EF31D" target="_blank" class="text-sky-400 hover:text-sky-300 font-medium block">
+                                                محاضرات الجبر الخطي من MIT
+                                            </a>
+                                            <p class="text-sm text-gray-300 mt-1">
+                                                سلسلة محاضرات كاملة مع أمثلة عملية وتطبيقات
+                                            </p>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- الإحصاء والاحتمالات -->
+                                <div class="bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700 hover:border-purple-500 transition-all duration-300">
+                                    <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                                        <span class="text-purple-400 mr-2">📊</span> الإحصاء والاحتمالات
+                                    </h3>
+                                    <ul class="space-y-4">
+                                        <li>
+                                            <span class="text-purple-400 hover:text-purple-300 font-medium block">
+                                                Practical Statistics for Data Scientists
+                                            </span>
+                                            <p class="text-sm text-gray-300 mt-1">
+                                                يركز على الجانب التطبيقي للإحصاء في علوم البيانات
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.khanacademy.org/math/statistics-probability" target="_blank" class="text-purple-400 hover:text-purple-300 font-medium block">
+                                                مساق الإحصاء من Khan Academy
+                                            </a>
+                                            <p class="text-sm text-gray-300 mt-1">
+                                                شرح مبسط مع تمارين تفاعلية للمبتدئين
+                                            </p>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Column 2: Courses & Practice -->
+                            <div class="space-y-6">
+                                <!-- الدورات التعليمية -->
+                                <div class="bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700 hover:border-amber-500 transition-all duration-300">
+                                    <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                                        <span class="text-amber-400 mr-2">🎓</span> دورات تعليمية
+                                    </h3>
+                                    <ul class="space-y-4">
+                                        <li>
+                                            <a href="https://www.coursera.org/specializations/mathematics-machine-learning" target="_blank" class="text-amber-400 hover:text-amber-300 font-medium block">
+                                                Mathematics for Machine Learning
+                                            </a>
+                                            <p class="text-sm text-gray-300 mt-1">
+                                                من إمبريال كوليدج لندن - يغطي الجبر الخطي والتفاضل
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.edx.org/course/calculus-1a-differentiation" target="_blank" class="text-amber-400 hover:text-amber-300 font-medium block">
+                                                Calculus 1A: Differentiation
+                                            </a>
+                                            <p class="text-sm text-gray-300 mt-1">
+                                                من معهد ماساتشوستس للتكنولوجيا - أساسيات التفاضل
+                                            </p>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- منصات التمرين -->
+                                <div class="bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700 hover:border-emerald-500 transition-all duration-300">
+                                    <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                                        <span class="text-emerald-400 mr-2">💻</span> منصات التمرين
+                                    </h3>
+                                    <ul class="space-y-2 text-gray-300 text-sm">
+                                        <li class="flex items-start">
+                                            <span class="text-emerald-400 mr-2">•</span>
+                                            <div>
+                                                <a href="https://www.khanacademy.org/" target="_blank" class="text-emerald-400 hover:underline font-medium">Khan Academy</a>
+                                                <p class="text-gray-400">تمارين تفاعلية في مختلف فروع الرياضيات</p>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <span class="text-emerald-400 mr-2">•</span>
+                                            <div>
+                                                <a href="https://brilliant.org/" target="_blank" class="text-emerald-400 hover:underline font-medium">Brilliant</a>
+                                                <p class="text-gray-400">تعلم الرياضيات من خلال حل المشكلات التفاعلية</p>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <span class="text-emerald-400 mr-2">•</span>
+                                            <div>
+                                                <a href="https://projecteuler.net/" target="_blank" class="text-emerald-400 hover:underline font-medium">Project Euler</a>
+                                                <p class="text-gray-400">تحديات برمجية تعتمد على الرياضيات</p>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -657,7 +740,7 @@
 
         function showSlide(slideIndex) {
             if (!slides || !dots || slideIndex < 0 || slideIndex >= totalSlides) {
-                console.error("Slider component not ready or slide index out of bounds.");
+                // Silently handle error - slider not ready
                 return;
             }
 
@@ -725,19 +808,34 @@
                 });
             }
 
-            // التنقل باستخدام لوحة المفاتيح
+            // التنقل باستخدام لوحة المفاتيح (معكوسة لتناسب RTL)
             document.addEventListener('keydown', (e) => {
-                // استخدام السهم الأيسر للتقدم والسهم الأيمن للعودة (وفقاً لاتجاه RTL)
-                if (e.key === 'ArrowLeft' && currentSlide < totalSlides - 1) { 
+                // ArrowLeft (السهم الأيسر) يتقدم
+                if (e.key === 'ArrowLeft' && currentSlide < totalSlides - 1) {
                     showSlide(currentSlide + 1);
-                } else if (e.key === 'ArrowRight' && currentSlide > 0) {
+                    e.preventDefault();
+                }
+                // ArrowRight (السهم الأيمن) يتراجع
+                else if (e.key === 'ArrowRight' && currentSlide > 0) {
                     showSlide(currentSlide - 1);
+                    e.preventDefault();
                 }
             });
 
-            // إظهار الشريحة الأولى
+            // Show initial slide based on hash or default to 0
             if (totalSlides > 0) {
-                showSlide(0);
+                const hash = window.location.hash.replace("#", "");
+                let initialIndex = 0;
+                if (hash) {
+                    const targetSlide = document.getElementById(hash);
+                    if (targetSlide) {
+                        const dataIndex = parseInt(targetSlide.getAttribute("data-slide"));
+                        if (!isNaN(dataIndex)) {
+                            initialIndex = dataIndex;
+                        }
+                    }
+                }
+                showSlide(initialIndex);
             }
         });
 

@@ -72,11 +72,12 @@
         /* تنسيق بطاقة المحتوى */
         .slide-content {
             background-color: #1f2937;
-            /* bg-gray-800 */
             border-radius: 0.75rem;
             padding: 2rem;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             width: 100%;
+            max-width: 2000px;
+            max-height: none;
             height: auto;
             display: flex;
             flex-direction: column;
@@ -138,11 +139,11 @@
         /* أنماط شريحة الفهرس الجديدة (Slide 0) */
         /* ************************************** */
         .slide[data-slide="0"] .slide-content {
-            height: 100%;
+            height: auto;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 3rem 2rem;
+            padding: 5rem 2rem 3rem;
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             border: 1px solid #0ea5e9;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
@@ -174,6 +175,7 @@
             margin: 0;
             padding: 1rem;
             list-style: none;
+            align-items: stretch;
         }
 
         .slide[data-slide="0"] li {
@@ -185,6 +187,10 @@
             text-align: center;
             position: relative;
             overflow: hidden;
+            display: flex;
+            align-items: stretch;
+            height: 100%;
+            align-self: stretch;
         }
 
         .slide[data-slide="0"] li::before {
@@ -218,10 +224,16 @@
             cursor: pointer;
             width: 100%;
             height: 100%;
-            text-align: right;
+            min-height: 100%;
+            text-align: center;
             padding: 1.5rem;
             font-family: 'Tajawal', sans-serif;
             transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            box-sizing: border-box;
         }
 
         .slide[data-slide="0"] button:hover {
@@ -345,17 +357,12 @@
                             <span class="text-sky-500">تعلم الآلة والذكاء الاصطناعي</span>
                         </h2>
                         <h3 class="text-xl font-semibold text-white mb-4">فهرس الوحدة</h3>
-                        <ul class="space-y-3 text-gray-300 grid grid-cols-1 md:grid-cols-2 gap-x-4">
-                            <li><button onclick="showSlide(1)" class="hover:text-sky-400">1. التعلم الآلي المراقب
-                                    (Supervised)</button></li>
-                            <li><button onclick="showSlide(2)" class="hover:text-sky-400">2. التعلم الآلي غير المراقب
-                                    (Unsupervised)</button></li>
-                            <li><button onclick="showSlide(3)" class="hover:text-sky-400">3. التعلم الآلي المعزز
-                                    (Reinforcement)</button></li>
-                            <li><button onclick="showSlide(4)" class="hover:text-sky-400">4. تقييم وتحسين
-                                    النماذج</button></li>
-                            <li><button onclick="showSlide(5)" class="hover:text-sky-400">5. التعلم العميق (Deep
-                                    Learning)</button></li>
+                        <ul class="text-gray-300">
+                            <li><button onclick="showSlide(1)" class="hover:text-sky-400">1. التعلم الآلي المراقب</button></li>
+                            <li><button onclick="showSlide(2)" class="hover:text-sky-400">2. التعلم الآلي غير المراقب</button></li>
+                            <li><button onclick="showSlide(3)" class="hover:text-sky-400">3. التعلم الآلي المعزز</button></li>
+                            <li><button onclick="showSlide(4)" class="hover:text-sky-400">4. تقييم وتحسين النماذج</button></li>
+                            <li><button onclick="showSlide(5)" class="hover:text-sky-400">5. التعلم العميق</button></li>
                             <li><button onclick="showSlide(6)" class="hover:text-sky-400">6. مصادر ومراجع</button></li>
                         </ul>
                     </div>
@@ -983,7 +990,7 @@
 
         function showSlide(slideIndex) {
             if (!slides || !dots || slideIndex < 0 || slideIndex >= totalSlides) {
-                console.error("Slider component not ready or slide index out of bounds.");
+                // Silently handle error - slider not ready
                 return;
             }
 
@@ -1006,13 +1013,27 @@
 
             currentSlide = slideIndex;
 
-            // Scroll to the top of the window when changing slides
-            window.scrollTo(0, 0);
+            // تحديث الـ URL Hash
+            updateURL(slideIndex);
 
             // Re-draw neural network SVG if it's slide 5 (was old slide 4)
             if (slideIndex === 5) {
                 drawNeuralNetwork();
             }
+        }
+
+        function updateURL(slideIndex) {
+            const slide = document.querySelector(`[data-slide="${slideIndex}"]`);
+            // التأكد من أن الشريحة لديها معرّف قبل التحديث
+            if (slide && !slide.id) {
+                slide.id = `slide-${slideIndex}`;
+            }
+            if (slide && slide.id) {
+                window.location.hash = `#${slide.id}`;
+            } else {
+                window.location.hash = "";
+            }
+            window.scrollTo(0, 0);
         }
 
         // Helper function to create SVG elements (moved out for reuse)
@@ -1184,18 +1205,38 @@
                 });
             }
 
-            // Keyboard navigation
+            // Keyboard navigation (معكوسة لتناسب RTL)
             document.addEventListener('keydown', (e) => {
-                if (e.key === 'ArrowRight' && currentSlide < totalSlides - 1) {
+                // ArrowLeft (السهم الأيسر) يتقدم
+                if (e.key === 'ArrowLeft' && currentSlide < totalSlides - 1) {
                     showSlide(currentSlide + 1);
-                } else if (e.key === 'ArrowLeft' && currentSlide > 0) {
+                    e.preventDefault();
+                }
+                // ArrowRight (السهم الأيمن) يتراجع
+                else if (e.key === 'ArrowRight' && currentSlide > 0) {
                     showSlide(currentSlide - 1);
+                    e.preventDefault();
                 }
             });
 
-            // Show first slide and draw network if needed
+            // Show initial slide based on hash or default to 0
             if (totalSlides > 0) {
-                showSlide(0);
+                const hash = window.location.hash.replace("#", "");
+                let initialIndex = 0;
+                if (hash) {
+                    const targetSlide = document.getElementById(hash);
+                    if (targetSlide) {
+                        const dataIndex = parseInt(targetSlide.getAttribute("data-slide"));
+                        if (!isNaN(dataIndex)) {
+                            initialIndex = dataIndex;
+                        }
+                    }
+                }
+                showSlide(initialIndex);
+                // Draw neural network if needed
+                if (initialIndex === 5) {
+                    drawNeuralNetwork();
+                }
             }
 
             // Ensure the network is drawn if the app starts directly on slide 5 (e.g., after refresh)
