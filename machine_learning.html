@@ -347,15 +347,15 @@
                         <h3 class="text-xl font-semibold text-white mb-4">فهرس الوحدة</h3>
                         <ul class="space-y-3 text-gray-300 grid grid-cols-1 md:grid-cols-2 gap-x-4">
                             <li><button onclick="showSlide(1)" class="hover:text-sky-400">1. التعلم الآلي المراقب
-                                    (Supervised)</button></li>
+                                        (Supervised)</button></li>
                             <li><button onclick="showSlide(2)" class="hover:text-sky-400">2. التعلم الآلي غير المراقب
-                                    (Unsupervised)</button></li>
+                                        (Unsupervised)</button></li>
                             <li><button onclick="showSlide(3)" class="hover:text-sky-400">3. التعلم الآلي المعزز
-                                    (Reinforcement)</button></li>
+                                        (Reinforcement)</button></li>
                             <li><button onclick="showSlide(4)" class="hover:text-sky-400">4. تقييم وتحسين
-                                    النماذج</button></li>
+                                        النماذج</button></li>
                             <li><button onclick="showSlide(5)" class="hover:text-sky-400">5. التعلم العميق (Deep
-                                    Learning)</button></li>
+                                        Learning)</button></li>
                             <li><button onclick="showSlide(6)" class="hover:text-sky-400">6. مصادر ومراجع</button></li>
                         </ul>
                     </div>
@@ -368,7 +368,7 @@
                             <h2 class="text-3xl font-bold text-white"><span class="text-sky-400 ml-2">1.</span> التعلم
                                 الآلي المراقب (Supervised ML)</h2>
                             <p class="text-gray-400 leading-relaxed">هو تدريب النموذج باستخدام <strong
-                                    class="text-sky-300">"بيانات مُصنّفة" (Labeled Data)</strong>. أي أن كل مدخل يقابله
+                                        class="text-sky-300">"بيانات مُصنّفة" (Labeled Data)</strong>. أي أن كل مدخل يقابله
                                 المخرج الصحيح (الإجابة). الهدف هو تعلم العلاقة للتنبؤ ببيانات جديدة.</p>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-grow">
@@ -588,7 +588,7 @@
                     </div>
                 </div>
 
-                <!-- Slide 3: التعلم الآلي المعزز -->
+                <!-- Slide 3: التعلم الآلي المعزز (المُعدَّل) -->
                 <div class="slide" data-slide="3">
                     <div class="slide-content">
                         <h2 class="text-3xl font-bold text-white mb-6"><span class="text-sky-400 ml-2">3.</span> التعلم
@@ -616,43 +616,12 @@
                                 </p>
                             </div>
 
-                            <!-- Visualization -->
+                            <!-- Visualization (UPDATED SVG - Removed Interpreter text, separated State/Reward) -->
                             <div class="illustration-box h-full">
-                                <!-- تم تعديل viewBox لضمان وجود مساحة كافية للأسهم دون الخروج من الإطار -->
-                                <svg viewBox="0 0 450 350" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
-                                    <title>رسم توضيحي للتعلم المعزز</title>
+                                <svg viewBox="0 0 450 400" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+                                    <title>دورة التعلم المعزز</title>
 
-                                    <!-- Environment (Box) - تم تحجيمها وتوسيطها في viewBox الجديد -->
-                                    <rect x="75" y="75" width="300" height="200" rx="15" fill="#1e293b" stroke="#38bdf8"
-                                        stroke-width="3" />
-                                    <text x="225" y="100" class="label" fill="#38bdf8" font-size="20">البيئة
-                                        (Environment)</text>
-
-                                    <!-- Agent (Circle) - تم تحريكها لتكون في المنتصف النسبي -->
-                                    <circle cx="225" cy="175" r="25" fill="#facc15" stroke="#fef08a" stroke-width="3" />
-                                    <text x="225" y="175" class="label" fill="#111827" font-size="16"
-                                        font-weight="bold">وكيل</text>
-
-                                    <!-- Arrows and Labels -->
-
-                                    <!-- 1. Action (Agent -> Environment) -->
-                                    <path d="M 250 175 L 370 175" fill="none" stroke="#60a5fa" stroke-width="2"
-                                        marker-end="url(#arrowBlue)" />
-                                    <text x="320" y="165" class="label" fill="#60a5fa" font-size="16">إجراء (Action)
-                                    </text>
-
-                                    <!-- 2. Reward (Environment -> Agent) - تم تعديل المنحنى ليظل داخل الإطار -->
-                                    <path d="M 225 275 C 325 305, 400 305, 400 205" fill="none" stroke="#34d399"
-                                        stroke-width="2" marker-end="url(#arrowGreen)" />
-                                    <text x="370" y="300" class="label" fill="#34d399" font-size="16">مكافأة (Reward)
-                                    </text>
-
-                                    <!-- 3. State (Environment -> Agent) -->
-                                    <path d="M 200 175 L 80 175" fill="none" stroke="#f43f5e" stroke-width="2"
-                                        marker-end="url(#arrowRed)" />
-                                    <text x="130" y="165" class="label" fill="#f43f5e" font-size="16">حالة (State)</text>
-
-                                    <!-- Definitions for markers -->
+                                    <!-- Definitions for markers (arrows) -->
                                     <defs>
                                         <marker id="arrowBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6"
                                             markerHeight="6" orient="auto-start-reverse">
@@ -667,6 +636,64 @@
                                             <path d="M 0 0 L 10 5 L 0 10 z" fill="#f43f5e" />
                                         </marker>
                                     </defs>
+
+                                    <!-- Environment Group (Top) - Maze Icon -->
+                                    <g id="environment" transform="translate(225, 80)">
+                                        <!-- Maze Placeholder -->
+                                        <rect x="-40" y="-40" width="80" height="80" rx="10" fill="#1f2937"
+                                            stroke="#38bdf8" stroke-width="2" />
+                                        <path d="M-30 -30 L 30 -30 M -30 -10 L 10 -10 M -10 10 L 30 10 M -30 30 L 30 30"
+                                            stroke="#38bdf8" stroke-width="4" fill="none" />
+                                        <text x="0" y="60" class="label" fill="#38bdf8" font-size="18">البيئة
+                                            (Environment)</text>
+                                    </g>
+
+                                    <!-- Interpreter Group (Left Center) - Eye Icon (Word removed) -->
+                                    <g id="interpreter" transform="translate(100, 180)">
+                                        <!-- Eye Placeholder -->
+                                        <circle cx="0" cy="0" r="30" fill="#1e293b" stroke="#fef08a" stroke-width="2" />
+                                        <ellipse cx="0" cy="0" rx="25" ry="15" fill="#111827" />
+                                        <circle cx="0" cy="0" r="8" fill="#e5e7eb" />
+                                        <text x="0" y="55" class="label" fill="#e5e7eb" font-size="16"></text> <!-- Removed the word -->
+                                    </g>
+
+                                    <!-- Agent Group (Bottom Center) -->
+                                    <g id="agent" transform="translate(225, 320)">
+                                        <!-- Simple Robot Head -->
+                                        <rect x="-30" y="-30" width="60" height="60" rx="10" fill="#34d399"
+                                            stroke="#10b981" stroke-width="2" />
+                                        <circle cx="-15" cy="-15" r="5" fill="#111827" />
+                                        <circle cx="15" cy="-15" r="5" fill="#111827" />
+                                        <rect x="-20" y="5" width="40" height="15" fill="#111827" rx="3" />
+                                        <text x="0" y="50" class="label" fill="#34d399" font-size="18">الوكيل
+                                            (Agent)</text>
+                                    </g>
+
+                                    <!-- 1. Action (Agent -> Environment) - Right Arc -->
+                                    <path d="M 270 300 C 370 250, 370 150, 260 100" fill="none" stroke="#60a5fa"
+                                        stroke-width="3" marker-end="url(#arrowBlue)" />
+                                    <!-- Text moved for clarity -->
+                                    <text x="350" y="200" class="label" fill="#60a5fa" font-size="16">إجراء (Action)
+                                    </text>
+
+                                    <!-- 2. Observation (Environment -> Interpreter) - Top Arc -->
+                                    <path d="M 190 100 C 160 100, 130 140, 105 160" fill="none" stroke="#f43f5e"
+                                        stroke-width="3" marker-end="url(#arrowRed)" />
+                                    <!-- Text moved higher and outside the arc -->
+                                    <text x="140" y="105" class="label" fill="#f43f5e" font-size="16">ملاحظة</text>
+
+                                    <!-- 3. State (Interpreter -> Agent) - Outer path, separated from Reward -->
+                                    <path d="M 75 220 C 100 270, 150 310, 200 305" fill="none" stroke="#f43f5e"
+                                        stroke-width="3" marker-end="url(#arrowRed)" />
+                                    <!-- Text positioned clear of the path -->
+                                    <text x="90" y="270" class="label" fill="#f43f5e" font-size="16">حالة (State)</text>
+
+                                    <!-- 4. Reward (Interpreter -> Agent) - Inner path, separated from State -->
+                                    <path d="M 115 215 C 130 250, 150 290, 200 310" fill="none" stroke="#34d399"
+                                        stroke-width="3" marker-end="url(#arrowGreen)" />
+                                    <!-- Text positioned clear of the path -->
+                                    <text x="140" y="250" class="label" fill="#34d399" font-size="16">مكافأة (Reward)
+                                    </text>
                                 </svg>
                             </div>
                         </div>
